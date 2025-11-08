@@ -102,6 +102,8 @@ Finite State Machine (FSM) & Computational model with finite number of states, t
 \midrule
 Free Will & Capacity for genuine choice not fully determined by prior causes. Emerges from non-computable selector mechanism. \\
 \midrule
+Gap Function ($f(n)$) & Variable positive integer function determining resource jumps in hierarchy: $M_n \subseteq M_{n+f(n)}$. May be constant, logarithmic, polynomial, or exponential. Larger $f(n)$ represents qualitative shifts in processing level. Universality requires $\lim_{n \to \infty} f(n) = \infty$. \\
+\midrule
 Global Ignition & Sudden, widespread activation pattern that occurs when information enters the global workspace. Corresponds to collapse completion and subsequent broadcasting. \\
 \midrule
 Global Workspace & In GWT, a limited-capacity system for broadcasting information widely. In our framework, the distribution mechanism activated post-collapse. \\
@@ -110,7 +112,7 @@ Hard Problem & Chalmers' term for explaining why there is "something it is like"
 \midrule
 Higher-Order Thought (HOT) & A thought about another mental state. HOT theories claim consciousness requires representing one's own mental states. \\
 \midrule
-Hierarchy & In our framework, the sequence of finite machines $M_1, M_2, \ldots, M_n$ with exponentially growing resources ($2^n$ bits for $M_n$). Not present in single-level theories. \\
+Hierarchy & In our framework, the sequence of finite machines $M_1, M_2, \ldots, M_n$ with exponentially growing resources ($2^n$ bits for $M_n$). Exhibits generalized non-uniform structure: $M_n \subseteq M_{n+f(n)}$ where $f(n) \geq 1$ represents variable resource gaps. Not present in single-level theories. \\
 \midrule
 Illusionism & View that phenomenal consciousness is an illusion—there is no "what it's like." We reject this; phenomenology is real. \\
 \midrule
@@ -126,7 +128,7 @@ Irreversibility & One-way nature of collapse: once multiple possibilities reduce
 \midrule
 Kolmogorov Complexity ($K(x)$) & Length of the shortest program that outputs string $x$. Non-computable function central to selector mechanism. Selector approximates compression optimization related to Kolmogorov complexity. \\
 \midrule
-Machine Hierarchy & Sequence $\mathcal{M} = (M_i)_{i=1}^{n_{\max}}$ where $M_i$ is a finite state machine with $2^i$ bits of memory. Core computational architecture. \\
+Machine Hierarchy & Sequence $\mathcal{M} = (M_i)_{i=1}^{n_{\max}}$ where $M_i$ is a finite state machine with $2^i$ bits of memory. Core computational architecture with non-uniform inclusion: $M_n \subseteq M_{n+f(n)}$ where gap function $f(n) \geq 1$ varies. \\
 \midrule
 Machine Level ($n$) & Position in the hierarchy, determining resources available: $M_n$ has $2^n$ bits. Higher $n$ = more computational power but higher cost. \\
 \midrule
@@ -203,6 +205,7 @@ Zombie (Philosophical) & Hypothetical being physically identical to conscious be
 \midrule
 $M_n$ or $\Mn$ & Machine at level $n$ (with $2^n$ bits memory) \\
 $\mathcal{M}$ & Machine hierarchy: $(\Mi)_{i=1}^{n_{\max}}$ \\
+$f(n)$ & Gap function: variable resource jump $M_n \subseteq M_{n+f(n)}$ \\
 $\mathcal{S}$ & Selector function: $\mathcal{C} \times \mathcal{H} \rightarrow \mathbb{N}$ \\
 $\Phi$ or $\Phi(S)$ & Integrated information of system $S$ \\
 $K(x)$ & Kolmogorov complexity of string $x$ \\
@@ -229,6 +232,8 @@ $\psi(t)$ & Integrated conscious state at time $t$ \\
 \textbf{Equation} & \textbf{Description} \\
 \midrule
 $\text{Memory}(M_n) = 2^n$ bits & Exponential memory scaling \\
+$M_n \subseteq M_{n+f(n)}, f(n) \geq 1$ & Non-uniform hierarchy inclusion \\
+$\lim_{n \to \infty} f(n) = \infty$ & Universality condition \\
 $\mathcal{S}(c, h) \approx \arg\min_{n} [K_n + C(n)]$ & Selector optimization \\
 $\Phi(S) = \min_{\text{cut}} [I(X^t; X^{t+1}) - \sum I(X_i^t; X_i^{t+1})]$ & Integrated information \\
 $\tcomp = \sum_i \int_0^{T_i} \|\dot{\gamma}_i(t)\| dt$ & Computational time \\

@@ -65,7 +65,9 @@ An extended FSM with $n$ bits of memory is $\Mn = (Q, \Sigma, \Gamma, \delta, \g
 
 \begin{definition}[Machine Hierarchy]
 \label{def:machine-hierarchy}
-The machine hierarchy is a sequence $\mathcal{M} = (\Mi)_{i=1}^{\infty}$ where each $\Mi$ is an extended FSM with $2^i$ bits of memory: $\Mi = (Q_i, \Sigma, \Gamma_i, \delta_i, \gamma_i, q_{0,i}, \mathbf{m}_{0,i}, F_i)$ where $\Gamma_i = \{0,1\}^{2^i}$.
+The machine hierarchy is a sequence $\mathcal{M} = (\Mi)_{i=1}^{\infty}$ where each $\Mi$ is an extended FSM with $2^i$ bits of memory: $\Mi = (Q_i, \Sigma, \Gamma_i, \delta_i, \gamma_i, q_{0,i}, \mathbf{m}_{0,i}, F_i)$ where $\Gamma_i = \{0,1\}^{2^i}$. 
+
+The hierarchy exhibits a \important{generalized non-uniform inclusion structure}: machines at level $n$ are effectively subsumed by machines at level $n+f(n)$, where $f: \mathbb{N} \to \mathbb{N}^+$ is a variable resource gap function. That is, $M_n \subseteq M_{n+f(n)}$ where $f(n) \geq 1$ may grow non-linearly (logarithmically, polynomially, or exponentially). The universality condition requires $\lim_{n \to \infty} f(n) = \infty$, ensuring asymptotic universality despite local discontinuities in the effective hierarchy.
 \end{definition}
 
 \begin{table}[H]
@@ -78,7 +80,9 @@ The machine hierarchy is a sequence $\mathcal{M} = (\Mi)_{i=1}^{\infty}$ where e
 \midrule
 Memory scaling & $|\Gamma_i| = 2^{2^i}$ (double exponential) \\
 Capacity growth & Configurations in $\Mi$: $|Q_i| \cdot 2^{2^i}$ \\
-Subsumption & For $i < j$, $\Mi$ simulated by $M_j$ with $\log$ overhead \\
+Non-uniform subsumption & $M_n \subseteq M_{n+f(n)}$ with variable gap $f(n) \geq 1$ \\
+Resource jumps & $f(n)$ may be constant, logarithmic, or exponential \\
+Universality condition & $\lim_{n \to \infty} f(n) = \infty$ (asymptotic universality) \\
 Bounded depth & Only finitely many levels accessible ($n_{\max}$) \\
 \midrule
 \multicolumn{2}{l}{\textit{Realistic Constraints (biological systems)}} \\
@@ -91,10 +95,10 @@ Typical use & $M_3$ to $M_5$ (8-32 bits) \\
 
 \begin{proposition}[Computational Power Hierarchy]
 \label{prop:power-hierarchy}
-For the machine hierarchy $\mathcal{M}$: (1) $\Mi$ can decide any language in $\DSPACE(2^i)$, (2) There exist languages decidable by $M_{i+1}$ but not by $\Mi$, (3) $\bigcup_{i=1}^{\infty} L(\Mi) = \textsf{RE}$ (recursively enumerable), (4) The hierarchy is strict: $L(\Mi) \subsetneq L(M_{i+1})$ for all $i$.
+For the machine hierarchy $\mathcal{M}$ with variable gap function $f(n)$: (1) $\Mi$ can decide any language in $\DSPACE(2^i)$, (2) There exist languages decidable by $M_{i+f(i)}$ but not by $\Mi$ for any $f(i) \geq 1$, (3) $\bigcup_{i=1}^{\infty} L(\Mi) = \textsf{RE}$ (recursively enumerable) as long as $\lim_{i \to \infty} f(i) = \infty$, (4) The effective hierarchy respects strict inclusion: $L(\Mi) \subsetneq L(M_{i+f(i)})$ for all $i$ where $f(i) \geq 1$.
 
 \begin{proof}[Proof sketch]
-(1) By construction, $\Mi$ has $2^i$ bits. (2) By space hierarchy theorem. (3) Any TM computation can be simulated by sufficiently large $n$. (4) Follows from (2).
+(1) By construction, $\Mi$ has $2^i$ bits. (2) By space hierarchy theorem: $\DSPACE(2^i) \subsetneq \DSPACE(2^{i+f(i)})$ for $f(i) \geq 1$. (3) Any TM computation can be simulated by sufficiently large $n$ since $\lim_{i \to \infty} (i + f(i)) = \infty$ when $\lim_{i \to \infty} f(i) = \infty$. (4) Follows from (2) and the space hierarchy theorem.
 \end{proof}
 \end{proposition}
 

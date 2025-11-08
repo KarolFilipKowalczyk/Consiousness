@@ -56,7 +56,7 @@ Here is what actually happens when the system solves a problem:
 
 \begin{enumerate}
 \item \textbf{Checkpoint:} At time $t_0$, the system checkpoints the current state $S_0$
-\item \textbf{Parallel Launch:} Multiple machines $\{M_{n_1}, M_{n_2}, \ldots, M_{n_k}\}$ begin exploring from $S_0$ in parallel
+\item \textbf{Parallel Launch:} Multiple machines $\{M_{n_1}, M_{n_2}, \ldots, M_{n_k}\}$ begin exploring from $S_0$ in parallel, where the sequence follows non-uniform gaps: $n_{i+1} = n_i + f(n_i)$ with variable $f(n_i) \geq 1$
 \item \textbf{Exploration:} Each machine $M_{n_i}$ maintains its own state trajectory:
    \begin{itemize}
    \item $M_{n_1}$: $S_0 \to S_1^{(1)} \to S_2^{(1)} \to \cdots$
@@ -65,7 +65,7 @@ Here is what actually happens when the system solves a problem:
    \end{itemize}
 \item \textbf{Failure Detection:} When a machine reaches a dead end or exhausts resources, its exploration terminates
 \item \textbf{Success Detection:} When a machine finds a solution, it signals success
-\item \textbf{Collapse:} The first successful machine's trajectory becomes the conscious experience
+\item \textbf{Collapse:} The first successful machine's trajectory becomes the conscious experience—this collapse event involves resource reallocation of magnitude $f(n_j)$ where $n_j$ is the successful level
 \item \textbf{Memory Management:} Failed trajectories are not stored in accessible memory—only the successful path is consolidated
 \end{enumerate}
 

@@ -55,7 +55,7 @@ The fundamental insight of this work is that consciousness is what computation "
 
 Our framework begins with a deceptively simple idea from computational complexity theory \autocite{sipser2012,arora2009}: instead of modeling cognition as a single Turing machine with infinite memory \autocite{turing1936}, we model it as a hierarchy of finite-state machines with exponentially growing resources.
 
-Let $M_1, M_2, M_3, \ldots, M_n, \ldots$ be a sequence of finite machines where $M_n$ has $2^n$ bits of memory. Each machine in this hierarchy:
+Let $M_1, M_2, M_3, \ldots, M_n, \ldots$ be a sequence of finite machines where $M_n$ has $2^n$ bits of memory. The hierarchy exhibits a \important{generalized non-uniform structure}: effective computational levels are not uniformly spaced, but rather follow $M_n \subseteq M_{n+f(n)}$ where $f(n) \geq 1$ is a variable resource gap function that may grow logarithmically, polynomially, or exponentially. This reflects realistic cognitive resource allocation where transitions between effective processing levels involve variable resource jumps. Each machine in this hierarchy:
 
 \begin{itemize}
 \item Is fully decidable (no halting problem at any finite level)
@@ -348,6 +348,7 @@ For each $n \in \mathbb{N}$, define machine $M_n$ with:
 \item Memory capacity: $2^n$ bits
 \item Computational power: Can solve problems in $\DSPACE(2^n)$
 \end{itemize}
+The hierarchy follows a non-uniform inclusion structure $M_n \subseteq M_{n+f(n)}$ where the gap function $f: \mathbb{N} \to \mathbb{N}^+$ represents variable resource jumps between effective levels. Asymptotic universality requires $\lim_{n \to \infty} f(n) = \infty$.
 \end{definition}
 
 This gives us a sequence:
@@ -552,11 +553,11 @@ Given computable $f$ and finite $X$, there exists a Turing machine $T$ computing
 The hierarchy respects the space hierarchy theorem from complexity theory.
 
 \begin{theorem}[Strict Hierarchy]
-For all $n$, there exist problems solvable by $M_{n+1}$ that cannot be solved by $M_n$.
+For all $n$ and any gap function $f(n) \geq 1$, there exist problems solvable by $M_{n+f(n)}$ that cannot be solved by $M_n$.
 \end{theorem}
 
 \begin{proof}
-This follows from the space hierarchy theorem: $\DSPACE(2^n) \subsetneq \DSPACE(2^{n+1})$.
+This follows from the space hierarchy theorem: $\DSPACE(2^n) \subsetneq \DSPACE(2^{n+f(n)})$ for any $f(n) \geq 1$. The non-uniform gap $f(n)$ represents the effective resource jump between consecutive computational levels in consciousness.
 \end{proof}
 
 \section{Parallel Exploration Model}
@@ -566,7 +567,7 @@ This follows from the space hierarchy theorem: $\DSPACE(2^n) \subsetneq \DSPACE(
 The key computational strategy is to launch multiple machines in parallel:
 
 \begin{definition}[Parallel Launch]
-Given problem $P$ and input $x$, launch machines $M_{n_1}, M_{n_2}, \ldots, M_{n_k}$ simultaneously, where $n_1 < n_2 < \cdots < n_k$.
+Given problem $P$ and input $x$, launch machines $M_{n_1}, M_{n_2}, \ldots, M_{n_k}$ simultaneously, where $n_1 < n_2 < \cdots < n_k$. The sequence $\{n_i\}$ follows the non-uniform hierarchy structure, with $n_{i+1} = n_i + f(n_i)$ where $f(n_i) \geq 1$ represents the variable resource gap between effective levels.
 \end{definition}
 
 Each machine explores the problem with its available resources. The first machine to find a solution "wins."
@@ -579,6 +580,7 @@ We can visualize the problem space as a labyrinth:
 \item The problem space is a labyrinth with one exit (the solution)
 \item Different machines are explorers with different capabilities
 \item $M_n$ can "jump" over obstacles of height up to $2^n$
+\item The gap between effective explorer capability levels follows $M_n \to M_{n+f(n)}$, representing non-uniform resource scaling—larger jumps correspond to qualitatively different cognitive integration levels
 \item Machines explore in parallel, taking different routes
 \item The first to reach the exit determines the solution
 \end{itemize}
@@ -588,15 +590,26 @@ We can visualize the problem space as a labyrinth:
 When all launched machines fail (none finds a solution), we employ \important{state checkpointing}:
 
 \begin{enumerate}
-\item Launch $M_1, M_2, \ldots, M_k$
+\item Launch $M_{n_1}, M_{n_2}, \ldots, M_{n_k}$ following the non-uniform hierarchy
 \item If all fail, restore to the checkpointed initial state
-\item Launch $M_{k+1}, M_{k+2}, \ldots, M_{k+j}$ (higher resource levels) from the checkpoint
+\item Launch next tier: $M_{n_{k+1}}, M_{n_{k+2}}, \ldots$ where $n_{k+i} = n_{k+i-1} + f(n_{k+i-1})$
 \item Repeat until success
 \end{enumerate}
 
 \begin{keyinsight}
 The state checkpointing and restoration is crucial: in computational time, many attempts occur and fail. But in subjective conscious time, only the successful attempt is experienced. The failed attempts are "erased" through selective memory consolidation—they are never stored in accessible memory.
 \end{keyinsight}
+
+\subsection{Collapse Events as Resource Reallocation}
+
+Each transition $M_n \to M_{n+f(n)}$ in the effective hierarchy can be interpreted as a \important{collapse event}:
+
+\begin{itemize}
+\item \textbf{Resource Reallocation:} The jump from level $n$ to $n+f(n)$ represents a discrete reallocation of computational resources, where $f(n)$ quantifies the magnitude of resource integration required
+\item \textbf{Cognitive Analogy:} Larger values of $f(n)$ correspond to higher-level cognitive integration or subjective time dilation—qualitative shifts in processing mode
+\item \textbf{Non-Uniform Scaling:} Unlike linear hierarchies where $f(n) = 1$ uniformly, cognitive systems may exhibit variable $f(n)$: small jumps for incremental processing, large jumps for gestalt insights or paradigm shifts
+\item \textbf{Universality Preservation:} Despite local discontinuities where $f(n) > 1$, the condition $\lim_{n \to \infty} f(n) = \infty$ ensures asymptotic computational universality
+\end{itemize}
 
 \section{Connection to Non-Uniform Computation}
 

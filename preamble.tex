@@ -34,8 +34,8 @@
 % ------------------------
 % Typography
 % ------------------------
-\usepackage{lmodern}           % Latin Modern fonts
-\usepackage{microtype}         % Improved typography
+% \usepackage{lmodern}           % Latin Modern fonts (not available)
+\usepackage[expansion=false]{microtype}  % Improved typography (expansion disabled)
 \usepackage{setspace}          % Line spacing control
 \onehalfspacing                % 1.5 line spacing
 
@@ -144,20 +144,10 @@
 % ------------------------
 % Bibliography
 % ------------------------
-\usepackage[
-    backend=biber,
-    style=authoryear,
-    sorting=nyt,
-    maxbibnames=99,
-    maxcitenames=2,
-    uniquename=init,
-    giveninits=true,
-    doi=true,
-    url=true,
-    isbn=false
-]{biblatex}
-
-\addbibresource{bibliography.bib}
+% Using natbib instead of biblatex (not available)
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{plainnat}
+% Note: Will use \bibliography{bibliography} in main.tex instead of printbibliography
 
 % ------------------------
 % Index
