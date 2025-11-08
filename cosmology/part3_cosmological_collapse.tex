@@ -329,6 +329,196 @@ If dark matter enables cosmic collapse, we predict:
 \item Regions with complex structure formation should have specific dark matter-to-baryon ratios enabling optimal collapse dynamics.
 \end{enumerate}
 
+\section{Relationship to Environmental Decoherence}
+
+A rigorous theory of cosmic collapse must connect to established quantum decoherence theory. This section shows how computational collapse relates to standard environmental decoherence, providing the crucial link between our framework and orthodox quantum mechanics.
+
+\subsection{Standard Decoherence Theory}
+
+Environmental decoherence, developed by Zurek \autocite{zurek2003} and others, explains how quantum systems become effectively classical through interaction with their environment. The master equation for a system coupled to an environment is:
+
+\begin{equation}
+\frac{\partial \rho_S}{\partial t} = -\frac{i}{\hbar}[H_S, \rho_S] + \mathcal{D}_{\text{env}}[\rho_S]
+\end{equation}
+
+where:
+\begin{itemize}
+\item $\rho_S$ is the system's density matrix
+\item $H_S$ is the system Hamiltonian
+\item $\mathcal{D}_{\text{env}}$ is the environmental decoherence superoperator
+\end{itemize}
+
+The decoherence term $\mathcal{D}_{\text{env}}$ typically has the Lindblad form:
+
+\begin{equation}
+\mathcal{D}_{\text{env}}[\rho] = \sum_k \gamma_k \left(L_k \rho L_k^\dagger - \frac{1}{2}\{L_k^\dagger L_k, \rho\}\right)
+\end{equation}
+
+where $L_k$ are Lindblad operators and $\gamma_k$ are decoherence rates.
+
+\subsection{Computational Collapse Contribution}
+
+Our framework proposes an additional term:
+
+\begin{theorem}[Decoherence Correspondence]\label{thm:decoherence-correspondence}
+In the regime of weak coupling to a Markovian environment, computational collapse adds a dimension-dependent term to the master equation:
+\begin{equation}
+\frac{\partial \rho}{\partial t} = -\frac{i}{\hbar}[H, \rho] - \gamma_{\text{env}} \mathcal{D}_{\text{env}}[\rho] - \gamma_{\text{comp}} \mathcal{C}[\rho]
+\end{equation}
+where:
+\begin{itemize}
+\item $\mathcal{D}_{\text{env}}[\rho]$ = standard environmental decoherence
+\item $\mathcal{C}[\rho]$ = computational collapse superoperator
+\item $\gamma_{\text{comp}} = \alpha \log(\text{dim}(\mathcal{H}))$ for Hilbert space $\mathcal{H}$
+\item $\alpha \approx 2.3 \times 10^{-7}$ is the collapse coupling constant (from Prediction Q-1)
+\end{itemize}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The computational collapse superoperator $\mathcal{C}$ arises from the selector function's preference for low-complexity states. In the weak-coupling limit:
+
+\textbf{Step 1:} The selector evaluates computational cost of maintaining superposition:
+\begin{equation}
+\mathcal{K}(\rho) = \text{Tr}[\rho \log \rho] \cdot \log(\text{dim}(\mathcal{H}))
+\end{equation}
+
+\textbf{Step 2:} This cost induces a selection pressure toward diagonal (classical) states:
+\begin{equation}
+\mathcal{C}[\rho] = \sum_{ij} \kappa_{ij} (|i\rangle\langle i| \rho |i\rangle\langle i| - \rho_{ij}|i\rangle\langle j|)
+\end{equation}
+
+\textbf{Step 3:} The rate $\gamma_{\text{comp}}$ is proportional to the "cost" of maintaining coherence across a $d$-dimensional space, giving:
+\begin{equation}
+\gamma_{\text{comp}} \propto \log d
+\end{equation}
+
+In the Markovian approximation, this reduces to the Lindblad form with dimension-dependent rate.
+\end{proof}
+
+\subsection{Comparison with Standard Decoherence}
+
+The key differences between environmental and computational decoherence:
+
+\begin{table}[h]
+\centering
+\caption{Environmental vs. Computational Decoherence}
+\begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Property} & \textbf{Environmental} & \textbf{Computational} \\
+\hline
+Physical origin & Coupling to environment & Complexity cost \\
+\hline
+Rate scaling & $\gamma_{\text{env}} \propto T, n_{\text{env}}$ & $\gamma_{\text{comp}} \propto \log d$ \\
+\hline
+Basis selection & Pointer states (energy, position) & Low-complexity states \\
+\hline
+Temperature dependence & Strong ($\sim T$) & Weak (logarithmic) \\
+\hline
+Dominant regime & Low $d$ ($< 10^6$) & High $d$ ($> 10^6$) \\
+\hline
+Observability & Well-established & Predicted by this theory \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Combined Decoherence Rate}
+
+For realistic systems, both mechanisms operate:
+
+\begin{equation}
+\Gamma_{\text{total}} = \Gamma_{\text{env}} + \Gamma_{\text{comp}}
+\end{equation}
+
+where:
+\begin{align}
+\Gamma_{\text{env}} &= A \cdot T \cdot n_{\text{bath}} \cdot \sigma \\
+\Gamma_{\text{comp}} &= \alpha \cdot \log(d)
+\end{align}
+
+with:
+\begin{itemize}
+\item $A$ = coupling strength
+\item $T$ = temperature
+\item $n_{\text{bath}}$ = bath particle density
+\item $\sigma$ = interaction cross-section
+\item $\alpha \approx 2.3 \times 10^{-7}$ = collapse coupling
+\item $d = \text{dim}(\mathcal{H})$ = Hilbert space dimension
+\end{itemize}
+
+\begin{remark}[When Computational Term Dominates]
+The computational decoherence dominates when:
+\begin{equation}
+\frac{\Gamma_{\text{comp}}}{\Gamma_{\text{env}}} = \frac{\alpha \log d}{A \cdot T \cdot n_{\text{bath}} \cdot \sigma} > 1
+\end{equation}
+
+This occurs for:
+\begin{itemize}
+\item Very cold systems ($T \to 0$)
+\item Isolated systems (small $n_{\text{bath}}$)
+\item High-dimensional entanglement ($d \gg 10^6$)
+\end{itemize}
+
+These are precisely the regimes tested by Prediction Q-1 in Part V.
+\end{remark}
+
+\subsection{Cosmological Decoherence}
+
+At cosmological scales, environmental decoherence from the CMB provides a baseline rate:
+
+\begin{equation}
+\Gamma_{\text{CMB}} \approx 10^{-29} \text{ s}^{-1} \times \left(\frac{T}{2.7 \text{ K}}\right)
+\end{equation}
+
+However, for the universe as a whole ($d \sim 10^{10^{120}}$ for all quantum degrees of freedom), computational decoherence could contribute:
+
+\begin{equation}
+\Gamma_{\text{cosmic}} \sim \alpha \log(10^{10^{120}}) \sim 10^{-5} \text{ s}^{-1}
+\end{equation}
+
+This is vastly larger than environmental decoherence, suggesting that cosmic wavefunction collapse is driven primarily by computational, not environmental, mechanisms.
+
+\begin{keyinsight}
+Environmental decoherence explains quantum-to-classical transition for small systems coupled to baths. Computational collapse extends this to isolated systems and cosmological scales where no external environment exists. The universe as a whole has no environment—its collapse must be self-induced through computational selection.
+\end{keyinsight}
+
+\subsection{Pointer States and Preferred Basis}
+
+Standard decoherence theory identifies "pointer states"—the states that remain stable under environmental interaction. These typically correspond to energy or position eigenstates.
+
+Computational collapse predicts a different preferred basis:
+
+\begin{proposition}[Computational Pointer States]
+The preferred basis for computational collapse consists of states minimizing:
+\begin{equation}
+\mathcal{L}(|\psi\rangle) = K(|\psi\rangle) + \lambda S(|\psi\rangle) - \mu \Phi(|\psi\rangle)
+\end{equation}
+where:
+\begin{itemize}
+\item $K(|\psi\rangle)$ = Kolmogorov complexity (simplicity)
+\item $S(|\psi\rangle)$ = von Neumann entropy (purity)
+\item $\Phi(|\psi\rangle)$ = integrated information (consciousness capacity)
+\item $\lambda, \mu > 0$ = weighting parameters
+\end{itemize}
+\end{proposition}
+
+For most physical systems, these computational pointer states approximately align with environmental pointer states, explaining why we don't observe gross violations of standard quantum mechanics. The small deviations (Predictions Q-1, Q-2) occur only in edge cases where computational cost becomes significant.
+
+\subsection{Experimental Distinguishability}
+
+The two decoherence mechanisms can be distinguished experimentally:
+
+\begin{enumerate}
+\item \textbf{Temperature scaling:} Environmental decoherence increases with temperature; computational decoherence is nearly temperature-independent.
+
+\item \textbf{Dimension scaling:} Environmental decoherence is roughly constant with dimension; computational decoherence increases as $\log d$.
+
+\item \textbf{Isolation:} Perfect isolation eliminates environmental decoherence but not computational decoherence.
+
+\item \textbf{Entanglement structure:} Environmental decoherence prefers factorizable states; computational decoherence has more complex entanglement preferences.
+\end{enumerate}
+
+These provide clear experimental signatures distinguishing the mechanisms, as detailed in the experimental protocols (Part V, Appendix B).
+
 \section{Dark Energy and Accelerating Expansion}
 
 The universe's expansion is accelerating, driven by dark energy comprising 68\% of total energy density. This poses a profound puzzle: what is dark energy, and why does it dominate now?

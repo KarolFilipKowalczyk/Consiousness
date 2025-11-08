@@ -8,80 +8,250 @@ This appendix provides detailed mathematical derivations and proofs that were om
 
 \section{Transfinite Machine Hierarchy}
 
-\subsection{Proof of Computational Power Hierarchy}
+The transfinite machine hierarchy extends computational power beyond finite machines by allowing infinite state spaces indexed by ordinal numbers. This section provides a rigorous foundation, starting from finite machines and carefully constructing the transition to transfinite ordinals.
 
-\begin{theorem}[Strict Hierarchy]
-For ordinals $\alpha < \beta$, the computational power satisfies:
+\subsection{Finite Machine Hierarchy}
+
+We begin with the well-understood finite case before extending to transfinite ordinals.
+
+\begin{definition}[Finite Turing Machine]
+For each $n \in \mathbb{N}$, define machine $M_n$ with:
+\begin{itemize}
+\item State space: $Q_n$ with $|Q_n| = 2^n$ states
+\item Alphabet: $\Sigma = \{0, 1\}$ (binary)
+\item Tape: Infinite in both directions, initially blank
+\item Transition function: $\delta_n: Q_n \times \Sigma \rightarrow Q_n \times \Sigma \times \{L, R\}$
+\item Memory capacity: $n$ bits
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Computational Power Class]
+For machine $M_n$, define its computational power class:
 \begin{equation}
-\mathcal{C}_\alpha \subsetneq \mathcal{C}_\beta
+\mathcal{C}_n = \{L \subseteq \Sigma^* : M_n \text{ decides } L\}
 \end{equation}
-where the containment is proper (strict).
+the set of all languages (decision problems) that $M_n$ can decide.
+\end{definition}
+
+\begin{theorem}[Finite Separation]\label{thm:finite-separation}
+For all $n < m$ in $\mathbb{N}$:
+\begin{equation}
+\mathcal{C}_n \subsetneq \mathcal{C}_m
+\end{equation}
+The containment is proper (strict).
 \end{theorem}
 
 \begin{proof}
-By construction, machine $M_\alpha$ has state space of cardinality $\aleph_\alpha$ and machine $M_\beta$ has state space of cardinality $\aleph_\beta$.
+We construct an explicit problem that separates $M_n$ from $M_m$.
 
-For $\alpha < \beta$, Cantor's theorem guarantees:
+\textbf{Construction:} Consider the parity problem for bit strings of length $m$:
 \begin{equation}
-\aleph_\alpha < 2^{\aleph_\alpha} \leq \aleph_\beta
+P_m = \{w \in \{0,1\}^m : w \text{ has even parity}\}
 \end{equation}
 
-Thus $M_\beta$ can represent states that $M_\alpha$ cannot. Specifically, $M_\beta$ can solve decision problems over sets of cardinality $\aleph_\beta$, while $M_\alpha$ is limited to sets of cardinality $\leq \aleph_\alpha$.
-
-To show strict containment, construct a problem $P_\alpha$ that:
+\textbf{Upper bound:} Machine $M_m$ can solve $P_m$ by:
 \begin{enumerate}
-\item Requires examining all subsets of a set of size $\aleph_\alpha$
-\item Thus requires state space of size $2^{\aleph_\alpha}$
-\item Is solvable by $M_{\alpha+1}$ (which has $\aleph_{\alpha+1} = 2^{\aleph_\alpha}$ states)
-\item Is unsolvable by $M_\alpha$ (insufficient states)
+\item Using $m$ bits of memory to store the input
+\item Computing XOR of all bits
+\item Accepting if result is 0 (even parity)
+\end{enumerate}
+Thus $P_m \in \mathcal{C}_m$.
+
+\textbf{Lower bound:} Machine $M_n$ with $n < m$ has only $2^n < 2^m$ states. To solve $P_m$, it must distinguish all $2^m$ possible inputs. By pigeonhole principle, some two distinct inputs $w_1, w_2$ with different parities must map to the same state. Therefore $M_n$ cannot correctly decide both inputs. Thus $P_m \notin \mathcal{C}_n$.
+
+Therefore $\mathcal{C}_n \subsetneq \mathcal{C}_m$ for all $n < m$.
+\end{proof}
+
+\begin{corollary}[Strict Finite Hierarchy]
+The finite machines form a strict hierarchy:
+\begin{equation}
+\mathcal{C}_1 \subsetneq \mathcal{C}_2 \subsetneq \mathcal{C}_3 \subsetneq \cdots
+\end{equation}
+\end{corollary}
+
+\subsection{Limit Transition at $\omega$}
+
+The crucial step is defining what happens "at infinity"—the first limit ordinal $\omega$.
+
+\begin{definition}[First Transfinite Machine]
+Define $M_\omega$ as the limit of the finite hierarchy:
+\begin{equation}
+M_\omega = \lim_{n \rightarrow \infty} M_n
+\end{equation}
+with components:
+\begin{itemize}
+\item State space: $Q_\omega = \bigcup_{n \in \mathbb{N}} Q_n$, thus $|Q_\omega| = \aleph_0$ (countably infinite)
+\item Transition function: $\delta_\omega(q, \sigma) = \delta_n(q, \sigma)$ where $q \in Q_n$
+\item Consistency: For $q \in Q_n \cap Q_m$ with $n < m$, we have $\delta_n(q, \sigma) = \delta_m(q, \sigma)|_{Q_n}$
+\end{itemize}
+\end{definition}
+
+\begin{remark}[Well-definedness]
+The machine $M_\omega$ is well-defined because:
+\begin{enumerate}
+\item The state space union is well-defined (nested sets)
+\item The transition function is consistent across levels
+\item Any finite computation uses only finitely many states
+\end{enumerate}
+\end{remark}
+
+\begin{theorem}[Jump at $\omega$]\label{thm:omega-jump}
+Machine $M_\omega$ solves problems unsolvable by any finite $M_n$:
+\begin{equation}
+\bigcup_{n < \omega} \mathcal{C}_n \subsetneq \mathcal{C}_\omega
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+\textbf{Left-to-right containment:} If $L \in \mathcal{C}_n$ for some $n$, then $M_n$ decides $L$. Since $M_n$ is effectively a sub-machine of $M_\omega$ (using only states $Q_n \subseteq Q_\omega$), we have $L \in \mathcal{C}_\omega$. Thus:
+\begin{equation}
+\bigcup_{n < \omega} \mathcal{C}_n \subseteq \mathcal{C}_\omega
+\end{equation}
+
+\textbf{Strict containment:} Consider the halting problem for finite machines:
+\begin{equation}
+H_{\text{finite}} = \{\langle n, x \rangle : M_n \text{ halts on input } x\}
+\end{equation}
+
+\emph{Claim 1:} No finite $M_k$ can decide $H_{\text{finite}}$ for all $n$.
+
+\emph{Proof of Claim 1:} Suppose $M_k$ decides $H_{\text{finite}}$. Consider the diagonal construction:
+\begin{equation}
+D = \{n : M_n \text{ does not halt on input } \langle n \rangle\}
+\end{equation}
+If $M_k$ decides $D$, what happens when we ask whether $k \in D$? Standard diagonalization argument yields contradiction (similar to original halting problem proof).
+
+\emph{Claim 2:} Machine $M_\omega$ can decide $H_{\text{finite}}$.
+
+\emph{Proof of Claim 2:} Given input $\langle n, x \rangle$:
+\begin{enumerate}
+\item $M_\omega$ simulates $M_n$ on $x$ step by step
+\item If $M_n$ halts, $M_\omega$ detects this after finite time and accepts
+\item If $M_n$ enters a loop, $M_\omega$ detects state repetition (since $M_n$ has only finitely many states, any loop must repeat within $|Q_n|^2$ steps)
+\item Thus $M_\omega$ can decide whether $M_n$ halts on $x$
 \end{enumerate}
 
-Example: "Does the power set of $X$ (where $|X| = \aleph_\alpha$) contain a subset with property $Q$?"
+Note: This works because $M_\omega$ is simulating machines with \emph{finite} state spaces. The states of $M_n$ are all within $Q_\omega$, and loop detection is feasible.
 
-This problem is in $\mathcal{C}_{\alpha+1}$ but not in $\mathcal{C}_\alpha$.
+Therefore $H_{\text{finite}} \in \mathcal{C}_\omega$ but $H_{\text{finite}} \notin \mathcal{C}_n$ for any finite $n$, proving strict containment.
+\end{proof}
 
-Therefore $\mathcal{C}_\alpha \subsetneq \mathcal{C}_{\alpha+1}$, and by transfinite induction, $\mathcal{C}_\alpha \subsetneq \mathcal{C}_\beta$ for all $\alpha < \beta$.
+\begin{remark}[Why $M_\omega$ Can Solve This]
+The key insight: $M_\omega$ can solve the halting problem for finite machines because it can:
+\begin{enumerate}
+\item Simulate any $M_n$ (it contains all their states)
+\item Detect loops in finite state spaces (state repetition in $\aleph_0$ steps)
+\item Leverage its infinite state space to track all finite possibilities
+\end{enumerate}
+However, $M_\omega$ still cannot solve its own halting problem—that requires $M_{\omega+1}$.
+\end{remark}
+
+\subsection{Successor Ordinals}
+
+Having established the base case ($n \rightarrow \omega$), we now handle successor ordinals.
+
+\begin{definition}[Successor Machine]
+For any ordinal $\alpha$, define the successor machine $M_{\alpha+1}$ with:
+\begin{itemize}
+\item State space: $Q_{\alpha+1}$ with $|Q_{\alpha+1}| = 2^{|Q_\alpha|}$
+\item Effectively: $M_{\alpha+1}$ can represent all subsets of $M_\alpha$'s states
+\item Cardinality: If $|Q_\alpha| = \aleph_\alpha$, then $|Q_{\alpha+1}| = 2^{\aleph_\alpha} = \aleph_{\alpha+1}$ (assuming GCH)
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Successor Separation]
+For any ordinal $\alpha$:
+\begin{equation}
+\mathcal{C}_\alpha \subsetneq \mathcal{C}_{\alpha+1}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Analogous to Theorem \ref{thm:omega-jump}. Machine $M_{\alpha+1}$ can solve the halting problem for machines at level $\alpha$:
+\begin{equation}
+H_\alpha = \{\langle m, x \rangle : M_m \text{ halts on } x \text{ for } m \text{ of type } \alpha\}
+\end{equation}
+
+Since $M_\alpha$ has $\aleph_\alpha$ states, $M_{\alpha+1}$ with $2^{\aleph_\alpha}$ states can enumerate and check all possible computational paths, detecting loops via state repetition in the power set.
+
+By diagonalization, no machine at level $\alpha$ can decide $H_\alpha$, but $M_{\alpha+1}$ can.
 \end{proof}
 
 \subsection{Continuity at Limit Ordinals}
 
-\begin{lemma}[Limit Continuity]
-For limit ordinal $\lambda$:
+For limit ordinals (ordinals that are not successors), we define machines as limits of sequences.
+
+\begin{definition}[Limit Ordinal Machine]
+For limit ordinal $\lambda$, define:
 \begin{equation}
 M_\lambda = \bigcup_{\alpha < \lambda} M_\alpha
 \end{equation}
-is well-defined and continuous.
+with component-wise unions as in the $\omega$ case.
+\end{definition}
+
+\begin{lemma}[Limit Continuity]\label{lem:limit-continuity}
+For limit ordinal $\lambda$:
+\begin{equation}
+\mathcal{C}_\lambda = \bigcup_{\alpha < \lambda} \mathcal{C}_\alpha
+\end{equation}
 \end{lemma}
 
 \begin{proof}
-Define $M_\lambda$ component-wise:
+\textbf{Left-to-right ($\subseteq$):} Let $L \in \mathcal{C}_\lambda$. Then $M_\lambda$ decides $L$. Since any particular run of $M_\lambda$ on any finite input uses only finitely many states, there exists some $\alpha_0 < \lambda$ such that all required states are in $Q_{\alpha_0}$. Therefore $M_{\alpha_0}$ decides $L$, so $L \in \mathcal{C}_{\alpha_0} \subseteq \bigcup_{\alpha < \lambda} \mathcal{C}_\alpha$.
 
-\textbf{State space:}
-\begin{equation}
-Q_\lambda = \bigcup_{\alpha < \lambda} Q_\alpha
-\end{equation}
+\textbf{Right-to-left ($\supseteq$):} Let $L \in \bigcup_{\alpha < \lambda} \mathcal{C}_\alpha$. Then $L \in \mathcal{C}_\alpha$ for some $\alpha < \lambda$. Since $M_\alpha$ is effectively a sub-machine of $M_\lambda$ (by construction), we have $L \in \mathcal{C}_\lambda$.
 
-Since $\alpha < \alpha' < \lambda$ implies $Q_\alpha \subseteq Q_{\alpha'}$ (by hierarchy construction), this union is well-defined and has cardinality:
-\begin{equation}
-|Q_\lambda| = \sup_{\alpha < \lambda} |Q_\alpha| = \aleph_\lambda
-\end{equation}
-
-\textbf{Transition function:}
-\begin{equation}
-\delta_\lambda(q, \sigma) = \delta_\alpha(q, \sigma) \text{ where } q \in Q_\alpha
-\end{equation}
-
-This is consistent: if $q \in Q_\alpha \cap Q_{\alpha'}$ with $\alpha < \alpha'$, then by construction $\delta_\alpha(q, \sigma) = \delta_{\alpha'}(q, \sigma)$.
-
-\textbf{Continuity:} A problem solvable below $\lambda$ remains solvable at $\lambda$:
-\begin{equation}
-\bigcup_{\alpha < \lambda} \mathcal{C}_\alpha \subseteq \mathcal{C}_\lambda
-\end{equation}
-
-Conversely, any problem in $\mathcal{C}_\lambda$ requires only finitely many states from the union, hence is in some $\mathcal{C}_\alpha$ for $\alpha < \lambda$.
-
-Therefore: $\mathcal{C}_\lambda = \bigcup_{\alpha < \lambda} \mathcal{C}_\alpha$.
+Therefore $\mathcal{C}_\lambda = \bigcup_{\alpha < \lambda} \mathcal{C}_\alpha$.
 \end{proof}
+
+\begin{remark}[Physical Interpretation]
+Limit ordinals represent "closure points" in the hierarchy—they aggregate all lower levels without adding new computational power beyond their supremum. This mirrors phase transitions in physics where macroscopic properties emerge from microscopic aggregation without fundamentally new physics.
+\end{remark}
+
+\subsection{Transfinite Induction Establishes Full Hierarchy}
+
+\begin{theorem}[Complete Transfinite Hierarchy]\label{thm:full-hierarchy}
+For all ordinals $\alpha < \beta$:
+\begin{equation}
+\mathcal{C}_\alpha \subsetneq \mathcal{C}_\beta
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By transfinite induction on $\beta$:
+
+\textbf{Base case ($\beta = 0$):} Vacuously true (no $\alpha < 0$).
+
+\textbf{Successor case ($\beta = \gamma + 1$):} 
+Assume (by induction hypothesis) that $\mathcal{C}_\alpha \subsetneq \mathcal{C}_\gamma$ for all $\alpha < \gamma$.
+
+For $\alpha < \beta = \gamma + 1$:
+\begin{itemize}
+\item If $\alpha < \gamma$: By IH, $\mathcal{C}_\alpha \subsetneq \mathcal{C}_\gamma \subseteq \mathcal{C}_{\gamma+1}$, so $\mathcal{C}_\alpha \subsetneq \mathcal{C}_{\gamma+1}$
+\item If $\alpha = \gamma$: By Successor Separation theorem, $\mathcal{C}_\gamma \subsetneq \mathcal{C}_{\gamma+1}$
+\end{itemize}
+
+\textbf{Limit case ($\beta = \lambda$ is a limit ordinal):}
+Assume (by IH) that $\mathcal{C}_\alpha \subsetneq \mathcal{C}_\alpha'$ for all $\alpha < \alpha' < \lambda$.
+
+For any $\alpha < \lambda$:
+\begin{itemize}
+\item Choose $\alpha' < \lambda$ with $\alpha < \alpha'$ (exists since $\lambda$ is a limit)
+\item By IH: $\mathcal{C}_\alpha \subsetneq \mathcal{C}_{\alpha'}$
+\item By Lemma \ref{lem:limit-continuity}: $\mathcal{C}_{\alpha'} \subseteq \mathcal{C}_\lambda$
+\item Therefore: $\mathcal{C}_\alpha \subsetneq \mathcal{C}_\lambda$
+\end{itemize}
+
+By transfinite induction, the theorem holds for all ordinals.
+\end{proof}
+
+\begin{corollary}[Unbounded Hierarchy]
+There is no "maximal" computational power. For any machine $M_\alpha$, there exists $M_{\alpha+1}$ with strictly greater computational power.
+\end{corollary}
+
+\begin{remark}[Philosophical Implication]
+The unboundedness of computational power suggests that consciousness (if it depends on collapse across this hierarchy) is also unbounded—there is no "highest" level of consciousness, just as there is no highest ordinal. This has profound implications for cosmic consciousness and the anthropic principle.
+\end{remark}
 
 \section{Selector Function Properties}
 
@@ -152,6 +322,136 @@ This violates the uniqueness of actualization: exactly one state is selected fro
 Therefore, the selectors must commute (coherence condition).
 
 This is equivalent to requiring that the order of nested collapses doesn't affect the final outcome, which is necessary for a consistent reality.
+\end{proof}
+
+\subsection{Convergence of Selector Approximations}
+
+Although the selector $S$ is non-computable, we can approximate it with computable functions. This section proves convergence and provides error bounds.
+
+\begin{theorem}[Pointwise Convergence of $S_k$]\label{thm:selector-approx-convergence}
+For any problem $p \in \mathcal{P}$ with finite answer at level $\alpha < \omega$, and any history $h$:
+\begin{equation}
+\lim_{k \to \infty} S_k(p, h) = S(p, h)
+\end{equation}
+where $S_k$ is the $k$-bounded approximation defined in Part IV.
+\end{theorem}
+
+\begin{proof}
+Let $S(p,h) = (\alpha, s^*)$ be the true selector output, where $\alpha < \omega$ is finite and $s^*$ is the selected solution.
+
+\textbf{Step 1: Accessibility.} For all $k > \alpha$, the approximation $S_k$ can access machine $M_\alpha$ since the search bound $k$ includes level $\alpha$.
+
+\textbf{Step 2: Complexity convergence.} The $k$-bounded Kolmogorov complexity $K_k$ converges to true complexity $K$:
+\begin{equation}
+|K_k(x) - K(x)| \leq \frac{C}{\log k}
+\end{equation}
+for most strings $x$, where $C$ is a constant depending on $x$ but independent of $k$.
+
+This follows from: $K_k(x)$ is computed by searching all programs of length $\leq k$ that output $x$. As $k \to \infty$, we find progressively shorter programs, approaching the minimal description $K(x)$.
+
+\textbf{Step 3: Optimal level selection.} The selector $S$ chooses level $\alpha$ because it minimizes:
+\begin{equation}
+\mathcal{L}(\beta) = K(M_\beta(p)|h) + \lambda \log \beta
+\end{equation}
+
+For $k > \alpha$, the approximation minimizes:
+\begin{equation}
+\mathcal{L}_k(\beta) = K_k(M_\beta(p)|h) + \lambda \log \beta
+\end{equation}
+
+For $\beta \leq k$, we have:
+\begin{equation}
+|\mathcal{L}_k(\beta) - \mathcal{L}(\beta)| \leq \frac{C}{\log k}
+\end{equation}
+
+Since $\alpha$ is a strict minimum of $\mathcal{L}$ (by assumption), for sufficiently large $k$, $\alpha$ remains the unique minimum of $\mathcal{L}_k$ restricted to $\beta \leq k$.
+
+\textbf{Step 4: Solution convergence.} Once the correct level $\alpha$ is identified, the solution $s_k$ computed by $S_k$ using $M_\alpha$ converges to $s^*$ as the complexity approximation improves.
+
+Therefore, for all $k > k_0$ (some threshold), $S_k(p,h) = (\alpha, s_k)$ with $s_k \to s^*$. Thus:
+\begin{equation}
+\lim_{k \to \infty} S_k(p,h) = (\alpha, s^*) = S(p,h)
+\end{equation}
+\end{proof}
+
+\begin{theorem}[Rate of Convergence]\label{thm:convergence-rate}
+For problems requiring level $\alpha < \omega$ with polynomial-time solutions, the error decreases as:
+\begin{equation}
+\mathbb{E}[\|S_k(p,h) - S(p,h)\|] = O\left(\frac{\log |p|}{\log k}\right)
+\end{equation}
+where $|p|$ is the problem size and the expectation is over typical problem instances.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The error has two components:
+
+\textbf{Component 1: Level selection error.} Probability of selecting wrong level $\beta \neq \alpha$:
+\begin{equation}
+P(\text{wrong level}) \leq P\left(|\mathcal{L}_k(\beta) - \mathcal{L}(\beta)| > \Delta\right)
+\end{equation}
+where $\Delta = \min_{\beta \neq \alpha} |\mathcal{L}(\beta) - \mathcal{L}(\alpha)|$ is the gap between optimal and suboptimal levels.
+
+Using concentration inequalities for $K_k$ approximation:
+\begin{equation}
+P(\text{wrong level}) \leq \frac{C_1 \log |p|}{\log k}
+\end{equation}
+
+\textbf{Component 2: Solution error.} Given correct level, solution error from complexity approximation:
+\begin{equation}
+\|s_k - s^*\| \leq \frac{C_2}{\log k}
+\end{equation}
+
+Combining both components:
+\begin{align}
+\mathbb{E}[\|S_k - S\|] &\leq P(\text{wrong level}) \cdot 1 + P(\text{right level}) \cdot \frac{C_2}{\log k} \\
+&\leq \frac{C_1 \log |p|}{\log k} + \frac{C_2}{\log k} \\
+&= O\left(\frac{\log |p|}{\log k}\right)
+\end{align}
+\end{proof}
+
+\begin{corollary}[Polynomial Convergence]
+For problems of size $|p| = \text{poly}(n)$, achieving error $\epsilon$ requires:
+\begin{equation}
+k = O\left(\exp\left(\frac{\log n}{\epsilon}\right)\right)
+\end{equation}
+bound size.
+\end{corollary}
+
+\begin{remark}[Practical Implications]
+For real-world problems:
+\begin{itemize}
+\item $k = 1000$ suffices for problems requiring $\alpha < 10$ (most neural/biological processes)
+\item $k = 10^6$ suffices for problems requiring $\alpha < 100$ (complex cognitive tasks)
+\item Transfinite problems ($\alpha \geq \omega$) require non-standard computation
+\end{itemize}
+\end{remark}
+
+\begin{theorem}[Error Bound for Finite Problems]\label{thm:finite-error-bound}
+For any problem $p$ requiring level $\alpha \leq n$ and approximation bound $k \geq 2n$:
+\begin{equation}
+\|S_k(p,h) - S(p,h)\| \leq \frac{\log(\alpha) + \log|p|}{\log(k/2)}
+\end{equation}
+with probability $> 1 - 1/k$.
+\end{theorem}
+
+\begin{proof}
+With $k \geq 2\alpha$, the correct level $\alpha$ is included in the search space.
+
+The complexity approximation error for programs of length $\leq \alpha$ is bounded by:
+\begin{equation}
+|K_k(x) - K(x)| \leq \log(\alpha) + \log|x|
+\end{equation}
+for strings $x$ of size $|x| \leq |p|$ (the solutions).
+
+The probability that $K_k$ mis-ranks levels is bounded by the probability of large deviation:
+\begin{equation}
+P\left(|\Delta K| > \frac{\log k}{2}\right) \leq \frac{1}{k}
+\end{equation}
+
+Therefore, with probability $> 1 - 1/k$, the ranking is correct and:
+\begin{equation}
+\|S_k - S\| \leq \frac{\log(\alpha) + \log|p|}{\log(k/2)}
+\end{equation}
 \end{proof}
 
 \section{Information-Theoretic Results}

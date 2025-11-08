@@ -66,6 +66,13 @@
 \newtheorem{cosmicprinciple}[theorem]{Cosmic Principle}
 \newtheorem{scaleinvariant}[theorem]{Scale-Invariant Property}
 
+% Prediction environment (for testable predictions)
+\newtheorem{prediction}[theorem]{Prediction}
+
+% Assumption environment
+\theoremstyle{definition}
+\newtheorem{assumption}[theorem]{Assumption}
+
 % ------------------------
 % Figures and Tables
 % ------------------------
@@ -303,6 +310,26 @@
     enhanced
 }
 
+% Technical translation box (for disambiguating metaphorical language)
+\newtcolorbox{technicalbox}{
+    colback=blue!5,
+    colframe=blue!60!black,
+    fonttitle=\bfseries,
+    title=Technical Translation,
+    breakable,
+    enhanced
+}
+
+% Falsification box
+\newtcolorbox{falsificationbox}{
+    colback=purple!5,
+    colframe=purple!60!black,
+    fonttitle=\bfseries,
+    title=Falsification Criterion,
+    breakable,
+    enhanced
+}
+
 % ------------------------
 % Custom Commands
 % ------------------------
@@ -359,7 +386,7 @@
 \newcommand{\alphafine}{\alpha}  % Fine structure constant
 \newcommand{\Gconst}{G}  % Gravitational constant
 \newcommand{\clight}{c}  % Speed of light
-\newcommand{\hbar}{\hbar}  % Reduced Planck constant
+% \hbar is already defined by LaTeX
 
 % Information-theoretic
 \newcommand{\Kolmogorov}{K}  % Kolmogorov complexity
