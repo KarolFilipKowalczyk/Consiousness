@@ -1,0 +1,290 @@
+% ============================================================================
+% PREAMBLE for "Consciousness as Collapsed Computational Time"
+% ============================================================================
+% This file contains all package imports, custom commands, and styling
+% definitions extracted from main.tex for better organization.
+% ============================================================================
+
+% ------------------------
+% Essential Packages
+% ------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{newunicodechar}
+
+% Define Unicode characters
+\newunicodechar{₂}{\textsubscript{2}}
+\newunicodechar{↔}{$\leftrightarrow$}
+\newunicodechar{≈}{$\approx$}
+\newunicodechar{≠}{$\neq$}
+
+% ------------------------
+% Page Layout
+% ------------------------
+\usepackage[
+    top=2.5cm,
+    bottom=2.5cm,
+    inner=3cm,
+    outer=2.5cm,
+    headheight=28pt
+]{geometry}
+
+% ------------------------
+% Typography
+% ------------------------
+\usepackage{lmodern}           % Latin Modern fonts
+\usepackage{microtype}         % Improved typography
+\usepackage{setspace}          % Line spacing control
+\onehalfspacing                % 1.5 line spacing
+
+% ------------------------
+% Mathematics
+% ------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
+
+% ------------------------
+% Figures and Tables
+% ------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{array}
+
+% Figure and table captions
+\captionsetup{
+    font=small,
+    labelfont=bf,
+    format=plain,
+    margin=10pt
+}
+
+% ------------------------
+% Colors and Boxes
+% ------------------------
+\usepackage[table,xcdraw]{xcolor}
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{mediumblue}{RGB}{51,102,153}
+\definecolor{lightblue}{RGB}{153,204,255}
+\definecolor{darkgreen}{RGB}{0,102,51}
+\definecolor{keyinsight}{RGB}{255,250,205}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% Empirical prediction box
+\newtcolorbox{empiricalbox}{
+    colback=orange!10,
+    colframe=orange!70,
+    fonttitle=\bfseries,
+    title=Empirical Prediction,
+    breakable,
+    enhanced
+}
+
+% Key insight box
+\newtcolorbox{keyinsight}{
+    colback=keyinsight,
+    colframe=darkblue,
+    fonttitle=\bfseries,
+    title=Key Insight,
+    breakable,
+    enhanced
+}
+
+% Summary box
+\newtcolorbox{summary}{
+    colback=lightblue!20,
+    colframe=mediumblue,
+    fonttitle=\bfseries,
+    title=Summary,
+    breakable,
+    enhanced
+}
+
+% ------------------------
+% Cross-referencing
+% ------------------------
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    citecolor=darkgreen,
+    urlcolor=mediumblue,
+    bookmarksnumbered=true,
+    bookmarksopen=true,
+    pdftitle={Consciousness as Collapsed Computational Time: A Unified Theory},
+    pdfauthor={Karol Kowalczyk},
+    pdfsubject={Consciousness, Computational Theory, Cognitive Science},
+    pdfkeywords={consciousness, computation, finite machines, temporal collapse, integrated information}
+}
+
+\usepackage[capitalize,noabbrev]{cleveref}
+
+% ------------------------
+% Bibliography
+% ------------------------
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=2,
+    uniquename=init,
+    giveninits=true,
+    doi=true,
+    url=true,
+    isbn=false
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+
+% ------------------------
+% Index
+% ------------------------
+\usepackage{makeidx}
+\makeindex
+
+% ------------------------
+% Headers and Footers
+% ------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Clear header for chapter start pages
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[C]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+% ------------------------
+% Chapter and Section Formatting
+% ------------------------
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+    {\normalfont\huge\bfseries\color{darkblue}}
+    {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+    {\normalfont\Large\bfseries\color{darkblue}}
+    {\thesection}{1em}{}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries\color{mediumblue}}
+    {\thesubsection}{1em}{}
+
+% ------------------------
+% Table of Contents
+% ------------------------
+\usepackage{tocloft}
+\setcounter{tocdepth}{1}  % Show chapters and sections only (not subsections)
+\setcounter{secnumdepth}{3}  % Number up to subsubsections
+
+% ------------------------
+% List environments
+% ------------------------
+\usepackage{enumitem}
+\setlist{nosep}  % Compact lists
+
+% ------------------------
+% Multi-column layout
+% ------------------------
+\usepackage{multicol}
+
+% ------------------------
+% Code listings (if needed)
+% ------------------------
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    captionpos=b
+}
+
+% ------------------------
+% Algorithms
+% ------------------------
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Customize algorithm appearance
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
+
+% ------------------------
+% Additional Custom Boxes
+% ------------------------
+
+% Implementation note box
+\newtcolorbox{implementationnote}{
+    colback=green!5,
+    colframe=green!60!black,
+    fonttitle=\bfseries,
+    title=Implementation Note,
+    breakable,
+    enhanced
+}
+
+% ------------------------
+% Custom Commands
+% ------------------------
+
+% Machine notation
+\newcommand{\Mn}{M_n}
+\newcommand{\Mk}{M_k}
+\newcommand{\Mi}{M_i}
+
+% Complexity classes
+\newcommand{\DSPACE}{\textsf{DSPACE}}
+\newcommand{\PSPACE}{\textsf{PSPACE}}
+\newcommand{\Ppoly}{\textsf{P/poly}}
+
+% Integrated information (Phi is already defined in LaTeX)
+% \newcommand{\Phi}{\Phi}  % Commented out - already exists
+\newcommand{\phimax}{\Phi^{\text{max}}}
+
+% Emphasis
+\newcommand{\important}[1]{\textbf{#1}}
+\newcommand{\term}[1]{\textit{#1}}
+
+% Temporal notation
+\newcommand{\tcomp}{t_{\text{comp}}}  % Computational time
+\newcommand{\tsubj}{t_{\text{subj}}}  % Subjective time
+
+% ------------------------
+% Spacing
+% ------------------------
+\usepackage{parskip}  % Paragraph spacing instead of indentation
+
+% ============================================================================
+% END OF PREAMBLE
+% ============================================================================

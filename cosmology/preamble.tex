@@ -1,0 +1,411 @@
+% ============================================================================
+% PREAMBLE for "Cosmology of Collapsing Consciousnesses"
+% ============================================================================
+% This file contains all package imports, custom commands, and styling
+% definitions for better organization.
+% ============================================================================
+
+% ------------------------
+% Essential Packages
+% ------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{newunicodechar}
+
+% Define Unicode characters
+\newunicodechar{₂}{\textsubscript{2}}
+\newunicodechar{↔}{$\leftrightarrow$}
+\newunicodechar{≈}{$\approx$}
+\newunicodechar{≠}{$\neq$}
+\newunicodechar{∞}{$\infty$}
+\newunicodechar{Φ}{$\Phi$}
+\newunicodechar{ω}{$\omega$}
+
+% ------------------------
+% Page Layout
+% ------------------------
+\usepackage[
+    top=2.5cm,
+    bottom=2.5cm,
+    inner=3cm,
+    outer=2.5cm,
+    headheight=28pt
+]{geometry}
+
+% ------------------------
+% Typography
+% ------------------------
+\usepackage{lmodern}           % Latin Modern fonts
+\usepackage{microtype}         % Improved typography
+\usepackage{setspace}          % Line spacing control
+\onehalfspacing                % 1.5 line spacing
+
+% ------------------------
+% Mathematics
+% ------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
+
+% Cosmology-specific theorem environments
+\newtheorem{cosmicprinciple}[theorem]{Cosmic Principle}
+\newtheorem{scaleinvariant}[theorem]{Scale-Invariant Property}
+
+% ------------------------
+% Figures and Tables
+% ------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{array}
+
+% Figure and table captions
+\captionsetup{
+    font=small,
+    labelfont=bf,
+    format=plain,
+    margin=10pt
+}
+
+% ------------------------
+% Colors and Boxes
+% ------------------------
+\usepackage[table,xcdraw]{xcolor}
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{mediumblue}{RGB}{51,102,153}
+\definecolor{lightblue}{RGB}{153,204,255}
+\definecolor{darkgreen}{RGB}{0,102,51}
+\definecolor{keyinsight}{RGB}{255,250,205}
+\definecolor{cosmicpurple}{RGB}{102,51,153}
+\definecolor{quantumgold}{RGB}{255,215,0}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% Empirical prediction box
+\newtcolorbox{empiricalbox}{
+    colback=orange!10,
+    colframe=orange!70,
+    fonttitle=\bfseries,
+    title=Empirical Prediction,
+    breakable,
+    enhanced
+}
+
+% Key insight box
+\newtcolorbox{keyinsight}{
+    colback=keyinsight,
+    colframe=darkblue,
+    fonttitle=\bfseries,
+    title=Key Insight,
+    breakable,
+    enhanced
+}
+
+% Summary box
+\newtcolorbox{summary}{
+    colback=lightblue!20,
+    colframe=mediumblue,
+    fonttitle=\bfseries,
+    title=Summary,
+    breakable,
+    enhanced
+}
+
+% Cosmic principle box (new)
+\newtcolorbox{cosmicbox}{
+    colback=cosmicpurple!5,
+    colframe=cosmicpurple,
+    fonttitle=\bfseries,
+    title=Cosmic Principle,
+    breakable,
+    enhanced
+}
+
+% Scale connection box (new)
+\newtcolorbox{scaleconnection}{
+    colback=quantumgold!10,
+    colframe=quantumgold!80!black,
+    fonttitle=\bfseries,
+    title=Scale Connection,
+    breakable,
+    enhanced
+}
+
+% Philosophical implication box (new)
+\newtcolorbox{philosophicalbox}{
+    colback=green!5,
+    colframe=darkgreen,
+    fonttitle=\bfseries,
+    title=Philosophical Implication,
+    breakable,
+    enhanced
+}
+
+% ------------------------
+% Cross-referencing
+% ------------------------
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    citecolor=darkgreen,
+    urlcolor=mediumblue,
+    bookmarksnumbered=true,
+    bookmarksopen=true,
+    pdftitle={Cosmology of Collapsing Consciousnesses: A Framework for Understanding Reality},
+    pdfauthor={Karol Kowalczyk},
+    pdfsubject={Cosmology, Consciousness, Quantum Mechanics, Philosophy of Physics},
+    pdfkeywords={cosmology, consciousness, collapse, quantum mechanics, observation, universe, nested hierarchies}
+}
+
+\usepackage[capitalize,noabbrev]{cleveref}
+
+% ------------------------
+% Bibliography
+% ------------------------
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=2,
+    uniquename=init,
+    giveninits=true,
+    doi=true,
+    url=true,
+    isbn=false
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+
+% ------------------------
+% Index
+% ------------------------
+\usepackage{makeidx}
+\makeindex
+
+% ------------------------
+% Headers and Footers
+% ------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Clear header for chapter start pages
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[C]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+% ------------------------
+% Chapter and Section Formatting
+% ------------------------
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+    {\normalfont\huge\bfseries\color{darkblue}}
+    {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+    {\normalfont\Large\bfseries\color{darkblue}}
+    {\thesection}{1em}{}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries\color{mediumblue}}
+    {\thesubsection}{1em}{}
+
+% ------------------------
+% Table of Contents
+% ------------------------
+\usepackage{tocloft}
+\setcounter{tocdepth}{1}  % Show chapters and sections only (not subsections)
+\setcounter{secnumdepth}{3}  % Number up to subsubsections
+
+% ------------------------
+% List environments
+% ------------------------
+\usepackage{enumitem}
+\setlist{nosep}  % Compact lists
+
+% ------------------------
+% Multi-column layout
+% ------------------------
+\usepackage{multicol}
+
+% ------------------------
+% Code listings (if needed)
+% ------------------------
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    captionpos=b
+}
+
+% ------------------------
+% Algorithms
+% ------------------------
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Customize algorithm appearance
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
+
+% ------------------------
+% Additional Custom Boxes
+% ------------------------
+
+% Implementation note box
+\newtcolorbox{implementationnote}{
+    colback=green!5,
+    colframe=green!60!black,
+    fonttitle=\bfseries,
+    title=Implementation Note,
+    breakable,
+    enhanced
+}
+
+% Testable prediction box
+\newtcolorbox{testablebox}{
+    colback=red!5,
+    colframe=red!60!black,
+    fonttitle=\bfseries,
+    title=Testable Prediction,
+    breakable,
+    enhanced
+}
+
+% ------------------------
+% Custom Commands
+% ------------------------
+
+% Machine notation (from consciousness paper)
+\newcommand{\Mn}{M_n}
+\newcommand{\Mk}{M_k}
+\newcommand{\Mi}{M_i}
+\newcommand{\Mcosmic}{M_{\text{cosmic}}}
+\newcommand{\Mquantum}{M_{\text{quantum}}}
+
+% Complexity classes
+\newcommand{\DSPACE}{\textsf{DSPACE}}
+\newcommand{\PSPACE}{\textsf{PSPACE}}
+\newcommand{\Ppoly}{\textsf{P/poly}}
+
+% Integrated information
+\newcommand{\phimax}{\Phi^{\text{max}}}
+\newcommand{\phicosmic}{\Phi_{\text{cosmic}}}
+
+% Emphasis
+\newcommand{\important}[1]{\textbf{#1}}
+\newcommand{\term}[1]{\textit{#1}}
+
+% Temporal notation
+\newcommand{\tcomp}{t_{\text{comp}}}  % Computational time
+\newcommand{\tsubj}{t_{\text{subj}}}  % Subjective time
+\newcommand{\tcosmic}{t_{\text{cosmic}}}  % Cosmic time
+
+% Cosmology-specific notation
+\newcommand{\Hubble}{H_0}  % Hubble constant
+\newcommand{\cosmicage}{t_{\text{universe}}}  % Age of universe
+\newcommand{\Planck}{\ell_{\text{Planck}}}  % Planck length
+\newcommand{\tPlanck}{t_{\text{Planck}}}  % Planck time
+
+% Selector notation at different scales
+\newcommand{\Selector}{S}  % Generic selector
+\newcommand{\Scosmic}{S_{\text{cosmic}}}  % Cosmic selector
+\newcommand{\Squantum}{S_{\text{quantum}}}  % Quantum selector
+\newcommand{\Sbio}{S_{\text{bio}}}  % Biological selector
+
+% Collapse notation
+\newcommand{\collapse}{\Pi}  % Collapse operator
+\newcommand{\collapsecosmic}{\Pi_{\text{cosmic}}}
+
+% Scale levels
+\newcommand{\scalequantum}{\text{quantum}}
+\newcommand{\scalemolecular}{\text{molecular}}
+\newcommand{\scalebio}{\text{biological}}
+\newcommand{\scalecognitive}{\text{cognitive}}
+\newcommand{\scalecosmic}{\text{cosmic}}
+
+% Physical constants
+\newcommand{\alphafine}{\alpha}  % Fine structure constant
+\newcommand{\Gconst}{G}  % Gravitational constant
+\newcommand{\clight}{c}  % Speed of light
+\newcommand{\hbar}{\hbar}  % Reduced Planck constant
+
+% Information-theoretic
+\newcommand{\Kolmogorov}{K}  % Kolmogorov complexity
+\newcommand{\Bekenstein}{S_{\text{BH}}}  % Bekenstein-Hawking entropy
+\newcommand{\infocontent}{I}  % Information content
+
+% Anthropic notation
+\newcommand{\anthropic}{\mathcal{A}}  % Anthropic principle
+
+% ------------------------
+% Spacing
+% ------------------------
+\usepackage{parskip}  % Paragraph spacing instead of indentation
+
+% ------------------------
+% Cosmology-specific packages
+% ------------------------
+\usepackage{siunitx}  % For proper SI units
+\sisetup{
+    separate-uncertainty=true,
+    multi-part-units=single
+}
+
+% ------------------------
+% Notation guide command
+% ------------------------
+\newcommand{\notationguide}{
+    \begin{center}
+    \textbf{Notation Guide}\\[0.5em]
+    \begin{tabular}{ll}
+    \toprule
+    Symbol & Meaning \\
+    \midrule
+    $\Mn$ & Machine at level $n$ \\
+    $\Mcosmic$ & Cosmic-scale machine \\
+    $\Selector$ & Selector mechanism \\
+    $\collapse$ & Collapse operator \\
+    $\tcomp$ & Computational time \\
+    $\tsubj$ & Subjective time \\
+    $\Phi$ & Integrated information \\
+    $\Kolmogorov$ & Kolmogorov complexity \\
+    \bottomrule
+    \end{tabular}
+    \end{center}
+}
+
+% ============================================================================
+% END OF PREAMBLE
+% ============================================================================

@@ -1,0 +1,104 @@
+\documentclass[12pt,a4paper,twoside]{book}
+
+% ============================================================================
+% LOAD PREAMBLE
+% ============================================================================
+% All package imports, custom commands, and styling are in preamble.tex
+\input{preamble.tex}
+
+% ============================================================================
+% DOCUMENT METADATA
+% ============================================================================
+
+\title{
+    {\Huge\bfseries Consciousness as Collapsed Computational Time}\\[1em]
+    {\Large A Unified Theory Integrating Finite Machine Hierarchies,\\
+    Temporal Phenomenology, and Existing Frameworks}
+}
+
+\author{
+    Karol Kowalczyk\\
+    \textit{AIRON Games}\\
+    \textit{Email: k.kowalczyk@airon.games}
+}
+
+\date{\today}
+
+% ============================================================================
+% BEGIN DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% ------------------------
+% Front Matter
+% ------------------------
+\frontmatter
+\pagenumbering{Roman}  % Uppercase Roman numerals for front matter
+
+\maketitle
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}
+\chapter*{Abstract}
+
+This work presents a unified computational theory of consciousness that integrates insights from Integrated Information Theory \autocite{tononi2004,tononi2016}, Global Workspace Theory \autocite{baars1988,baars1997,dehaene2001}, Attention Schema Theory \autocite{graziano2013,graziano2019}, and quantum consciousness approaches \autocite{penrose1989,hameroff1996} within a novel framework based on finite machine hierarchies. 
+
+The central thesis proposes that consciousness emerges from the collapse of parallel computational explorations across a hierarchy of finite-state machines with exponentially growing resources ($M_1, M_2, M_3, \ldots, M_n$ where $M_n$ has $2^n$ bits of memory). While real computational time includes all parallel attempts, backtracks, and time-reversals, subjective conscious experience perceives only the successful computational path—a smooth, continuous temporal flow that never experiences the failed branches.
+
+This framework addresses the hard problem of consciousness \autocite{chalmers1995,chalmers1996} by explaining why there is ``something it is like'' to be an information-processing system: consciousness is the internal phenomenology of resource-constrained computational collapse, where the selector mechanism (analogous to quantum measurement but implementable classically) chooses which machine $M_n$ to deploy. The non-computability of optimal selection, related to Kolmogorov complexity \autocite{kolmogorov1965}, provides a natural account of agency and free will.
+
+The theory makes testable predictions about neural correlates of consciousness \autocite{koch2016}, explains why consciousness is decidable at each resource level yet computationally universal in the limit, and provides a mechanistic account of temporal phenomenology that existing theories lack. By treating computational power itself as an explorable dimension parallel to problem space, and time-reversal as a resource invisible to consciousness, this framework bridges computational complexity theory \autocite{turing1936,sipser2012}, neuroscience, and phenomenology \autocite{husserl1991} in a comprehensive synthesis.
+
+\newpage
+\phantomsection
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+% ------------------------
+% Main Matter
+% ------------------------
+\mainmatter
+\pagenumbering{arabic}  % Arabic numerals for main content
+
+% Include each part from separate files
+\include{part1_foundations}
+\include{part2_existing_theories}
+\include{part3_temporal_revolution}
+\include{part4_mechanisms}
+\include{part5_hard_problem}
+\include{part6_empirical}
+\include{part7_philosophical}
+\include{part8_synthesis}
+
+% ------------------------
+% Appendices
+% ------------------------
+\appendix
+\include{appendix_comparisons}
+\include{appendix_glossary}
+\include{appendix_mathematical}
+\include{appendix_protocols}
+\include{appendix_selector}
+\include{appendix_toy_model}
+
+% ------------------------
+% Back Matter
+% ------------------------
+\backmatter
+
+% Bibliography
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography
+
+% Index (optional)
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+\end{document}

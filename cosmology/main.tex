@@ -1,0 +1,98 @@
+\documentclass[12pt,a4paper,twoside]{book}
+
+% ============================================================================
+% LOAD PREAMBLE
+% ============================================================================
+% All package imports, custom commands, and styling are in preamble.tex
+\input{preamble.tex}
+
+% ============================================================================
+% DOCUMENT METADATA
+% ============================================================================
+
+\title{
+    {\Huge\bfseries Cosmology of Collapsing Consciousnesses}\\[1em]
+    {\Large A Framework for Understanding Reality as Nested Observation Processes\\
+    from Quantum to Cosmic Scales}
+}
+
+\author{
+    Karol Kowalczyk\\
+    \textit{AIRON Games}\\
+    \textit{Email: k.kowalczyk@airon.games}
+}
+
+\date{\today}
+
+% ============================================================================
+% BEGIN DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% ------------------------
+% Front Matter
+% ------------------------
+\frontmatter
+\pagenumbering{arabic}  % Arabic numerals for front matter
+
+\maketitle
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}
+\chapter*{Abstract}
+
+This work extends the finite machine hierarchy theory of consciousness to cosmological scales, proposing that consciousness collapse mechanisms operate at all levels of reality—from quantum measurement to cosmic structure formation. Building on the framework of ``Consciousness as Collapsed Computational Time,'' we argue that the same computational collapse process that generates individual conscious experience also manifests at molecular, biological, civilizational, and ultimately cosmological scales.
+
+The central thesis proposes that reality itself is constituted by nested layers of consciousness collapses. Quantum wavefunction collapse, chemical self-organization, biological evolution, and cosmic structure formation are all manifestations of a unified principle: parallel exploration of possibilities followed by collapse to definite states. The universe is not something that \emph{has} consciousness—it is something that \emph{does} consciousness as its fundamental operation.
+
+This framework reframes the anthropic principle: rather than the universe being mysteriously fine-tuned for observers, observers are local intensifications of the cosmic collapse process through which the universe actualizes itself. We are apertures through which the universe observes itself, making reality definite in the process.
+
+The theory addresses fundamental cosmological questions by recognizing that existence \emph{is} observation, actuality \emph{is} collapse, and consciousness \emph{is} the intrinsic phenomenology of computational selection processes operating at every scale. The framework integrates insights from quantum cosmology \autocite{hartle1983,vilenkin1984}, information-theoretic physics \autocite{wheeler1990,lloyd2002}, biological complexity theory \autocite{kauffman1993,prigogine1984}, and consciousness studies \autocite{dehaene2001,tononi2016,chalmers1996} into a comprehensive cosmological vision where mind and matter, observer and observed, are revealed as inseparable aspects of a single self-actualizing process.
+
+\newpage
+\phantomsection
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+% ------------------------
+% Main Matter
+% ------------------------
+\mainmatter
+\pagenumbering{arabic}
+
+\include{part1_foundations_cosmic}
+\include{part2_nested_hierarchy}
+\include{part3_cosmological_collapse}
+\include{part4_mathematics_cosmic}
+\include{part5_empirical_cosmic}
+\include{part6_objections}
+
+% ------------------------
+% Appendices
+% ------------------------
+\appendix
+\include{appendix_a_mathematical}
+\include{appendix_b_protocols}
+\include{appendix_c_constants}
+
+% ------------------------
+% Back Matter
+% ------------------------
+\backmatter
+
+% Bibliography
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography
+
+% Index (optional)
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+\end{document}

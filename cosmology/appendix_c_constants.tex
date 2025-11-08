@@ -1,0 +1,311 @@
+% ============================================================================
+% APPENDIX C: PHYSICAL CONSTANTS AND PARAMETERS REFERENCE
+% ============================================================================
+
+\chapter{Physical Constants and Parameters Reference}
+
+This appendix provides comprehensive tables of physical constants, cosmological parameters, and framework-specific quantities referenced throughout the text. All values are given with uncertainties where applicable, and predicted values from the collapse framework are compared with observed values.
+
+\section{Fundamental Physical Constants}
+
+\subsection{Standard Model Parameters}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Constant} & \textbf{Symbol} & \textbf{Value} & \textbf{Uncertainty} \\
+\hline
+Speed of light & $c$ & $299,792,458$ m/s & exact (definition) \\
+\hline
+Planck constant & $h$ & $6.62607015 \times 10^{-34}$ J·s & exact (definition) \\
+\hline
+Reduced Planck constant & $\hbar$ & $1.054571817 \times 10^{-34}$ J·s & exact \\
+\hline
+Elementary charge & $e$ & $1.602176634 \times 10^{-19}$ C & exact (definition) \\
+\hline
+Boltzmann constant & $k_B$ & $1.380649 \times 10^{-23}$ J/K & exact (definition) \\
+\hline
+Avogadro constant & $N_A$ & $6.02214076 \times 10^{23}$ mol$^{-1}$ & exact (definition) \\
+\hline
+\end{tabular}
+\caption{Exactly defined constants in SI system}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Constant} & \textbf{Symbol} & \textbf{Value} & \textbf{Rel. Uncert.} \\
+\hline
+Gravitational constant & $G$ & $6.67430(15) \times 10^{-11}$ m$^3$kg$^{-1}$s$^{-2}$ & $2.2 \times 10^{-5}$ \\
+\hline
+Fine structure constant & $\alpha$ & $7.2973525693(11) \times 10^{-3}$ & $1.5 \times 10^{-10}$ \\
+\hline
+Electron mass & $m_e$ & $9.1093837015(28) \times 10^{-31}$ kg & $3.0 \times 10^{-10}$ \\
+\hline
+Proton mass & $m_p$ & $1.67262192369(51) \times 10^{-27}$ kg & $3.1 \times 10^{-10}$ \\
+\hline
+Neutron mass & $m_n$ & $1.67492749804(95) \times 10^{-27}$ kg & $5.7 \times 10^{-10}$ \\
+\hline
+Weak mixing angle & $\sin^2\theta_W$ & $0.23122(4)$ & $1.7 \times 10^{-4}$ \\
+\hline
+Strong coupling (at $M_Z$) & $\alpha_s(M_Z)$ & $0.1179(10)$ & $8.5 \times 10^{-3}$ \\
+\hline
+\end{tabular}
+\caption{Measured fundamental constants (CODATA 2018 / PDG 2020)}
+\end{table}
+
+\subsection{Derived Planck Units}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Quantity} & \textbf{Symbol} & \textbf{Value} \\
+\hline
+Planck length & $\ell_P = \sqrt{\hbar G/c^3}$ & $1.616255(18) \times 10^{-35}$ m \\
+\hline
+Planck mass & $m_P = \sqrt{\hbar c/G}$ & $2.176434(24) \times 10^{-8}$ kg \\
+\hline
+Planck time & $t_P = \sqrt{\hbar G/c^5}$ & $5.391247(60) \times 10^{-44}$ s \\
+\hline
+Planck energy & $E_P = \sqrt{\hbar c^5/G}$ & $1.956 \times 10^{9}$ J \\
+\hline
+Planck temperature & $T_P = \sqrt{\hbar c^5/(G k_B^2)}$ & $1.416784(16) \times 10^{32}$ K \\
+\hline
+\end{tabular}
+\caption{Planck units derived from fundamental constants}
+\end{table}
+
+\section{Cosmological Parameters}
+
+\subsection{Standard $\Lambda$CDM Parameters}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Planck 2018 Value} & \textbf{68\% C.L.} \\
+\hline
+Hubble constant & $H_0$ & $67.66$ km/s/Mpc & $\pm 0.42$ \\
+\hline
+Baryon density & $\Omega_b h^2$ & $0.02242$ & $\pm 0.00014$ \\
+\hline
+Cold dark matter density & $\Omega_c h^2$ & $0.11933$ & $\pm 0.00091$ \\
+\hline
+Dark energy density & $\Omega_\Lambda$ & $0.6889$ & $\pm 0.0056$ \\
+\hline
+Matter density & $\Omega_m$ & $0.3111$ & $\pm 0.0056$ \\
+\hline
+Curvature & $\Omega_k$ & $0.0007$ & $\pm 0.0019$ \\
+\hline
+Optical depth & $\tau$ & $0.0561$ & $\pm 0.0071$ \\
+\hline
+Scalar spectral index & $n_s$ & $0.9665$ & $\pm 0.0038$ \\
+\hline
+Amplitude (at $k_0$) & $\ln(10^{10}A_s)$ & $3.047$ & $\pm 0.014$ \\
+\hline
+\end{tabular}
+\caption{Cosmological parameters from Planck 2018 results}
+\end{table}
+
+\subsection{Derived Cosmological Quantities}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Quantity} & \textbf{Symbol} & \textbf{Value} \\
+\hline
+Age of universe & $t_0$ & $13.787 \pm 0.020$ Gyr \\
+\hline
+Critical density & $\rho_c$ & $8.62 \times 10^{-27}$ kg/m$^3$ \\
+\hline
+Baryon density & $\rho_b$ & $4.22 \times 10^{-28}$ kg/m$^3$ \\
+\hline
+Dark matter density & $\rho_{\text{DM}}$ & $2.25 \times 10^{-27}$ kg/m$^3$ \\
+\hline
+Dark energy density & $\rho_\Lambda$ & $5.94 \times 10^{-27}$ kg/m$^3$ \\
+\hline
+Hubble distance & $c/H_0$ & $4.42 \times 10^{26}$ m (14.4 Gpc) \\
+\hline
+Particle horizon & $r_{\text{horizon}}$ & $4.24 \times 10^{26}$ m (13.8 Gpc) \\
+\hline
+CMB temperature & $T_{\text{CMB}}$ & $2.72548 \pm 0.00057$ K \\
+\hline
+\end{tabular}
+\caption{Derived cosmological quantities}
+\end{table}
+
+\section{Collapse Framework Parameters}
+
+\subsection{Fundamental Collapse Constants}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Predicted Value} & \textbf{Status} \\
+\hline
+Base collapse rate & $\gamma_0$ & $\sim 10^{43}$ s$^{-1}$ & Theoretical \\
+\hline
+Collapse length & $\ell_C = \sqrt{\hbar/(m c \gamma_0)}$ & $\sim 10^{-35}$ m & = $\ell_P$ \\
+\hline
+Selector coupling & $\alpha_S$ & $\mathcal{O}(1)$ & Free parameter \\
+\hline
+Integration weight & $\beta_\Phi$ & $0.1 - 1.0$ & To be fitted \\
+\hline
+Complexity weight & $\gamma_K$ & $0.01 - 0.1$ & To be fitted \\
+\hline
+\end{tabular}
+\caption{Framework-specific fundamental parameters}
+\end{table}
+
+\subsection{Scale-Dependent Collapse Rates}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Scale} & \textbf{Collapse Rate} & \textbf{Coherence Time} \\
+\hline
+Planck (quantum) & $\gamma_P \sim 10^{43}$ s$^{-1}$ & $\tau_P \sim 10^{-43}$ s \\
+\hline
+Atomic & $\gamma_{\text{atom}} \sim 10^{15}$ s$^{-1}$ & $\tau \sim 10^{-15}$ s \\
+\hline
+Molecular & $\gamma_{\text{mol}} \sim 10^{9}$ s$^{-1}$ & $\tau \sim 10^{-9}$ s \\
+\hline
+Neural & $\gamma_{\text{neural}} \sim 10^{2}$ s$^{-1}$ & $\tau \sim 10^{-2}$ s \\
+\hline
+Conscious & $\gamma_{\text{conscious}} \sim 10^{1}$ s$^{-1}$ & $\tau \sim 10^{-1}$ s \\
+\hline
+Galactic & $\gamma_{\text{gal}} \sim 10^{-14}$ s$^{-1}$ & $\tau \sim 10^{14}$ s \\
+\hline
+Cosmic & $\gamma_{\text{cosmic}} \sim 10^{-18}$ s$^{-1}$ & $\tau \sim 10^{18}$ s \\
+\hline
+\end{tabular}
+\caption{Estimated collapse rates at different scales}
+\end{table}
+
+\subsection{Information Integration Estimates}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{System} & \textbf{$\Phi$ (bits)} & \textbf{Basis} \\
+\hline
+Single qubit & $\sim 0.1$ & Single quantum collapse \\
+\hline
+Hydrogen atom & $\sim 1$ & Electron orbital collapse \\
+\hline
+Simple molecule & $\sim 10$ & Vibrational mode coupling \\
+\hline
+Bacterium & $\sim 5$ & Metabolic integration \\
+\hline
+C. elegans (worm) & $\sim 10$ & Neural integration (302 neurons) \\
+\hline
+Honeybee & $\sim 15$ & Complex behavior integration \\
+\hline
+Mouse & $\sim 25$ & Mammalian cortex \\
+\hline
+Human (awake) & $30 - 50$ & High cortical integration \\
+\hline
+Human (deep sleep) & $< 5$ & Minimal integration \\
+\hline
+Human (anesthetized) & $< 1$ & Near-zero integration \\
+\hline
+\end{tabular}
+\caption{Estimated integrated information for various systems}
+\end{table}
+
+\section{Symbol Reference Tables}
+
+\subsection{Latin Symbols}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabular}{|l|p{6cm}|l|}
+\hline
+\textbf{Symbol} & \textbf{Meaning} & \textbf{First Used} \\
+\hline
+$c$ & Speed of light & Throughout \\
+$C_\mu$ & Collapse gauge field & Chapter 12 \\
+$\mathcal{C}_\alpha$ & Complexity class at level $\alpha$ & Chapter 10 \\
+$\mathcal{C}_S$ & Collapse operator with selector $S$ & Chapter 10 \\
+$E$ & Energy & Throughout \\
+$F_{\mu\nu}$ & Field strength tensor & Chapter 12 \\
+$f_{NL}$ & Non-Gaussianity parameter & Chapter 14 \\
+$G$ & Gravitational constant & Throughout \\
+$g_{\mu\nu}$ & Metric tensor & Throughout \\
+$H$ & Hamiltonian / Hubble parameter & Context dependent \\
+$\mathcal{H}$ & Hilbert space / History & Context dependent \\
+$I$ & Mutual information & Throughout \\
+$K$ & Kolmogorov complexity & Chapter 11 \\
+$M_n$ & Machine at level $n$ & Chapter 10 \\
+$\mathcal{P}$ & Possibility space & Throughout \\
+$S$ & Selector function / Entropy & Context dependent \\
+$T_{\mu\nu}$ & Stress-energy tensor & Throughout \\
+$w$ & Dark energy equation of state & Chapter 14 \\
+\hline
+\end{tabular}
+\caption{Latin symbol reference}
+\end{table}
+
+\subsection{Greek Symbols}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabular}{|l|p{6cm}|l|}
+\hline
+\textbf{Symbol} & \textbf{Meaning} & \textbf{First Used} \\
+\hline
+$\alpha$ & Fine structure constant / ordinal index & Context dependent \\
+$\alpha_s$ & Strong coupling constant & Chapter 14 \\
+$\Gamma$ & Collapse rate / width & Context dependent \\
+$\gamma_0$ & Base collapse rate constant & Chapter 13 \\
+$\Lambda$ & Cosmological constant & Throughout \\
+$\Phi$ & Integrated information & Throughout \\
+$\Psi$ & Wavefunction (universe/system) & Throughout \\
+$\Omega$ & Density parameter / number of states & Context dependent \\
+$\omega$ & First infinite ordinal & Chapter 10 \\
+\hline
+\end{tabular}
+\caption{Greek symbol reference (selected)}
+\end{table}
+
+\section{Experimental Requirements}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Observable} & \textbf{Required Precision} & \textbf{Timeline} \\
+\hline
+CMB $f_{NL}$ & $\Delta f_{NL} < 2$ & Current (Planck) \\
+\hline
+Dark energy $w_0$ & $\Delta w_0 < 0.02$ & 2030s (Roman, Euclid) \\
+\hline
+Dark energy $w_a$ & $\Delta w_a < 0.1$ & 2030s (Roman, Euclid) \\
+\hline
+Redshift drift & $10^{-10}$ yr$^{-1}$ & 2040s+ (ELT) \\
+\hline
+Neural $\Phi$ & Real-time, $>10^3$ channels & 2030s (ECoG) \\
+\hline
+Quantum observer effect & $\Delta P \sim 10^{-6}$, $N > 10^7$ & 2020s \\
+\hline
+\end{tabular}
+\caption{Required experimental precision and timeline}
+\end{table}

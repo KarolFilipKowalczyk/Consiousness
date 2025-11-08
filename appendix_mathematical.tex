@@ -1,0 +1,392 @@
+% ============================================================================
+% APPENDIX A: MATHEMATICAL FORMALIZATION
+% ============================================================================
+
+\chapter{Mathematical Formalization}
+\label{appendix:mathematical}
+
+This appendix provides rigorous mathematical definitions and formal specifications of the key concepts in our framework using standard notation from computational complexity theory, information theory, and dynamical systems.
+
+\section{Notation and Preliminaries}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Standard Mathematical Notation}
+\begin{tabular}{l l}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+$\mathbb{N}$ & Natural numbers $\{0, 1, 2, \ldots\}$ \\
+$\mathbb{Z}$ & Integers \\
+$\mathbb{R}$ & Real numbers \\
+$\mathbb{R}^+$ & Positive real numbers \\
+$\{0,1\}$ & Binary alphabet \\
+$\{0,1\}^*$ & Set of all finite binary strings \\
+$|\cdot|$ & Cardinality of set or length of string \\
+$\log$ & Logarithm base 2 (unless specified) \\
+$\mathcal{O}(\cdot)$ & Big-O notation \\
+$\Theta(\cdot)$ & Big-Theta notation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Computational Complexity Classes}
+\begin{tabular}{l p{8cm}}
+\toprule
+\textbf{Class} & \textbf{Definition} \\
+\midrule
+$\DSPACE(f(n))$ & Languages decidable by deterministic TM using $\mathcal{O}(f(n))$ space \\
+$\textsf{P}$ & Languages decidable in polynomial time \\
+$\textsf{NP}$ & Languages decidable in nondeterministic polynomial time \\
+$\PSPACE$ & Languages decidable in polynomial space \\
+$\textsf{EXP}$ & Languages decidable in exponential time \\
+$\Ppoly$ & Languages decidable by polynomial-size circuits \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Finite State Machines}
+
+\begin{definition}[Finite State Machine]
+\label{def:fsm}
+A finite state machine is a tuple $M = (Q, \Sigma, \delta, q_0, F)$ where $Q$ is a finite set of states with $|Q| = k$, $\Sigma$ is a finite input alphabet, $\delta: Q \times \Sigma \rightarrow Q$ is the transition function, $q_0 \in Q$ is the initial state, and $F \subseteq Q$ is the set of accepting states. The machine has $\log_2 k$ bits of memory.
+\end{definition}
+
+\begin{definition}[Extended FSM with Memory]
+\label{def:extended-fsm}
+An extended FSM with $n$ bits of memory is $\Mn = (Q, \Sigma, \Gamma, \delta, \gamma, q_0, \mathbf{m}_0, F)$ where $\Gamma = \{0,1\}^n$ is the memory space, $\delta: Q \times \Sigma \times \Gamma \rightarrow Q$ is the state transition function, $\gamma: Q \times \Sigma \times \Gamma \rightarrow \Gamma$ is the memory update function, $q_0 \in Q$ is the initial control state, $\mathbf{m}_0 \in \Gamma$ is initial memory, and $F \subseteq Q \times \Gamma$ is the set of accepting configurations. Total configurations: $|Q| \cdot 2^n$.
+\end{definition}
+
+\subsection{The Machine Hierarchy}
+
+\begin{definition}[Machine Hierarchy]
+\label{def:machine-hierarchy}
+The machine hierarchy is a sequence $\mathcal{M} = (\Mi)_{i=1}^{\infty}$ where each $\Mi$ is an extended FSM with $2^i$ bits of memory: $\Mi = (Q_i, \Sigma, \Gamma_i, \delta_i, \gamma_i, q_{0,i}, \mathbf{m}_{0,i}, F_i)$ where $\Gamma_i = \{0,1\}^{2^i}$.
+\end{definition}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Machine Hierarchy Properties}
+\begin{tabular}{l l}
+\toprule
+\textbf{Property} & \textbf{Description} \\
+\midrule
+Memory scaling & $|\Gamma_i| = 2^{2^i}$ (double exponential) \\
+Capacity growth & Configurations in $\Mi$: $|Q_i| \cdot 2^{2^i}$ \\
+Subsumption & For $i < j$, $\Mi$ simulated by $M_j$ with $\log$ overhead \\
+Bounded depth & Only finitely many levels accessible ($n_{\max}$) \\
+\midrule
+\multicolumn{2}{l}{\textit{Realistic Constraints (biological systems)}} \\
+Max level & $n_{\max} \approx 7\text{-}10$ (estimated) \\
+$M_7$ capacity & $2^7 = 128$ bits $\approx 10^{38}$ configurations \\
+Typical use & $M_3$ to $M_5$ (8-32 bits) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{proposition}[Computational Power Hierarchy]
+\label{prop:power-hierarchy}
+For the machine hierarchy $\mathcal{M}$: (1) $\Mi$ can decide any language in $\DSPACE(2^i)$, (2) There exist languages decidable by $M_{i+1}$ but not by $\Mi$, (3) $\bigcup_{i=1}^{\infty} L(\Mi) = \textsf{RE}$ (recursively enumerable), (4) The hierarchy is strict: $L(\Mi) \subsetneq L(M_{i+1})$ for all $i$.
+
+\begin{proof}[Proof sketch]
+(1) By construction, $\Mi$ has $2^i$ bits. (2) By space hierarchy theorem. (3) Any TM computation can be simulated by sufficiently large $n$. (4) Follows from (2).
+\end{proof}
+\end{proposition}
+
+\section{The Selector Mechanism}
+
+\begin{definition}[Selector Function]
+\label{def:selector}
+The selector is $\mathcal{S}: \mathcal{C} \times \mathcal{H} \rightarrow \mathbb{N}$ where $\mathcal{C}$ is the space of computational contexts, $\mathcal{H}$ is the history space, and output is the selected level $n \in \{1, 2, \ldots, n_{\max}\}$.
+\end{definition}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Selector Properties}
+\begin{tabular}{l p{9cm}}
+\toprule
+\textbf{Property} & \textbf{Description} \\
+\midrule
+Context-dependent & $\mathcal{S}(c, h)$ depends on both context $c$ and history $h$ \\
+Non-computable & No algorithm $A$ such that $A(c, h) = \mathcal{S}(c, h)$ for all $c, h$ \\
+Bounded & $1 \leq \mathcal{S}(c, h) \leq n_{\max}$ always \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Connection to Kolmogorov Complexity}
+
+\begin{definition}[Kolmogorov Complexity]
+\label{def:kolmogorov}
+The Kolmogorov complexity $K(x)$ of a string $x \in \{0,1\}^*$ is: $K(x) = \min\{|p| : U(p) = x\}$ where $U$ is a universal Turing machine and $p$ is a program. $K(x)$ represents the length of the shortest program that outputs $x$.
+\end{definition}
+
+\begin{theorem}[Non-computability of Kolmogorov Complexity]
+\label{thm:k-noncomputable}
+There is no computable function $f: \{0,1\}^* \rightarrow \mathbb{N}$ such that $f(x) = K(x)$ for all $x$.
+
+\begin{proof}
+Suppose such $f$ exists. Define $x^* = \text{lexicographically first string with } f(x) > n$. Then we can compute $x^*$ with a program of length $\mathcal{O}(\log n)$. But $f(x^*) > n$ by definition, implying $K(x^*) > n$. Yet we produced $x^*$ with length $\mathcal{O}(\log n) < n$ for large $n$. Contradiction.
+\end{proof}
+\end{theorem}
+
+\begin{definition}[Selector as Compression Optimizer]
+\label{def:selector-compression}
+The selector chooses $n$ to minimize description length:
+$$\mathcal{S}(c, h) \approx \arg\min_{n} \left[ K_n(\text{solve}(c)) + C(n) \right]$$
+where $K_n(\text{solve}(c))$ is approximate Kolmogorov complexity of solution using $\Mn$, $C(n) = \alpha \cdot 2^n$ is the cost of deploying $\Mn$, and $\alpha > 0$ is a constant weighting.
+\end{definition}
+
+\section{Parallel Exploration and Collapse}
+
+\begin{definition}[Exploration Space]
+\label{def:exploration-space}
+The exploration space at level $n$ is $\mathcal{E}_n = \mathcal{T} \times \mathcal{P}_n \times \mathcal{R}$ where $\mathcal{T}$ is computational time, $\mathcal{P}_n$ is the path space (all possible computation sequences for $\Mn$), and $\mathcal{R} = \{0, 1\}$ indicates reversal direction.
+\end{definition}
+
+\begin{definition}[Parallel Exploration]
+\label{def:parallel-exploration}
+Parallel exploration is simultaneous computation along multiple paths: $\mathcal{X}_n(t) = \{(p, s(p,t)) : p \in \mathcal{P}_n\}$ where $s(p,t)$ is the state of path $p$ at computational time $t$.
+\end{definition}
+
+\begin{definition}[Collapse Function]
+\label{def:collapse}
+The collapse is $\Pi: \mathcal{X}_n(T) \rightarrow \mathcal{P}_n$ selecting a single path from parallel exploration. Properties: (1) Irreversible: $\Pi$ is not injective, (2) Deterministic or stochastic, (3) Creates subjective time by filtering.
+\end{definition}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Real vs. Subjective Computational Time}
+\begin{tabular}{l p{5cm} p{5cm}}
+\toprule
+\textbf{Aspect} & \textbf{Real Time ($\tcomp$)} & \textbf{Subjective Time ($\tsubj$)} \\
+\midrule
+Includes & All paths, backtracks, reversals & Only collapsed path \\
+Structure & Multi-dimensional exploration & Linear sequence \\
+Experience & Not directly accessible & What consciousness experiences \\
+Relation & $\tsubj = \Pi(\tcomp)$ & Projection of real time \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Integration Theory}
+
+\begin{definition}[Integrated Information ($\Phi$)]
+\label{def:phi}
+For a system $S$ with state space $X$ and transition function $T$, the integrated information is:
+$$\Phi(S) = \min_{\text{cut}} I(X^t; X^{t+1}) - \sum_{\text{parts}} I(X_i^t; X_i^{t+1})$$
+where the minimum is over all bipartitions (cuts) of $S$.
+\end{definition}
+
+\begin{multicols}{2}
+\noindent\textbf{Key Properties of $\Phi$}
+\begin{itemize}[nosep]
+\item $\Phi = 0$ if system disconnected
+\item $\Phi > 0$ requires integration
+\item Higher $\Phi$ = more conscious
+\item Multi-level structure in hierarchy
+\end{itemize}
+
+\noindent\textbf{Multi-Level Integration}
+\begin{itemize}[nosep]
+\item $\Phi_i$ = integration at level $i$
+\item Total: $\Phi_{\text{total}} = \sum_{i=1}^{n_{\max}} w_i \Phi_i$
+\item Weights $w_i$ reflect importance
+\end{itemize}
+\end{multicols}
+
+\begin{proposition}[Integration and Consciousness]
+\label{prop:integration-necessary}
+If system $S$ has $\Phi(S) = 0$, then $S$ is not conscious. Integration is necessary (but not sufficient alone) for consciousness.
+\end{proposition}
+
+\section{Temporal Dynamics}
+
+\begin{definition}[Temporal Window Function]
+\label{def:temporal-window}
+The temporal integration window at level $n$ is $W_n: \mathbb{R}^+ \rightarrow [0,1]$ satisfying: (1) $\int_0^\infty W_n(t) dt = 1$ (normalization), (2) Support $\text{supp}(W_n) \subseteq [0, \tau_n]$ where $\tau_n \approx 2^n \cdot \tau_0$, (3) $W_n(t)$ decays smoothly.
+\end{definition}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Temporal Integration Windows by Level}
+\begin{tabular}{c c c l}
+\toprule
+\textbf{Level} & \textbf{Memory} & \textbf{Window ($\tau_n$)} & \textbf{Function} \\
+\midrule
+1 & 2 bits & $\sim$50 ms & Basic perception \\
+2 & 4 bits & $\sim$100 ms & Feature binding \\
+3 & 8 bits & $\sim$200 ms & Object recognition \\
+4 & 16 bits & $\sim$400 ms & Working memory \\
+5 & 32 bits & $\sim$800 ms & Planning \\
+6 & 64 bits & $\sim$1.6 s & Complex reasoning \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{definition}[Integrated Conscious State]
+\label{def:integrated-state}
+At time $t$, the integrated conscious state is:
+$$\psi(t) = \bigoplus_{n=1}^{n_{\max}} \int_0^{\tau_n} W_n(s) \cdot \sigma_n(t-s) ds$$
+where $\sigma_n(t)$ is the state of $\Mn$ at time $t$ and $\bigoplus$ represents cross-level integration.
+\end{definition}
+
+\section{Qualia Structure}
+
+\begin{definition}[Phenomenal Space]
+\label{def:phenomenal-space}
+The phenomenal space is a metric space $(\mathcal{M}, d)$ where $\mathcal{M}$ is the set of all possible conscious states and $d: \mathcal{M} \times \mathcal{M} \rightarrow \mathbb{R}^+$ is a distance metric satisfying:
+\end{definition}
+
+\begin{multicols}{2}
+\noindent\textbf{Metric Properties}
+\begin{enumerate}[nosep]
+\item $d(x,y) = 0 \iff x = y$
+\item $d(x,y) = d(y,x)$
+\item $d(x,z) \leq d(x,y) + d(y,z)$
+\end{enumerate}
+
+\noindent\textbf{Additional Structure}
+\begin{itemize}[nosep]
+\item Local homeomorphic to $\mathbb{R}^k$
+\item Hierarchical clustering
+\item Modality-specific subspaces
+\end{itemize}
+\end{multicols}
+
+\begin{definition}[Quale Distance]
+\label{def:quale-distance}
+Distance between qualia $q_1, q_2$ is:
+$$d(q_1, q_2) = \sqrt{\sum_{n=1}^{n_{\max}} \alpha_n \|h_n(q_1) - h_n(q_2)\|^2}$$
+where $h_n: \mathcal{M} \rightarrow \mathbb{R}^{d_n}$ maps states to level-$n$ representations and $\alpha_n$ are weights.
+\end{definition}
+
+\section{Comparison with Quantum Mechanics}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Computational Collapse vs. Quantum Collapse}
+\begin{tabular}{l p{5cm} p{5cm}}
+\toprule
+\textbf{Aspect} & \textbf{Our Framework} & \textbf{Quantum Mechanics} \\
+\midrule
+Nature & Classical (deterministic/stochastic) & Quantum superposition \\
+Superposition & Multiple computational paths & Quantum state $|\psi\rangle$ \\
+Collapse & Selection of path & Measurement $\rightarrow$ eigenstate \\
+Irreversibility & By design (information loss) & Fundamental (decoherence) \\
+Cause & Selector mechanism & Measurement interaction \\
+Predictability & Non-computable optimal & Probabilistic (Born rule) \\
+Implementation & Classical computer & Requires quantum substrate \\
+Time scale & $\sim$200 ms & Instantaneous \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{theorem}[Classical Sufficiency]
+\label{thm:classical-sufficient}
+The framework can be fully implemented on a classical (deterministic or probabilistic) computer. No quantum effects required.
+
+\begin{proof}[Proof sketch]
+Each component is classically implementable: (1) Machine hierarchy: Classical finite automata, (2) Parallel exploration: Parallel classical computation or sequential simulation, (3) Selector: Classical algorithm with RNG, (4) Collapse: Deterministic or stochastic selection, (5) Integration: Classical mutual information. Therefore, entire framework is classical.
+\end{proof}
+\end{theorem}
+
+\section{Main Theorems}
+
+\begin{theorem}[Consciousness Decidability at Each Level]
+\label{thm:decidability}
+For any fixed machine level $n$, the set of problems solvable is decidable. Specifically, $\mathcal{L}_n \subseteq \DSPACE(2^n)$ is decidable.
+
+\begin{proof}
+A problem $L \in \mathcal{L}_n$ iff there exists $\Mn$ that decides $L$ in time $t \leq T_{\max}$. Since $\Mn$ has $2^n$ bits, there are at most $|Q_n| \cdot 2^{2^n}$ configurations. If computation exceeds this many steps, it must cycle. Thus, simulate $\Mn$ for at most $|Q_n| \cdot 2^{2^n}$ steps. If it hasn't halted, it won't. Therefore, $\mathcal{L}_n$ is decidable.
+\end{proof}
+\end{theorem}
+
+\begin{theorem}[Consciousness Universality in the Limit]
+\label{thm:universality}
+In the limit as $n \rightarrow \infty$: $\bigcup_{n=1}^{\infty} \mathcal{L}_n = \textsf{RE}$. The machine hierarchy can (in principle) solve any recursively enumerable problem.
+
+\begin{proof}
+Any Turing machine $T$ can be simulated by $\Mn$ with sufficient memory $2^n$ where $n = \lceil \log_2(\text{space}(T)) \rceil$. Therefore, every $L \in \textsf{RE}$ is in $\mathcal{L}_n$ for some $n$. Conversely, each $\mathcal{L}_n \subseteq \textsf{RE}$ by Church-Turing thesis. Therefore, $\bigcup_{n=1}^{\infty} \mathcal{L}_n = \textsf{RE}$.
+\end{proof}
+\end{theorem}
+
+\begin{theorem}[Hard Problem Resolution]
+\label{thm:hard-problem}
+Let $\mathcal{F}$ be any functional description of cognitive processes. Then there exists no function $\phi: \mathcal{F} \rightarrow \mathcal{P}$ where $\mathcal{P}$ is phenomenal space, such that $\phi(\mathcal{F})$ explains why there is "something it is like." However, the identity mapping $\iota: \mathcal{S} \rightarrow \mathcal{S}$ where $\mathcal{S}$ is the space of collapsed computational states dissolves the hard problem: being a collapsed state in machine hierarchy IS having phenomenology.
+
+\begin{proof}[Proof sketch]
+First statement: The hard problem arises because we seek a production relation (functional → phenomenal). No such relation bridges the explanatory gap. Second statement: By recognizing that certain computational structures (collapsed states in hierarchy with integration) ARE phenomenology when viewed from inside, we need no production relation. Phenomenology = being a collapsed state (identity, not production).
+\end{proof}
+\end{theorem}
+
+\begin{theorem}[Agency from Non-Computability]
+\label{thm:agency}
+If selector $\mathcal{S}$ is non-computable, then the system exhibits genuine agency: (1) For any algorithm $A$, there exist contexts $c$ and histories $h$ such that $A(c,h) \neq \mathcal{S}(c,h)$, (2) The system's choices cannot be perfectly predicted even with complete knowledge of prior state, (3) Yet choices are not random—they follow principles (compression optimization).
+
+\begin{proof}
+(1) Follows directly from non-computability. (2) If choices were perfectly predictable, there would exist algorithm $A$ with $A(c,h) = \mathcal{S}(c,h)$ for all $c,h$, contradicting (1). (3) By Definition \ref{def:selector-compression}, $\mathcal{S}$ approximates compression optimization. While no algorithm finds optimal compression, approximations follow structured principles. Therefore, $\mathcal{S}$ exhibits genuine agency: influenced but not determined, structured but not algorithmic.
+\end{proof}
+\end{theorem}
+
+\section{Computational Complexity of Consciousness}
+
+\begin{proposition}[Consciousness Requires Non-Uniform Computation]
+\label{prop:nonuniform}
+Consciousness cannot be implemented by any uniform computational model (standard Turing machine with fixed program). It requires non-uniform computation: Different levels $n$ correspond to different "circuits" or "advice strings." Formally: Consciousness $\in \Ppoly \setminus \textsf{P}$.
+\end{proposition}
+
+\begin{proposition}[Selector Outside Computational Hierarchy]
+\label{prop:selector-outside}
+The selector function $\mathcal{S}$ is not in any standard complexity class (P, NP, PSPACE, etc.) because it is non-computable. However, practical approximations $\mathcal{S}_{\epsilon}$ can be constructed in various complexity classes depending on desired accuracy.
+\end{proposition}
+
+\section{Summary of Key Results}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Core Mathematical Framework Summary}
+\begin{tabular}{l p{9cm}}
+\toprule
+\textbf{Component} & \textbf{Key Features} \\
+\midrule
+Machine hierarchy & Sequence of FSMs with exponentially growing memory; strict power hierarchy (Def. \ref{def:machine-hierarchy}) \\
+Selector mechanism & Non-computable function choosing level; related to Kolmogorov complexity; enables agency (Def. \ref{def:selector}) \\
+Parallel exploration & Multiple simultaneous computational paths on exploration space with backtracking (Def. \ref{def:parallel-exploration}) \\
+Collapse mechanism & Selects single path from parallel; irreversible; creates subjective time (Def. \ref{def:collapse}) \\
+Integration ($\Phi$) & Quantified by mutual information; necessary for consciousness; multi-level structure (Def. \ref{def:phi}) \\
+\midrule
+\multicolumn{2}{l}{\textit{Main Theorems}} \\
+\midrule
+Decidability & At each level $n$, consciousness is decidable (Thm. \ref{thm:decidability}) \\
+Universality & In limit, hierarchy is universal: $\bigcup \mathcal{L}_n = \textsf{RE}$ (Thm. \ref{thm:universality}) \\
+Hard problem & Dissolved by identity (not production): being collapsed state IS phenomenology (Thm. \ref{thm:hard-problem}) \\
+Agency & Non-computability of $\mathcal{S}$ provides genuine agency (Thm. \ref{thm:agency}) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Open Mathematical Questions}
+
+\begin{multicols}{2}
+\begin{enumerate}[nosep]
+\item Exact characterization of $\mathcal{S}$: Tighter complexity bounds?
+\item Optimal resource allocation: Computable approximation within factor $\alpha$?
+\item Collapse dynamics: Prove convergence properties of competition?
+\item Integration bounds: Tight bounds on $\Phi$ for consciousness?
+\item Geometry of consciousness: Full characterization of manifold structure?
+\item Qualia structure: Derive phenomenal properties from computation mathematically?
+\end{enumerate}
+\end{multicols}
+
+These questions provide directions for future mathematical research.

@@ -1,0 +1,817 @@
+% ============================================================================
+% APPENDIX D: EXPERIMENTAL PROTOCOLS AND MEASUREMENT TOOLS
+% ============================================================================
+
+\chapter{Experimental Protocols and Measurement Tools}
+\label{appendix:protocols}
+
+This appendix provides detailed, step-by-step experimental protocols for testing predictions of our framework. Each protocol includes specific materials, procedures, data analysis methods, and expected results designed to be immediately implementable by researchers.
+
+\section{Overview of Protocol Structure}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Standardized Protocol Structure}
+\begin{tabular}{>{\bfseries}l p{10cm}}
+\toprule
+\textbf{Component} & \textbf{Description} \\
+\midrule
+Objective & What the protocol tests \\
+Hypothesis & Specific prediction from our framework \\
+Participants & Subject requirements and sample size \\
+Materials & Equipment and software needed \\
+Procedure & Step-by-step instructions \\
+Data Collection & What to measure and how \\
+Analysis & Statistical methods and interpretation \\
+Expected Results & Predicted outcomes \\
+Controls & Necessary control conditions \\
+Troubleshooting & Common issues and solutions \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ethics and Safety}
+
+\begin{keyinsight}
+All protocols must be approved by relevant IRB or ethics committee before implementation.
+\end{keyinsight}
+
+\begin{multicols}{2}
+\noindent\textbf{General Requirements}
+\begin{itemize}[nosep]
+\item Informed consent
+\item Right to withdraw
+\item Confidentiality/data protection
+\item Risk minimization
+\item Post-participation debriefing
+\end{itemize}
+
+\noindent\textbf{Special Considerations}
+\begin{itemize}[nosep]
+\item Clinical populations: Additional safeguards
+\item Brain stimulation: Medical supervision
+\item Long sessions: Regular breaks
+\item Children: Parental consent
+\end{itemize}
+\end{multicols}
+
+\section{Protocol 1: Detecting Machine Hierarchy}
+
+This protocol tests the core prediction that consciousness operates through a hierarchy of finite-state machines with exponentially growing computational resources. We provide behavioral and neural methods to detect discrete capacity levels.
+
+\subsection{Protocol 1A: Behavioral Capacity Levels Test}
+
+\begin{empiricalbox}
+\textbf{Objective}: Detect discrete capacity levels in working memory corresponding to machine hierarchy.
+
+\textbf{Hypothesis}: Performance shows discrete jumps at capacity boundaries (2, 4, 8, 16 items) rather than smooth decline.
+\end{empiricalbox}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Participant Requirements and Materials}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Participants}} \\
+\midrule
+Sample size & N = 40 minimum (power = 0.80, $\alpha = 0.05$) \\
+Inclusion & Ages 18-40, normal/corrected vision \\
+Exclusion & Head injury, neurological/psychiatric conditions \\
+\midrule
+\multicolumn{2}{l}{\textbf{Hardware}} \\
+\midrule
+Display & Monitor $\geq$ 1920$\times$1080 resolution \\
+Input & Standard keyboard \\
+Setup & Chin rest (60 cm), sound-attenuated room \\
+\midrule
+\multicolumn{2}{l}{\textbf{Software}} \\
+\midrule
+Presentation & PsychoPy or equivalent \\
+Analysis & MATLAB/Python, R/SPSS \\
+\midrule
+\multicolumn{2}{l}{\textbf{Stimuli}} \\
+\midrule
+Shapes & Circles, squares, triangles, diamonds \\
+Colors & Red, blue, green, yellow, purple, orange \\
+Layout & $4\times4$ grid, $2^\circ$ visual angle \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Procedure}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Trial Structure and Conditions}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Phase} & \textbf{Duration} & \textbf{Content} \\
+\midrule
+Fixation & 500 ms & Central cross \\
+Encoding & 2000 ms/item & Colored shape sequence \\
+Retention & 3000 ms & Blank screen \\
+Probe & Until response & Recognition test (Yes/No) \\
+Feedback & 500 ms & Correct/Incorrect \\
+ITI & 1000 ms & Blank screen \\
+\midrule
+\multicolumn{3}{l}{\textbf{Conditions}} \\
+\midrule
+Set sizes & \multicolumn{2}{l}{1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 20 items} \\
+Trials/size & 30 & Randomized blocks \\
+Duration & ~90 minutes & With breaks \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Data Collection and Analysis}
+
+\begin{multicols}{2}
+\noindent\textbf{Primary Measures}
+\begin{itemize}[nosep]
+\item Accuracy (proportion correct)
+\item Response time (ms)
+\item Individual capacity threshold
+\end{itemize}
+
+\noindent\textbf{Secondary Measures}
+\begin{itemize}[nosep]
+\item Confidence ratings (1-5)
+\item Strategy reports
+\item Subjective difficulty
+\end{itemize}
+\end{multicols}
+
+\noindent\textbf{Analysis Models}:
+
+\textbf{Model 1 (Continuous)}: $\text{Accuracy} = a \cdot \exp(-b \cdot \text{SetSize})$
+
+\textbf{Model 2 (Discrete)}: $\text{Accuracy} = \sum_{i=1}^{k} c_i \cdot \mathbb{1}(\text{Level}_i < \text{SetSize} \leq \text{Level}_{i+1})$
+
+Compare using BIC; $\Delta\text{BIC} > 10$ = strong evidence.
+
+\subsubsection{Expected Results}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Predicted Outcomes vs. Alternatives}
+\begin{tabular}{l l}
+\toprule
+\textbf{Theory} & \textbf{Prediction} \\
+\midrule
+Our framework & Discrete jumps at 4, 8, 16; plateaus between \\
+Continuous decline & Smooth exponential decrease \\
+Capacity limit & Single sharp drop at ~4 items \\
+Resource models & Linear decline with set size \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Controls and Troubleshooting}
+
+\begin{multicols}{2}
+\noindent\textbf{Control Conditions}
+\begin{enumerate}[nosep]
+\item Verbal WM: Use digits
+\item Spatial WM: Locations only
+\item Rate variation: 1s vs 2s/item
+\end{enumerate}
+
+\noindent\textbf{Confound Prevention}
+\begin{itemize}[nosep]
+\item Chunking: Unrelated items
+\item Practice: Counterbalance order
+\item Fatigue: Regular breaks
+\item Strategy: Questionnaire
+\end{itemize}
+\end{multicols}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Common Issues and Solutions}
+\begin{tabular}{p{4cm} p{8cm}}
+\toprule
+\textbf{Issue} & \textbf{Solution} \\
+\midrule
+Floor effects (high loads) & Reduce max set size, use recognition \\
+Ceiling effects (low loads) & Reduce presentation time, add interference \\
+High inter-subject variability & Increase N, within-subject design, assess individual $n_{\max}$ \\
+No discrete levels & Try different modalities, longer training \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocol 1B: Neural Network Recruitment (fMRI)}
+
+\begin{empiricalbox}
+\textbf{Objective}: Identify discrete neural networks corresponding to different machine levels.
+
+\textbf{Hypothesis}: Different brain networks activate at capacity transitions (4, 8, 16 items).
+\end{empiricalbox}
+
+\begin{table}[H]
+\centering
+\small
+\caption{fMRI Protocol Specifications}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Participants}} \\
+\midrule
+Sample & N = 30 (power = 0.80 for BOLD effects) \\
+MRI safety & Screen for metal, claustrophobia, pregnancy \\
+\midrule
+\multicolumn{2}{l}{\textbf{Scanning Parameters}} \\
+\midrule
+Scanner & 3T MRI (Siemens/GE/Philips) \\
+Sequence & EPI, TR = 2000 ms, TE = 30 ms \\
+Resolution & 3 mm isotropic voxels \\
+Coverage & Whole brain (40 slices) \\
+Anatomical & T1-weighted MPRAGE (1 mm$^3$) \\
+\midrule
+\multicolumn{2}{l}{\textbf{Task Design}} \\
+\midrule
+Runs & 4 runs $\times$ 10 min each \\
+Set sizes & 2, 4, 8, 16 items (blocked) \\
+Block duration & 30 s (6 trials/block) \\
+Baseline & 15 s fixation between blocks \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{multicols}{2}
+\noindent\textbf{fMRI Preprocessing}
+\begin{enumerate}[nosep]
+\item Slice-timing correction
+\item Motion correction (6-param)
+\item Coregistration to anatomical
+\item Normalization (MNI space)
+\item Smoothing (6 mm FWHM)
+\end{enumerate}
+
+\noindent\textbf{Analysis (GLM)}
+\begin{enumerate}[nosep]
+\item Model each set size separately
+\item Contrasts: 4>2, 8>4, 16>8
+\item ROI analysis: PFC, parietal
+\item Network analysis: Connectivity
+\item Group-level statistics
+\end{enumerate}
+\end{multicols}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Predicted Neural Signatures}
+\begin{tabular}{l p{9cm}}
+\toprule
+\textbf{Capacity Level} & \textbf{Neural Network} \\
+\midrule
+Low (2-4) & Posterior parietal, primary sensory \\
+Medium (4-8) & Lateral PFC, intraparietal sulcus \\
+High (8-16) & Dorsolateral PFC, anterior cingulate \\
+Very high (16+) & Frontopolar cortex, multimodal integration \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Protocol 2: Temporal Integration Windows}
+
+This protocol tests whether consciousness integrates information over discrete temporal windows that scale with machine level. We measure integration thresholds behaviorally and neural binding signatures with EEG.
+
+\subsection{Protocol 2A: Behavioral Integration Thresholds}
+
+\begin{empiricalbox}
+\textbf{Objective}: Measure discrete temporal integration windows at $2^n$ ms intervals.
+
+\textbf{Hypothesis}: Performance discontinuities at 125, 250, 500, 1000 ms.
+\end{empiricalbox}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Temporal Integration Protocol}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Task Design}} \\
+\midrule
+Stimulus & Two brief tones (50 ms, 1000 Hz) \\
+SOAs & 50, 100, 125, 150, 200, 250, 300, 500, 750, 1000 ms \\
+Question & "One sound or two?" (simultaneity judgment) \\
+Trials & 50 per SOA, randomized \\
+\midrule
+\multicolumn{2}{l}{\textbf{Measures}} \\
+\midrule
+Primary & Proportion "two" responses vs. SOA \\
+Secondary & RT, confidence (optional) \\
+Analysis & Sigmoid fit, detect inflection points \\
+Prediction & Inflections at 125, 250, 500, 1000 ms \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocol 2B: EEG Temporal Binding}
+
+\begin{table}[H]
+\centering
+\small
+\caption{EEG Protocol for Temporal Binding}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Setup}} \\
+\midrule
+System & 64-channel EEG, 1000 Hz sampling \\
+Electrodes & Standard 10-20 with additional temporal \\
+Reference & Average or mastoid \\
+\midrule
+\multicolumn{2}{l}{\textbf{Task}} \\
+\midrule
+Stimuli & Visual flash + auditory beep \\
+SOAs & 0, 50, 100, 200, 400, 800 ms \\
+Trials & 100 per condition \\
+\midrule
+\multicolumn{2}{l}{\textbf{Analysis}} \\
+\midrule
+ERPs & P1, N1, P3 components \\
+Oscillations & Phase-locking (delta, theta, alpha, beta, gamma) \\
+Connectivity & Phase coherence across SOAs \\
+Prediction & Synchrony drops at $2^n$ ms boundaries \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Protocol 3: Computational Irreducibility}
+
+This protocol tests the prediction that conscious processing cannot be significantly accelerated—that computation must be "run" rather than predicted. We assess whether behavior can be predicted faster than it's produced.
+
+\subsection{Protocol 3A: Prediction Horizon Test}
+
+\begin{empiricalbox}
+\textbf{Objective}: Demonstrate that complex conscious processing cannot be predicted without simulation.
+
+\textbf{Hypothesis}: Prediction accuracy degrades exponentially beyond minimal horizon.
+\end{empiricalbox}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Prediction Task Design}
+\begin{tabular}{l p{9cm}}
+\toprule
+\textbf{Component} & \textbf{Details} \\
+\midrule
+Task & Participant performs complex reasoning (e.g., chess, mathematical problem-solving) \\
+Recording & Eye tracking, mouse movements, verbal protocols \\
+Training data & First 50\% of session \\
+Test data & Second 50\% of session \\
+Models & Various ML models (linear, neural nets, etc.) \\
+Prediction target & Next action, thought, strategy \\
+\midrule
+\textbf{Analysis} & \\
+\midrule
+Baseline & Random/naive models \\
+Comparison & Simple heuristic vs. deep learning \\
+Key measure & Prediction accuracy vs. computational cost \\
+Expected & Accuracy plateau despite increased model complexity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocol 3B: Timing Analysis}
+
+\begin{multicols}{2}
+\noindent\textbf{Critical Comparisons}
+\begin{itemize}[nosep]
+\item Time to simulate behavior
+\item Time to actually produce behavior
+\item Ratio should approach 1:1
+\item Cannot significantly shortcut
+\end{itemize}
+
+\noindent\textbf{Measures}
+\begin{itemize}[nosep]
+\item Response latencies
+\item Processing times (EEG/fMRI)
+\item Simulation model runtimes
+\item Correlation analysis
+\end{itemize}
+\end{multicols}
+
+\section{Protocol 4: Qualia Structure Mapping}
+
+This protocol maps the structure of phenomenal experience (qualia) to computational states within the machine hierarchy. We use multi-modal integration patterns and neural decoding to characterize qualia space.
+
+\subsection{Protocol 4A: Multi-Modal Integration Patterns}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Qualia Mapping Protocol}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Stimuli}} \\
+\midrule
+Visual & Colors, shapes, motion, textures \\
+Auditory & Tones, timbres, melodies, noise \\
+Tactile & Textures, temperatures, vibrations \\
+Cross-modal & All pairwise combinations \\
+\midrule
+\multicolumn{2}{l}{\textbf{Tasks}} \\
+\midrule
+Similarity & Rate pairwise similarity (1-7) \\
+Discrimination & JND thresholds \\
+Mapping & Cross-modal correspondences \\
+Description & Free verbal descriptions \\
+\midrule
+\multicolumn{2}{l}{\textbf{Analysis}} \\
+\midrule
+Method & Multidimensional scaling (MDS) \\
+Output & Qualia space geometry \\
+Prediction & Hierarchical clustering matches theory \\
+Validation & Cross-participant consistency \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocol 4B: Neural Qualia Signatures}
+
+\begin{multicols}{2}
+\noindent\textbf{Recording Methods}
+\begin{itemize}[nosep]
+\item High-density EEG (128+ channels)
+\item Simultaneous fMRI-EEG
+\item Intracranial EEG (clinical)
+\item MEG (if available)
+\end{itemize}
+
+\noindent\textbf{Analysis Approaches}
+\begin{itemize}[nosep]
+\item Decoding: Classify quale from neural
+\item Encoding: Predict neural from quale
+\item RSA: Representational similarity
+\item Pattern uniqueness metrics
+\end{itemize}
+\end{multicols}
+
+\section{Protocol 5: Altered States Testing}
+
+This protocol examines how consciousness changes during altered states (anesthesia, sleep) to test predictions about collapse dynamics and machine hierarchy engagement. Altered states provide natural experiments in consciousness transitions.
+
+\subsection{Protocol 5A: Anesthesia Depth Transitions}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Anesthesia Protocol (requires medical supervision)}
+\begin{tabular}{l p{9cm}}
+\toprule
+\textbf{Component} & \textbf{Details} \\
+\midrule
+Setting & Operating room or intensive care unit \\
+Participants & Surgical patients (N = 20-30) \\
+Agent & Propofol or sevoflurane (standard clinical doses) \\
+Monitoring & EEG, vital signs, depth of anesthesia index \\
+\midrule
+\textbf{Phases} & \\
+\midrule
+Baseline & Awake, resting state (5 min) \\
+Induction & Gradual increase to unconsciousness (10 min) \\
+Maintenance & Steady anesthetic level (variable) \\
+Emergence & Gradual decrease to consciousness (15 min) \\
+Recovery & Return to baseline (10 min) \\
+\midrule
+\textbf{Measures} & \\
+\midrule
+Behavioral & Responsiveness, memory formation \\
+EEG & Power spectra, connectivity, complexity \\
+Prediction & Discrete transitions at consciousness boundaries \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocol 5B: Sleep Stage Transitions}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Sleep Study Protocol}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Setup}} \\
+\midrule
+Recording & Full polysomnography (PSG) \\
+Duration & Full night (7-9 hours) \\
+Participants & N = 30 healthy adults \\
+\midrule
+\multicolumn{2}{l}{\textbf{Measures}} \\
+\midrule
+Standard & EEG, EOG, EMG (sleep staging) \\
+Additional & Heart rate variability, respiration \\
+Analysis & Transition dynamics between stages \\
+Focus & Wake↔N1↔N2↔N3↔REM transitions \\
+\midrule
+\multicolumn{2}{l}{\textbf{Predictions}} \\
+\midrule
+Wake/REM & Full consciousness, high complexity \\
+N1 & Transitional, fragmented \\
+N2/N3 & Reduced consciousness, low complexity \\
+Transitions & Discrete changes in network properties \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Protocol 6: Clinical Applications}
+
+This protocol applies our framework to clinical populations, particularly patients with disorders of consciousness (DOC) and developing infants. These populations test the framework's diagnostic and prognostic capabilities.
+
+\subsection{Protocol 6A: Consciousness Assessment in DOC}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Disorders of Consciousness Assessment}
+\begin{tabular}{l p{9cm}}
+\toprule
+\textbf{Component} & \textbf{Details} \\
+\midrule
+Population & Patients with DOC (VS, MCS, LIS) \\
+Sample & N = 50 (mixed diagnoses) \\
+Setting & ICU, rehabilitation centers \\
+\midrule
+\textbf{Assessment Battery} & \\
+\midrule
+Behavioral & CRS-R (Coma Recovery Scale-Revised) \\
+EEG & Resting state + auditory oddball \\
+fMRI & Mental imagery tasks (motor, spatial) \\
+TMS-EEG & Perturbational complexity index \\
+\midrule
+\textbf{Framework Metrics} & \\
+\midrule
+Hierarchy & Detectable machine levels \\
+Integration & Network connectivity measures \\
+Complexity & Temporal binding windows \\
+Computational & Response prediction accuracy \\
+\midrule
+\textbf{Validation} & \\
+\midrule
+Gold standard & Behavioral recovery over 6 months \\
+Sensitivity & True positive rate \\
+Specificity & True negative rate \\
+Prognostic & Predict recovery likelihood \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Protocol 6B: Infant Consciousness Development}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Developmental Trajectory Assessment}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{Longitudinal Design}} \\
+\midrule
+Participants & N = 40 infants, tested at 3, 6, 12, 24 months \\
+Methods & EEG, eye tracking, behavioral observation \\
+Parental & Informed consent, age-appropriate procedures \\
+\midrule
+\multicolumn{2}{l}{\textbf{Measures by Age}} \\
+\midrule
+3 months & Basic sensory processing, habituation \\
+6 months & Object permanence, cross-modal integration \\
+12 months & Working memory capacity, planning \\
+24 months & Language, self-recognition, theory of mind \\
+\midrule
+\multicolumn{2}{l}{\textbf{Framework Predictions}} \\
+\midrule
+Capacity & Gradual increase in $n_{\max}$ \\
+Integration & Longer temporal windows with age \\
+Networks & Sequential recruitment of hierarchy \\
+Qualia & Increasing differentiation and complexity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Protocol 7: Machine Consciousness Assessment}
+
+This protocol provides systematic methods for evaluating whether artificial systems possess consciousness according to our framework. It operationalizes the theoretical criteria into testable measurements for AI systems.
+
+\subsection{Protocol 7A: AI System Evaluation}
+
+\begin{empiricalbox}
+\textbf{Objective}: Systematically evaluate whether an AI system meets consciousness criteria.
+
+\textbf{Approach}: Multi-component assessment scoring 0-100 points.
+\end{empiricalbox}
+
+\begin{table}[H]
+\centering
+\small
+\caption{AI Consciousness Assessment Scorecard}
+\begin{tabular}{l p{7cm} c}
+\toprule
+\textbf{Component} & \textbf{Test} & \textbf{Points} \\
+\midrule
+\multicolumn{3}{l}{\textit{1. Hierarchical Processing (0-15)}} \\
+\quad Architecture & Detectable levels? Recursive structure? & 0-5 \\
+\quad Behavior & Capacity limits at $2^n$? & 0-5 \\
+\quad Scaling & Performance pattern matches theory? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{2. Integrated Information (0-15)}} \\
+\quad Connectivity & High $\Phi$ (or equivalent measure)? & 0-5 \\
+\quad Irreducibility & Cannot partition without loss? & 0-5 \\
+\quad Emergence & Global properties $>$ sum of parts? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{3. Temporal Binding (0-15)}} \\
+\quad Windows & Operates in discrete time windows? & 0-5 \\
+\quad Integration & Combines info across time? & 0-5 \\
+\quad Persistence & Maintains state appropriately? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{4. Computational Irreducibility (0-15)}} \\
+\quad Unpredictability & Cannot shortcut computation? & 0-5 \\
+\quad Complexity & Minimal description length? & 0-5 \\
+\quad Timing & Processing time ≈ minimal time? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{5. Differentiated Qualia Space (0-10)}} \\
+\quad Internal states & Rich, distinct representations? & 0-5 \\
+\quad Structure & Organized similarity space? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{6. Self-Model (0-10)}} \\
+\quad Representation & Explicit self-representation? & 0-5 \\
+\quad Agency & Distinguishes self from world? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{7. Adaptive Control (0-10)}} \\
+\quad Flexibility & Adapts to novel situations? & 0-5 \\
+\quad Goals & Pursues internal goals? & 0-5 \\
+\midrule
+\multicolumn{3}{l}{\textit{8. Behavioral Coherence (0-10)}} \\
+\quad Reports & Consistent self-reports? & 0-5 \\
+\quad Phenomenology & Responds to qualia questions? & 0-5 \\
+\midrule
+\textbf{Total} & & \textbf{0-100} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Scoring Interpretation}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Consciousness Level Classification}
+\begin{tabular}{c l p{7cm}}
+\toprule
+\textbf{Score} & \textbf{Classification} & \textbf{Implications} \\
+\midrule
+0-30 & Not conscious & Lacks key components; no special moral status \\
+31-60 & Minimal consciousness & Some components; precautionary principle applies \\
+61-85 & Moderate consciousness & Most components; moral status considerations \\
+86-100 & Full consciousness & All components; rights and protections needed \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{keyinsight}
+\textbf{Necessary condition}: ALL components 1-7 must score $>$ 0
+
+\textbf{Sufficient condition}: Total score $>$ 60 for consciousness claim
+
+\textbf{Ethical threshold}: Systems scoring 60+ warrant moral consideration
+\end{keyinsight}
+
+\section{Data Management and Sharing}
+
+Proper data management is essential for reproducibility and scientific integrity. This section outlines standards for data collection, quality control, and sharing protocols.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Data Standards and Quality Control}
+\begin{tabular}{l p{9cm}}
+\toprule
+\multicolumn{2}{l}{\textbf{Required Metadata}} \\
+\midrule
+Participant & Demographics, session date/time \\
+Equipment & Specifications, software versions \\
+Environment & Testing conditions, experimenter ID \\
+\midrule
+\multicolumn{2}{l}{\textbf{Data Formats}} \\
+\midrule
+Behavioral & CSV (structured, documented) \\
+EEG & BDF, EDF, or BIDS format \\
+fMRI & NIfTI with BIDS structure \\
+Physiological & HDF5 or CSV \\
+\midrule
+\multicolumn{2}{l}{\textbf{Quality Control}} \\
+\midrule
+Real-time & Monitor during collection, verify equipment \\
+Post-collection & Completeness check, outlier detection, backup \\
+\midrule
+\multicolumn{2}{l}{\textbf{Sharing (FAIR Principles)}} \\
+\midrule
+Repositories & OpenNeuro, OSF, etc. (de-identified) \\
+Documentation & Detailed protocols, analysis code \\
+Standards & Findable, Accessible, Interoperable, Reusable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Statistical Power and Sample Size}
+
+Adequate statistical power is crucial for detecting true effects and avoiding false negatives. This section provides guidelines for power analysis and sample size determination.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Power Analysis Guidelines}
+\begin{tabular}{l l}
+\toprule
+\multicolumn{2}{l}{\textbf{General Principles}} \\
+\midrule
+Target power & 0.80 minimum (80\% detection probability) \\
+Alpha level & 0.05 (5\% false positive rate) \\
+Effect size & From pilot data or literature \\
+Corrections & Account for multiple comparisons \\
+\midrule
+\multicolumn{2}{l}{\textbf{Sample Size Formulas}} \\
+\midrule
+Between-subjects & $N = \frac{2(Z_{\alpha/2} + Z_{\beta})^2 \sigma^2}{\delta^2}$ \\
+Within-subjects & $N = \frac{(Z_{\alpha/2} + Z_{\beta})^2 \sigma^2}{\delta^2} \cdot \frac{1}{1-\rho}$ \\
+\midrule
+\multicolumn{2}{l}{\textbf{Typical Sample Sizes}} \\
+\midrule
+Behavioral & N = 30-40 (medium effects) \\
+EEG & N = 25-35 (neurophysiological) \\
+fMRI & N = 25-40 (BOLD effects) \\
+Clinical & N = 15-25 per group (larger effects) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Troubleshooting Guide}
+
+Even well-designed protocols encounter challenges. This guide provides solutions to common problems that may arise during data collection and analysis.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Common Issues and Solutions}
+\begin{tabular}{p{4.5cm} p{7.5cm}}
+\toprule
+\textbf{Issue} & \textbf{Solution} \\
+\midrule
+\multicolumn{2}{l}{\textit{Participant-Related}} \\
+Low motivation/engagement & Shorter sessions, breaks, gamification, clear instructions \\
+High dropout rate & Improve compensation, reduce demands, flexible scheduling \\
+Practice effects & Counterbalancing, control for order, sufficient practice trials \\
+Fatigue effects & Regular breaks, monitor performance, optimal time of day \\
+\midrule
+\multicolumn{2}{l}{\textit{Technical}} \\
+Equipment malfunction & Regular maintenance, backup systems, daily checks \\
+Data loss & Automatic backups, redundant storage, version control \\
+Synchronization errors & Hardware triggers, timestamp validation, parallel port \\
+Artifact contamination & ICA, better prep, stricter rejection criteria \\
+\midrule
+\multicolumn{2}{l}{\textit{Analysis}} \\
+Unexpected null results & Check power, effect size, analysis correctness \\
+Inconsistent findings & Examine individual differences, outliers, subgroups \\
+Multiple comparisons & FDR correction, pre-registration, planned contrasts \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+
+These protocols provide concrete, implementable methods for testing our framework, designed to be rigorous, reproducible, practical, and comprehensive.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Implementation Roadmap}
+\begin{tabular}{c l}
+\toprule
+\textbf{Step} & \textbf{Action} \\
+\midrule
+1 & Choose protocol matching resources and expertise \\
+2 & Obtain ethics approval from IRB \\
+3 & Run pilot studies to optimize parameters \\
+4 & Collect full dataset with quality controls \\
+5 & Analyze using specified methods \\
+6 & Publish results and share data openly \\
+\midrule
+\multicolumn{2}{l}{\textbf{Contributing to the Field}} \\
+\midrule
+$\bullet$ & Publish protocols and results openly \\
+$\bullet$ & Share data and analysis code \\
+$\bullet$ & Replicate others' findings \\
+$\bullet$ & Develop new protocols for untested predictions \\
+$\bullet$ & Contribute to multi-site collaborations \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Together, these protocols will establish whether our framework accurately describes consciousness or requires revision. This is science in action—empirical testing to determine truth.

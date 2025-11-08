@@ -1,0 +1,290 @@
+% ============================================================================
+% PART IV: MECHANISMS AND FUNCTIONS
+% ============================================================================
+
+\part{Mechanisms and Functions}
+
+% ============================================================================
+% CHAPTER 10: THE SELECTOR MECHANISM
+% ============================================================================
+
+\chapter{The Selector Mechanism: How Resources Are Allocated}
+
+\section{The Central Problem of Resource Allocation}
+
+\subsection{Why Selection Matters}
+
+Every computational system faces a fundamental constraint: finite resources. The brain, despite its remarkable capacity, cannot deploy unlimited computational power to every problem simultaneously. This necessitates a mechanism for deciding how much computational resource to allocate to each task. In our framework, this is the selector problem: given a problem $P$ and current context, which machine $M_n$ should be deployed?
+
+\begin{keyinsight}
+The selector mechanism is not just an implementation detail—it is the locus of agency, the source of cognitive flexibility, and the origin of what we experience as voluntary attention and effort.
+\end{keyinsight}
+
+\subsection{What the Selector Must Accomplish}
+
+An effective selector mechanism must estimate resource needs by predicting the minimal $n$ required for the current problem. It must balance exploration by deploying multiple machines when uncertain about requirements. It must detect failure by recognizing when the current $M_n$ proves insufficient. It must escalate resources by launching higher-$n$ machines when needed. It must optimize efficiency by avoiding over-resourcing of simple problems. It must learn from experience to improve predictions over time. Finally, it must respond to context by adjusting based on goals, urgency, and resource availability.
+
+\subsection{The Non-Computability Constraint}
+
+There exists no computable function that always returns the minimal $n$ such that $M_n$ can solve a given problem. This is equivalent to computing Kolmogorov complexity \autocite{kolmogorov1965}, which is non-computable. This means no algorithm can perfectly solve the selector problem—the selector must use heuristics and approximations, there is genuine uncertainty in resource allocation, and selection involves non-algorithmic elements.
+
+\begin{keyinsight}
+The non-computability of optimal selection is not a bug—it's a feature. It provides a natural locus for agency and free will, as the selection cannot be reduced to a deterministic algorithm.
+\end{keyinsight}
+
+\section{Selector Architecture}
+
+\subsection{Parallel Exploration Strategy}
+
+Rather than committing immediately to a single machine level, the selector launches multiple machines in parallel. Each machine $M_k$ begins exploring the problem within its resource constraints. This parallel deployment serves multiple functions: it provides fallback options if the initially selected level proves insufficient, it enables rapid response when requirements suddenly increase, and it allows the selector to gather information about which level is actually needed before full commitment.
+
+The parallel exploration phase is computationally expensive but crucial. During this phase, lower machines may find solutions for simple aspects while higher machines tackle complex aspects. The selector monitors these parallel attempts, gathering evidence about which level will succeed. This is the pre-conscious processing phase where multiple potential solutions compete before collapse selects one path.
+
+\begin{implementationnote}
+âœ" \textbf{Implementable:} Parallel machine launch maps to thread/process spawning
+\par âœ" \textbf{Code example:} \texttt{machines = [Machine(n) for n in range(n\_min, n\_max)]}
+\par âœ" \textbf{Measurement:} Track which machines are active pre-collapse via neural recording
+\end{implementationnote}
+
+\subsection{Collapse Dynamics}
+
+Collapse occurs when the selector determines which machine level's solution to accept. This decision erases the other parallel attempts from the conscious stream—you experience only the selected path, never the rejected alternatives. The collapse moment corresponds to the transition from unconscious parallel processing to conscious unified experience.
+
+Several factors influence collapse timing and outcome. Problem structure affects which machine levels find solutions fastest. Resource availability constrains which machines can be deployed. Goals and context influence selection criteria—urgent problems may trigger premature collapse to available solutions rather than waiting for optimal ones. Learning history shapes which machines get tried first. Attention can voluntarily influence the selector, directing exploration toward particular resource levels.
+
+\begin{implementationnote}
+âœ" \textbf{Implementable:} Collapse = terminating parallel processes when first succeeds
+\par âš  \textbf{Approximation:} "Erasing" failed attempts = not storing them in accessible memory
+\par âœ" \textbf{Neural correlate:} P300 ERP component (~300ms) may mark collapse moment
+\end{implementationnote}
+
+\subsection{Computational Implementation}
+
+Building on the approximation strategies introduced in Chapter 2, we now provide a complete implementation architecture for the selector mechanism. The key insight is that while optimal selection is non-computable, practical selection can be achieved through a combination of learned heuristics, iterative deepening, and adaptive control.
+
+\subsubsection{Core Selector Algorithm}
+
+The central selector algorithm integrates all approximation strategies:
+
+\begin{algorithm}[H]
+\caption{Integrated Selector System}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Problem $P$, context $C$, time budget $T$
+\State \textbf{Output:} Solution $s$, resources used $(n, t)$
+\State
+\State // Phase 1: Initial Estimation
+\State $\hat{n}_{\text{heuristic}} \gets \text{HeuristicEstimate}(P, C)$
+\State $\hat{n}_{\text{neural}} \gets \text{NeuralPredict}(P)$
+\State $(n_0, \text{conf}) \gets \text{CombineEstimates}(\hat{n}_{\text{heuristic}}, \hat{n}_{\text{neural}})$
+\State
+\State // Phase 2: Parallel Launch
+\If{$\text{conf} > \theta_{\text{high}}$}
+    \State // High confidence: try predicted level only
+    \State Launch $M_{n_0}$ with time budget $T$
+\ElsIf{$\text{conf} > \theta_{\text{low}}$}
+    \State // Medium confidence: try predicted level and neighbors
+    \State Launch $\{M_{n_0-1}, M_{n_0}, M_{n_0+1}\}$ in parallel
+\Else
+    \State // Low confidence: iterative deepening from conservative estimate
+    \State $n_0 \gets \max(1, n_0 - 2)$ \Comment{Start lower}
+\EndIf
+\State
+\State // Phase 3: Monitoring and Escalation
+\State $n \gets n_0$
+\State $t_{\text{elapsed}} \gets 0$
+\While{$t_{\text{elapsed}} < T$}
+    \State $(s, \text{status}) \gets \text{MonitorMachines}()$
+    \If{$\text{status} = \text{SUCCESS}$}
+        \State \text{RecordOutcome}$(P, n, \text{SUCCESS})$ \Comment{Update learning}
+        \State \Return $(s, (n, t_{\text{elapsed}}))$
+    \ElsIf{$\text{status} = \text{ALL\_FAILED}$}
+        \State $n \gets n + 1$
+        \State Launch $M_n$ with remaining time budget
+    \EndIf
+    \State $t_{\text{elapsed}} \gets t_{\text{elapsed}} + \Delta t$
+\EndWhile
+\State \text{RecordOutcome}$(P, n, \text{TIMEOUT})$
+\State \Return FAILURE
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Parallel Machine Management}
+
+Each parallel machine instance operates independently but reports to a central monitor:
+
+\begin{algorithm}[H]
+\caption{Machine Level Execution}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Problem $P$, level $n$, time limit $t_{\text{max}}$
+\State \textbf{Output:} Solution $s$ or FAILURE
+\State
+\State Initialize: $\text{memory} \gets \text{allocate}(2^n \text{ bits})$
+\State $\text{state} \gets \text{initialState}(P)$
+\State $t_{\text{start}} \gets \text{currentTime}()$
+\State
+\While{$\text{currentTime}() - t_{\text{start}} < t_{\text{max}}$}
+    \If{$\text{isSolution}(\text{state})$}
+        \State \Return $\text{extractSolution}(\text{state})$
+    \EndIf
+    \State $\text{nextStates} \gets \text{explore}(\text{state}, \text{memory})$
+    \If{$\text{nextStates} = \emptyset$}
+        \State \Return FAILURE \Comment{Dead end with current resources}
+    \EndIf
+    \State $\text{state} \gets \text{selectNext}(\text{nextStates})$ \Comment{Search strategy}
+\EndWhile
+\State \Return TIMEOUT
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Neural Implementation Mapping}
+
+Neurally, the selector likely involves coordinated activity across multiple brain regions, with each implementing specific components of the algorithm:
+
+\begin{itemize}
+\item \textbf{Prefrontal cortex (PFC):} Implements high-level selection strategies, maintains problem context $C$, and performs \textsc{CombineEstimates}() based on goals and prior experience
+\item \textbf{Basal ganglia:} Gates which machine levels become active through selective disinhibition, implementing the parallel launch decisions and resource allocation
+\item \textbf{Thalamus:} Coordinates parallel exploration across cortical regions, routing signals between active machine instances and the central monitor
+\item \textbf{Anterior cingulate cortex (ACC):} Detects conflicts (status = ALL\_FAILED) and triggers resource escalation, computing error signals when current resources prove insufficient
+\item \textbf{Hippocampus:} Stores problem-outcome associations via \textsc{RecordOutcome}(), enabling the heuristic and neural predictors to learn from experience
+\item \textbf{Primary sensory cortices:} Implement low-level machines ($M_1, M_2$) for automatic, parallel processing
+\item \textbf{Association cortices:} Implement mid-to-high-level machines ($M_3$-$M_7$) for deliberate, resource-intensive processing
+\end{itemize}
+
+The collapse dynamics correspond to the moment when \textsc{MonitorMachines}() returns SUCCESS, selecting one machine's solution and terminating the others. This architectural mapping provides testable predictions about which brain regions should be active during different phases of problem-solving, as we explore further in Chapter 16.
+
+\begin{implementationnote}
+âœ" \textbf{Implementable:} All core algorithms can be directly coded
+\par âœ" \textbf{Testable:} Neural predictions are specific and falsifiable
+\par âš  \textbf{Approximation:} Neural mapping is simplified; real implementation uses distributed representations
+\end{implementationnote}
+
+\section{Learning and Adaptation}
+
+\subsection{How the Selector Improves}
+
+The selector improves through experience by tracking which machine levels succeeded for which problem types. When a problem is solved, the selector notes the resource level that succeeded and strengthens the association between that problem structure and that resource level. When a problem fails, the selector learns to try higher resources sooner next time. This learning is not perfect—the non-computability ensures no algorithm can fully capture optimal selection—but it improves average performance substantially.
+
+\begin{implementationnote}
+âœ" \textbf{Implementable:} Store $(P_{\text{features}}, n_{\text{success}})$ pairs in database/neural network
+\par âœ" \textbf{Algorithm:} Supervised learning: $\text{predict}(P) \to n$ with $L = |n_{\text{pred}} - n_{\text{actual}}|$
+\par âœ" \textbf{Neural basis:} Hippocampal encoding + PFC retrieval of problem-solution associations
+\end{implementationnote}
+
+Expertise reflects well-tuned selector function as much as increased computational resources. Experts deploy appropriate machine levels more efficiently than novices, wasting less time exploring inappropriate levels. This explains why experts can often solve problems that overwhelm novices even when basic cognitive capacities are similar—the expert selector has learned better heuristics for resource allocation.
+
+\subsection{Individual Differences}
+
+Selector efficiency varies across individuals, creating meaningful cognitive differences independent of raw neural resources. Some individuals may have more efficient selector heuristics, leading to superior performance despite similar underlying capacity. Others may have selector biases that favor particular resource levels, creating strengths in certain domains. Certain cognitive deficits may reflect selector dysfunction rather than capacity loss—the resources exist but cannot be properly deployed.
+
+% ============================================================================
+% CHAPTER 11: LEVELS OF CONSCIOUSNESS
+% ============================================================================
+
+\chapter{Levels of Consciousness: The Machine Hierarchy in Mind}
+
+\section{Hierarchical States of Consciousness}
+
+\subsection{The Hierarchy in Experience}
+
+Consciousness is not binary but exists across a hierarchy corresponding to which machine level is currently active. Low-level consciousness involves simple perceptual processing in primary sensory areas with limited integration. Mid-level consciousness engages prefrontal and parietal regions, supporting typical wakeful awareness with working memory and cognitive control. High-level consciousness recruits extensive networks for intense focused attention, complex problem-solving, and metacognitive reflection.
+
+These are not merely different amounts of consciousness but qualitatively different states. Low-level consciousness feels automatic and unreflective. Mid-level consciousness feels like normal waking experience with voluntary control. High-level consciousness feels like intense mental effort with enhanced clarity and control. The transitions between levels are often noticeable subjectively as shifts in mental state.
+
+\subsection{State Transitions}
+
+Transitions between consciousness levels occur through selector activity. Escalation happens when current resources prove insufficient—you're reading difficult text and suddenly need to "focus harder," recruiting higher machine levels. De-escalation occurs when problems become easier or attention wanes, allowing return to lower resource levels. Rapid switching between levels creates the fluctuating quality of attention during complex tasks.
+
+Sleep involves decoupling the machine hierarchy, preventing collapse into unified consciousness. During non-REM sleep, machines may operate independently without coordination, creating no conscious experience. REM sleep may involve abnormal selector operation, creating the bizarre quality of dreams where resources are deployed according to altered criteria. Anesthesia disrupts collapse mechanisms entirely, preventing the integration necessary for any conscious experience.
+
+\section{Altered States and Unusual Hierarchies}
+
+\subsection{Meditation and Flow States}
+
+Meditation practices may stabilize particular machine levels, reducing selector variability. This creates the characteristic focused yet effortless quality of meditative states—a single resource level maintained steadily rather than fluctuating. Flow states during skilled performance may involve highly efficient selector operation, deploying just sufficient resources without waste, creating the sense of effortless optimal performance.
+
+\subsection{Psychedelic States}
+
+Psychedelic substances may alter selector function, changing the criteria by which collapse occurs. This could allow conscious access to normally unconscious parallel explorations, creating the enhanced perceptual richness of psychedelic experience. Altered selection criteria might favor novelty over coherence, explaining the loosened associations and creative connections of psychedelic thought. Disrupted erasure of failed paths might allow awareness of alternatives that normally disappear, creating the sense of expanded consciousness.
+
+\subsection{Pathological States}
+
+Schizophrenia may involve abnormal selector function, inappropriately deploying high resources for simple tasks or low resources for complex ones. This creates the cognitive inefficiency and reality distortions characteristic of the disorder. ADHD might reflect selector instability, with excessive switching between resource levels preventing sustained deployment. Autism could involve altered selection criteria, optimizing different computational properties than neurotypical individuals, creating both deficits and enhancements in different domains.
+
+% ============================================================================
+% CHAPTER 12: ATTENTION AND WORKING MEMORY
+% ============================================================================
+
+\chapter{Attention and Working Memory: Resource Deployment in Action}
+
+\section{Attention as Selector-Driven Resource Allocation}
+
+\subsection{What Attention Is}
+
+Attention in our framework is the conscious manifestation of selector operation. When you "pay attention" to something, the selector is deploying appropriate machine levels to process that content. Attention feels effortful when the selector must maintain high resource levels against competing demands. Attention feels automatic when lower machines handle processing without selector intervention.
+
+This explains several attention phenomena. Selective attention reflects selector focus on particular processing streams, deploying resources there while withholding them elsewhere. Divided attention attempts parallel processing at multiple resource levels, succeeding when tasks require different machines but failing when they compete for the same resources. Sustained attention requires continuous selector effort to maintain resource deployment despite habituation and competing demands.
+
+\subsection{Attention and Consciousness}
+
+The tight relationship between attention and consciousness reflects their shared basis in the selector mechanism. Attended information is conscious because the selector has deployed resources to process it and included it in collapse. Unattended information may be processed unconsciously but doesn't participate in collapse, remaining outside conscious experience. Attention doesn't cause consciousness but rather both reflect selector operation—consciousness is what it's like when the selector deploys resources and collapse occurs.
+
+\section{Working Memory as Active Machine State}
+
+\subsection{Capacity Limits}
+
+Working memory capacity limits reflect machine-level constraints. Each machine $M_n$ has limited memory ($2^n$ bits), constraining how much information can be actively maintained. The famous "magical number seven plus or minus two" may reflect typical resource levels deployed for working memory tasks. Individual differences in working memory capacity partially reflect which machine levels individuals can stably deploy.
+
+Training can improve working memory not by expanding machine capacity but by improving selector efficiency. Better resource allocation allows the same underlying machines to maintain more information through more efficient coding and deployment strategies. This explains why training effects are often task-specific—the selector has learned better heuristics for those particular tasks without changing underlying capacity.
+
+\subsection{Working Memory and Consciousness}
+
+Working memory and consciousness are intimately related because both involve active maintenance at the currently selected machine level. What's in working memory is typically conscious because it's being actively processed by the deployed machine. Conversely, conscious contents typically enter working memory automatically. However, they can dissociate: you can be conscious of something without maintaining it in working memory (fleeting perceptions), and working memory might maintain information that becomes unconscious through habituation.
+
+% ============================================================================
+% CHAPTER 13: CONSCIOUSNESS AND COGNITIVE CONTROL
+% ============================================================================
+
+\chapter{Consciousness and Cognitive Control: The Role of Voluntary Regulation}
+
+\section{Voluntary Control as Selector Manipulation}
+
+\subsection{What Makes Control Voluntary}
+
+Voluntary control in our framework involves intentional manipulation of the selector mechanism. When you deliberately focus attention, suppress distraction, or switch between tasks, you're influencing which machine levels the selector explores and deploys. This isn't direct control—you can't arbitrarily select any machine—but rather modulation of the selector's exploratory process.
+
+The phenomenology of effort reflects selector operation. Tasks feel effortful when they require maintaining resource levels that the selector would prefer to de-escalate. Sustained effort requires continuous voluntary influence on the selector, fighting against automatic tendencies. Loss of control occurs when the selector becomes unresponsive to voluntary modulation, either through fatigue, dysfunction, or overwhelming automatic processes.
+
+\subsection{Agency and Free Will}
+
+The non-computable nature of the selector provides a mechanistic account of agency. Your choices about what to attend to, think about, or focus on reflect genuine indeterminacy in selector operation. This isn't randomness but non-algorithmic selection based on problem structure and context. You have genuine agency because the selector's choices aren't determined by any computable function, yet they're causally efficacious in determining which resources get deployed.
+
+This explains the phenomenology of free will: you experience yourself as choosing because the selector is genuinely making non-determined choices. The experience of deliberation reflects parallel exploration of alternatives before collapse. The experience of decision reflects the collapse moment when one path is selected. The "could have done otherwise" intuition reflects genuine indeterminacy in selector operation—in identical physical circumstances, different selector outcomes are possible due to non-computability.
+
+\section{Cognitive Control Functions}
+
+\subsection{Inhibition and Suppression}
+
+Inhibitory control involves the selector withholding resources from automatically triggered processes. When you suppress a prepotent response, the selector is refusing to deploy machines for that response despite automatic activation. Failure of inhibition occurs when the selector cannot maintain this resource withholding, allowing automatic processes to capture resources.
+
+\subsection{Task Switching}
+
+Task switching requires the selector to reconfigure which machine levels are deployed for which processing streams. Switch costs reflect the time and effort needed for this reconfiguration. Flexible switching ability reflects efficient selector operation. Perseveration and inflexibility reflect selector dysfunction, inability to reconfigure resource allocation when contexts change.
+
+\subsection{Executive Functions}
+
+Executive functions generally reflect sophisticated selector operation. Planning requires the selector to explore future resource requirements. Monitoring requires tracking whether current resource deployment is succeeding. Updating requires the selector to modify deployment based on feedback. These are not separate processes but aspects of the unified selector mechanism operating in service of goal-directed behavior.
+
+\section{Development and Training}
+
+\subsection{Developmental Changes}
+
+Cognitive development involves maturation of the machine hierarchy and selector. Young children have fewer available machine levels and less sophisticated selector control. Adolescence brings additional high-level machines online and improved selector function. Adult expertise reflects fully developed hierarchy with highly tuned selector operation.
+
+\subsection{Training Effects}
+
+Cognitive training primarily affects selector efficiency rather than machine capacity. Training improves resource allocation heuristics, reducing wasted exploration and enabling faster deployment of appropriate resources. This explains why training effects are often narrow—the selector has learned better heuristics for trained tasks without changing underlying architecture. Transfer requires learning general selection principles that apply across domains.
+
+\section{Summary: Mechanisms in Action}
+
+The selector mechanism allocates resources through parallel exploration and collapse, implementing the non-computable function that optimizes for problem structure. This creates hierarchical consciousness levels corresponding to which machines are active. Attention manifests selector operation, with voluntary control reflecting intentional selector modulation. Working memory reflects active maintenance at selected resource levels. Cognitive control functions implement sophisticated selector operations in service of goals. Together, these mechanisms transform the abstract machine hierarchy into the rich phenomenology of human conscious experience.
+

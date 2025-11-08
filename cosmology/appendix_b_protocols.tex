@@ -1,0 +1,392 @@
+% ============================================================================
+% APPENDIX B: EXPERIMENTAL PROTOCOLS
+% ============================================================================
+
+\chapter{Experimental Protocols}
+
+This appendix provides detailed experimental protocols for the nine key experiments proposed in Chapter 17. Each protocol includes equipment specifications, step-by-step procedures, data analysis methods, and statistical procedures to enable replication by independent research groups.
+
+\section{QM-1: Observer-Dependent Quantum Collapse}
+
+\subsection{Objective}
+Test whether conscious observation affects quantum measurement outcomes beyond Born rule predictions.
+
+\subsection{Equipment}
+
+\begin{itemize}
+\item \textbf{Quantum system:} Single-photon source (heralded SPDC), $\lambda = 810$ nm
+\item \textbf{Polarization rotator:} Half-wave plate on motorized mount
+\item \textbf{Beam splitter:} 50/50 non-polarizing beam splitter
+\item \textbf{Detectors:} Two avalanche photodiodes (APD), quantum efficiency $>60\%$, dark count $<100$ Hz
+\item \textbf{Coincidence counter:} Time resolution $<1$ ns
+\item \textbf{Control system:} Computer-controlled random polarization setting
+\item \textbf{Observer isolation:} Soundproof, light-tight booth for conscious observer
+\item \textbf{Recording:} EEG system (64 channels, $\geq 1$ kHz sampling) for observer state monitoring
+\end{itemize}
+
+\subsection{Procedure}
+
+\textbf{Phase 1: Automated baseline (2 weeks)}
+
+\begin{enumerate}
+\item Configure system in fully automated mode
+\item No human observers within 10 meters
+\item Generate $N = 10^7$ single photon measurements
+\item Randomly select polarization basis for each measurement
+\item Record detection events and polarization settings
+\item Verify Born rule: $P(\text{det}_1) = \cos^2(\theta)$ within statistical error
+\end{enumerate}
+
+\textbf{Phase 2: Conscious observation (8 weeks)}
+
+\begin{enumerate}
+\item Recruit $n = 30$ participants (pre-registered, IRB approved)
+\item Each participant undergoes 20 sessions of 1 hour
+\item Session structure:
+\begin{itemize}
+\item 10 min: Baseline EEG recording, eyes closed
+\item 40 min: Observation period (see below)
+\item 10 min: Post-observation EEG, debrief
+\end{itemize}
+\item During observation:
+\begin{itemize}
+\item Participant views real-time detection display
+\item For each photon, participant "intends" which detector should click
+\item Intention is recorded (button press) before measurement
+\item Actual measurement outcome is displayed after 100 ms delay
+\item EEG continuously recorded
+\end{itemize}
+\item Control for fatigue, learning, motivation with counterbalancing
+\end{enumerate}
+
+\textbf{Phase 3: Blinds and controls}
+
+\begin{enumerate}
+\item \textbf{Sham sessions:} Identical setup but participant shown pre-recorded data (participant blind to sham/real)
+\item \textbf{Different intentions:} Sessions where participant intends detector 1, detector 2, or remains neutral
+\item \textbf{High-Φ manipulation:} Some sessions with focused attention meditation pre-training
+\item \textbf{Double-blind:} Analysis performed by researcher blind to session type
+\end{enumerate}
+
+\subsection{Data Analysis}
+
+\textbf{Primary outcome:} Deviation from Born rule when observer intends specific outcome.
+
+\begin{equation}
+\Delta P = P(\text{intended outcome}|\text{observation}) - P(\text{outcome}|\text{automation})
+\end{equation}
+
+\textbf{Statistical test:}
+\begin{itemize}
+\item Null hypothesis: $\Delta P = 0$
+\item Alternative: $\Delta P > 0$ (one-tailed, pre-registered)
+\item Test: Mixed-effects logistic regression with random intercepts for participants
+\item Model: \texttt{outcome $\sim$ intention + session\_type + (1|participant)}
+\item Significance threshold: $\alpha = 0.05$, Bonferroni corrected for multiple comparisons
+\end{itemize}
+
+\textbf{Secondary analyses:}
+\begin{itemize}
+\item Correlation between EEG-derived $\Phi$ and $\Delta P$
+\item Time-course of effect (does it increase with practice?)
+\item Individual differences (who shows stronger effects?)
+\end{itemize}
+
+\textbf{Power analysis:}
+To detect $\Delta P = 10^{-5}$ with power $0.80$ at $\alpha = 0.05$:
+\begin{equation}
+N_{\text{required}} = \frac{2(z_{\alpha} + z_{\beta})^2 p(1-p)}{(\Delta P)^2} \approx 10^{7}
+\end{equation}
+
+With 30 participants × 20 sessions × 1000 trials/session = $6 \times 10^5$ trials, we have $\sim 60\%$ power. Increase sample size if initial results promising.
+
+\subsection{Expected Results}
+
+\begin{itemize}
+\item \textbf{Null result:} $\Delta P < 10^{-6}$, framework falsified
+\item \textbf{Weak effect:} $10^{-6} < \Delta P < 10^{-5}$, inconclusive, needs larger sample
+\item \textbf{Predicted effect:} $\Delta P \sim 10^{-5}$, framework supported
+\item \textbf{Strong effect:} $\Delta P > 10^{-4}$, unexpected, requires theoretical revision
+\end{itemize}
+
+\subsection{Safety and Ethics}
+
+\begin{itemize}
+\item IRB approval required
+\item Informed consent emphasizing speculative nature
+\item No deception (participants know it's quantum measurement study)
+\item Debriefing explains theoretical framework
+\item Data privacy (EEG data anonymized)
+\end{itemize}
+
+\section{NC-1: Φ-Consciousness Correlation}
+
+\subsection{Objective}
+Measure real-time correlation between integrated information ($\Phi$) and subjective consciousness level.
+
+\subsection{Equipment}
+
+\begin{itemize}
+\item \textbf{Neural recording:} ECoG (electrocorticography) grids, 256 channels, 1 kHz sampling
+\item \textbf{Participants:} Epilepsy patients with implanted grids (clinical monitoring)
+\item \textbf{Consciousness monitoring:} Experience sampling via button press every 30 seconds
+\item \textbf{Computation:} High-performance cluster for real-time $\Phi$ calculation
+\item \textbf{Software:} Modified PyPhi library with GPU acceleration
+\end{itemize}
+
+\subsection{Procedure}
+
+\textbf{Participant selection (n = 10-15):}
+\begin{itemize}
+\item Epilepsy patients undergoing clinical ECoG monitoring
+\item Grids covering frontal-parietal cortex (consciousness-relevant regions)
+\item No seizures within 24 hours of experimental sessions
+\item Informed consent, IRB approved
+\end{itemize}
+
+\textbf{Experimental sessions (5 sessions × 2 hours):}
+
+\begin{enumerate}
+\item \textbf{Resting baseline (20 min):}
+\begin{itemize}
+\item Eyes closed, relaxed but awake
+\item ECoG recorded continuously
+\item Experience sampling: "Rate consciousness level 0-10" every 30 sec
+\end{itemize}
+
+\item \textbf{Task-induced variation (60 min):}
+\begin{itemize}
+\item Alternate between:
+\begin{itemize}
+\item[--] High-consciousness tasks: Mental arithmetic, working memory, meditation
+\item[--] Low-consciousness tasks: Passive viewing, rest, drowsiness induction
+\end{itemize}
+\item Experience sampling continues
+\item Tasks counterbalanced across sessions
+\end{itemize}
+
+\item \textbf{Anesthetic manipulation (40 min, optional):}
+\begin{itemize}
+\item Progressive sedation with propofol (clinical anesthesiologist present)
+\item Consciousness measured via:
+\begin{itemize}
+\item[--] Self-report (while possible)
+\item[--] Response to command
+\item[--] Bispectral index (BIS) monitor
+\end{itemize}
+\item ECoG recorded through sedation and recovery
+\end{itemize}
+\end{enumerate}
+
+\subsection{Φ Computation}
+
+\textbf{Real-time approximation:}
+
+Standard $\Phi$ calculation is intractable for 256 channels. Use approximations:
+
+\begin{enumerate}
+\item \textbf{Subsampling:} Calculate $\Phi$ on overlapping 8-channel windows, average
+\item \textbf{Surrogate partitions:} Test only $k = 100$ random partitions, use minimum
+\item \textbf{Binning:} Discretize neural activity into 2 states (high/low firing)
+\item \textbf{Short timescale:} Calculate $\Phi$ on 100 ms windows
+\end{enumerate}
+
+\begin{equation}
+\Phi_{\text{approx}}(t) = \frac{1}{M} \sum_{i=1}^{M} \min_{k \in \text{partitions}} \text{EI}(X_i(t))
+\end{equation}
+
+where $M$ is number of channel windows, $X_i(t)$ is neural state at time $t$.
+
+\textbf{Validation:} Compare approximation to exact $\Phi$ on small subsets to ensure $r > 0.9$ correlation.
+
+\subsection{Data Analysis}
+
+\textbf{Primary analysis:} Correlation between $\Phi_{\text{approx}}$ and consciousness rating.
+
+\begin{itemize}
+\item \textbf{Within-subject:} Time-series correlation for each participant
+\item \textbf{Between-subject:} Aggregate across participants
+\item \textbf{Statistical test:} 
+\begin{equation}
+r_{\Phi,C} = \text{corr}(\Phi_{\text{approx}}(t), C_{\text{rating}}(t))
+\end{equation}
+\item \textbf{Prediction:} $r > 0.8$
+\item \textbf{Null:} $r < 0.5$ would falsify
+\end{itemize}
+
+\textbf{Secondary analyses:}
+\begin{itemize}
+\item Temporal dynamics: How quickly does $\Phi$ respond to consciousness changes?
+\item Spatial distribution: Which brain regions contribute most to $\Phi$?
+\item State transitions: Does $\Phi$ show discontinuities at consciousness transitions?
+\item Anesthesia depth: $\Phi$ vs. BIS correlation
+\end{itemize}
+
+\textbf{Control analyses:}
+\begin{itemize}
+\item Compare $\Phi$ to other measures: Lempel-Ziv complexity, spectral power, synchrony
+\item Test whether $\Phi$ uniquely predicts consciousness or whether simpler measures suffice
+\end{itemize}
+
+\subsection{Expected Results}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Correlation} & \textbf{Interpretation} & \textbf{Action} \\
+\hline
+$r < 0.5$ & Φ doesn't track consciousness & Framework falsified \\
+$0.5 \leq r < 0.7$ & Weak correlation & Needs refinement \\
+$0.7 \leq r < 0.8$ & Good correlation & Framework supported \\
+$r \geq 0.8$ & Strong correlation & Framework strongly supported \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{CMB-1: Large-Angle Anomaly Analysis}
+
+\subsection{Objective}
+Test whether CMB anomalies match collapse-predicted correlation function.
+
+\subsection{Data Sources}
+
+\begin{itemize}
+\item \textbf{Primary:} Planck 2018 temperature and polarization maps
+\item \textbf{Secondary:} WMAP 9-year data (independent confirmation)
+\item \textbf{Future:} CMB-S4 data when available (higher precision)
+\end{itemize}
+
+\subsection{Analysis Pipeline}
+
+\textbf{Step 1: Data preparation}
+\begin{enumerate}
+\item Download Planck Commander foreground-cleaned maps
+\item Apply common mask (remove Galaxy, point sources)
+\item Compute $a_{\ell m}$ coefficients via HEALPix
+\item Calculate angular power spectrum $C_\ell$
+\end{enumerate}
+
+\textbf{Step 2: Model specification}
+
+Standard $\Lambda$CDM:
+\begin{equation}
+C_\ell^{\Lambda\text{CDM}} = \text{CAMB}(\Omega_b, \Omega_c, H_0, n_s, \tau, A_s)
+\end{equation}
+
+Collapse model:
+\begin{equation}
+C_\ell^{\text{collapse}} = C_\ell^{\Lambda\text{CDM}} \cdot \exp\left(-\frac{\ell^2}{2\ell_{\text{coh}}^2}\right)
+\end{equation}
+
+where $\ell_{\text{coh}}$ is coherence scale (free parameter).
+
+\textbf{Step 3: Bayesian model comparison}
+
+Use nested sampling (e.g., MultiNest) to compute:
+\begin{itemize}
+\item Posterior distributions for both models
+\item Evidence (marginal likelihood) for each model
+\item Bayes factor: $B = Z_{\text{collapse}} / Z_{\Lambda\text{CDM}}$
+\end{itemize}
+
+Prior on $\ell_{\text{coh}}$: Uniform on $[10, 50]$ (motivated by theory).
+
+\textbf{Step 4: Posterior predictive checks}
+
+\begin{itemize}
+\item Generate mock CMB maps from posterior
+\item Compute statistics: quadrupole, octopole alignment, cold spot, hemispherical asymmetry
+\item Compare to observed statistics
+\end{itemize}
+
+\subsection{Statistical Tests}
+
+\textbf{Primary test:} Bayes factor
+\begin{itemize}
+\item $\ln B > 5$: Strong evidence for collapse model
+\item $2 < \ln B < 5$: Moderate evidence
+\item $0 < \ln B < 2$: Weak evidence
+\item $\ln B < 0$: Evidence against collapse model
+\end{itemize}
+
+\textbf{Prediction:} $\ln B > 3$
+
+\textbf{Secondary tests:}
+\begin{itemize}
+\item AIC: $\Delta \text{AIC} = 2(\mathcal{L}_{\text{collapse}} - \mathcal{L}_{\Lambda\text{CDM}}) - 2(k_{\text{collapse}} - k_{\Lambda\text{CDM}})$
+\item BIC: $\Delta \text{BIC} = 2(\mathcal{L}_{\text{collapse}} - \mathcal{L}_{\Lambda\text{CDM}}) - (k_{\text{collapse}} - k_{\Lambda\text{CDM}})\ln(N)$
+\end{itemize}
+
+\subsection{Robustness Checks}
+
+\begin{itemize}
+\item Different foreground cleaning methods (SMICA, NILC, SEVEM)
+\item Different masks (conservative vs. aggressive)
+\item Different $\ell$ ranges ($2 \leq \ell \leq 30$ vs. $2 \leq \ell \leq 100$)
+\item Cross-validation on WMAP data
+\end{itemize}
+
+\subsection{Expected Results}
+
+\begin{itemize}
+\item \textbf{Strong support:} $\ln B > 5$, $\ell_{\text{coh}} \approx 20$
+\item \textbf{Moderate support:} $2 < \ln B < 5$
+\item \textbf{Inconclusive:} $|\ ln B| < 2$
+\item \textbf{Falsified:} $\ln B < -2$
+\end{itemize}
+
+\section{Summary Table: All Nine Experiments}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Exp.} & \textbf{Duration} & \textbf{Sample Size} & \textbf{Key Measure} & \textbf{Success Criterion} \\
+\hline
+QM-1 & 3 months & $10^7$ trials & $\Delta P$ & $\Delta P > 10^{-5}$ \\
+NC-1 & 2 years & 10-15 subjects & $r_{\Phi,C}$ & $r > 0.8$ \\
+CMB-1 & 1 year & Full sky & $\ln B$ & $\ln B > 3$ \\
+LSS-1 & 3 years & $10^7$ galaxies & Betti numbers & Match prediction \\
+DE-1 & 10 years & $10^4$ SNe & $w_a$ & $w_a = 0.3 \pm 0.1$ \\
+BS-1 & 15 years & $10^{11}$ neurons & $\Phi_{\text{sim}}$ & Matches human \\
+QAI-1 & 30 years & $10^{15}$ qubits & Collapse Test & Pass \\
+COSMO-1 & 50 years & 100 quasars & $dz/dt$ & Detect at $3\sigma$ \\
+SETI-C & Ongoing & All-sky & Anomalies & Correlation \\
+\hline
+\end{tabular}
+\caption{Summary of all experimental protocols}
+\end{table}
+
+\section{Data Sharing and Reproducibility}
+
+All experiments should adhere to:
+
+\begin{itemize}
+\item \textbf{Pre-registration:} Hypotheses, methods, analyses registered before data collection
+\item \textbf{Open data:} Raw data deposited in public repository (with appropriate privacy protections)
+\item \textbf{Open code:} Analysis scripts on GitHub with version control
+\item \textbf{Registered reports:} Submit protocol for peer review before data collection
+\item \textbf{Replication:} Budget includes funds for independent replication
+\end{itemize}
+
+\section{Quality Control}
+
+\begin{itemize}
+\item \textbf{Blinding:} Analysts blind to experimental condition where possible
+\item \textbf{Multiple analysts:} Independent teams analyze same data
+\item \textbf{Pre-specified:} All analyses pre-registered, exploratory analyses clearly marked
+\item \textbf{Calibration:} Equipment calibrated before each session
+\item \textbf{Validation:} Methods validated on synthetic data with known ground truth
+\end{itemize}
+
+\section{Ethical Considerations}
+
+\begin{itemize}
+\item \textbf{Human subjects:} IRB approval, informed consent, right to withdraw
+\item \textbf{Animal research:} IACUC approval if extended to animal consciousness
+\item \textbf{Dual use:} Consider potential misuse of consciousness measurement technology
+\item \textbf{Privacy:} Neural data highly sensitive, strict data protection
+\item \textbf{Publication:} Negative results published with equal priority
+\end{itemize}
