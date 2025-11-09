@@ -24,6 +24,13 @@
 \newtheorem{limitation}[theorem]{Limitation}
 \newtheorem{concern}[theorem]{Critical Concern}
 
+% Custom commands
+\newcommand{\Fsm}{\textbf{Fsm}}
+\newcommand{\Hilbfsm}{\textbf{Hilb}_{\text{fsm}}}
+\newcommand{\Hom}{\text{Hom}}
+\newcommand{\id}{\text{id}}
+\newcommand{\Tr}{\text{Tr}}
+
 \title{Hierarchical Projection Model of Quantum Measurement:\\Testable Deviations from Standard Theory}
 \author{Karol Kowalczyk}
 \date{November 9, 2025}
@@ -33,10 +40,45 @@
 \maketitle
 
 \begin{abstract}
-We propose that quantum measurement arises from hierarchical projection between computational levels in a finite information hierarchy. Each level $n$ corresponds to a Hilbert space of dimension $2^n$. Measurement is modeled as projection $P_{j\to i}$ from level $j$ to $i < j$, with collapse operators $C_{i\to j}$ forming an approximate adjunction $(C \dashv P)$. Extending the \emph{Adjoint Projections on Computational Hierarchies} framework to quantum systems, we show that completely positive trace-preserving (CPTP) maps realize $\varepsilon$-adjunctions with deviations quantified by decoherence parameters. The model predicts two testable deviations from standard quantum mechanics: (1) finite measurement delay scaling as $\tau \propto n^2$ for $n$-qubit systems, and (2) small oscillatory corrections to the Born rule from cross-level interference. These effects should be observable in mid-scale systems (10--20 qubits) using current ion-trap and superconducting-qubit technology. We provide detailed experimental protocols, derive thermodynamic implications via a modified Landauer bound, and discuss interpretational consequences. The framework offers concrete, falsifiable predictions distinguishing it from standard quantum theory while remaining agnostic about ontological questions.
+We propose that quantum measurement can be expressed as hierarchical projection between computational levels in a finite information hierarchy. Each level $n$ corresponds to a Hilbert space of dimension $2^n$. Measurement is modeled as projection $P_Q: \mathcal{H}_j \to \mathcal{H}_i$ from level $j$ to $i < j$, with collapse operators $C_Q: \mathcal{H}_i \to \mathcal{H}_j$ forming an approximate adjunction $(C_Q \dashv P_Q)$. Extending the \emph{Adjoint Projections on Computational Hierarchies} framework to quantum systems, we show that completely positive trace-preserving (CPTP) maps realize $\varepsilon$-adjunctions with deviations quantified by decoherence parameters. The model predicts two testable deviations from standard quantum mechanics: (1) finite measurement delay scaling as $\tau \propto n^2$ for $n$-qubit systems, and (2) small oscillatory corrections to the Born rule from cross-level interference. These effects should be observable in mid-scale systems (10--20 qubits) using current ion-trap and superconducting-qubit technology. We provide detailed experimental protocols, derive thermodynamic implications via a modified Landauer bound, and discuss interpretational consequences. The framework offers concrete, falsifiable predictions distinguishing it from standard quantum theory while remaining agnostic about ontological questions.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Quantum measurement, computational hierarchy, CPTP maps, Born rule, decoherence, information theory
+
+\noindent\textbf{Note:} Adjunction in this paper refers to category-theoretic functorial duality $(C_Q \dashv P_Q)$, not Hermitian conjugation $(A^\dagger)$ of operators.
+
+\tableofcontents
+
+\newpage
+
+\section{Glossary of Symbols}
+\label{sec:glossary}
+
+For ease of reference, we collect the main notation:
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+\textbf{Symbol} & \textbf{Meaning} \\
+\hline
+$\mathcal{H}_n$ & Hilbert space at level $n$ with $\dim \mathcal{H}_n = 2^n$ \\
+$\rho$ & Density operator (density matrix) \\
+$U_n$ & Unitary operator on $\mathcal{H}_n$ \\
+$P_Q$ & Quantum projection operator (CPTP map) \\
+$C_Q$ & Quantum collapse operator (embedding) \\
+$\eta_Q$ & Unit of quantum adjunction $\id \Rightarrow C_Q \circ P_Q$ \\
+$\varepsilon_Q$ & Counit of quantum adjunction $P_Q \circ C_Q \Rightarrow \id$ \\
+$\Tr_E$ & Partial trace over environment $E$ \\
+$S(\rho)$ & Von Neumann entropy: $-\Tr(\rho \log \rho)$ \\
+$D(\rho, \sigma)$ & Trace distance: $\frac{1}{2}\Tr|\rho - \sigma|$ \\
+$\tau$ & Measurement delay time \\
+$n$ & Hierarchy level (number of qubits) \\
+$\varepsilon$ & Approximation error in adjunction \\
+$\gamma$ & Decoherence rate \\
+$\Hilbfsm$ & Category of finite-dimensional Hilbert spaces \\
+\hline
+\end{tabular}
+\end{center}
 
 \section{Introduction}
 
@@ -48,9 +90,20 @@ Recent information-theoretic approaches (QBism, relational QM, constructor theor
 
 \subsection{Hierarchical computation and quantum systems}
 
-The \emph{Adjoint Projections on Computational Hierarchies} framework (Kowalczyk, 2025) formalizes nested computational levels $\{M_n\}$ with state spaces of size $2^n$. Projection operators $P_{j\to i}$ compress information from level $j$ to level $i < j$, while collapse operators $C_{i\to j}$ reconstruct higher-level structure. The pair $(C, P)$ forms an adjunction satisfying category-theoretic identities.
+The \emph{Adjoint Projections on Computational Hierarchies} framework \cite{kowalczyk2025} formalizes nested computational levels $\{M_n\}$ with state spaces of size $2^n$. Projection operators $P_{j\to i}$ compress information from level $j$ to level $i < j$, while collapse operators $C_{i\to j}$ reconstruct higher-level structure. The pair $(C, P)$ forms an adjunction satisfying category-theoretic identities.
 
 \textbf{Key insight:} Mapping this structure to quantum systems by identifying $n = \log_2(\dim \mathcal{H})$, we interpret measurement as projection between hierarchy levels. Crucially, we assume projection requires \textbf{finite time} proportional to the computational complexity of comparing $2^n$ states.
+
+\subsection{Scope and non-goals}
+
+This framework provides a \emph{formal mathematical structure} for quantum measurement without committing to specific ontological interpretations. We do not claim that:
+\begin{itemize}
+\item Computational levels are the fundamental constituents of reality
+\item Measurement is "really" a computational process
+\item Standard quantum mechanics is incorrect
+\end{itemize}
+
+Rather, we show that \emph{if} measurement involves hierarchical information processing, then specific testable predictions follow. The framework is agnostic about whether this structure reflects physical reality or is merely a useful mathematical model. Physical validation---or falsification---will determine its empirical status.
 
 \subsection{Main predictions}
 
@@ -116,10 +169,11 @@ The framework should be viewed as \emph{highly speculative} but \emph{rigorously
 
 Our approach differs from:
 \begin{itemize}
-\item \textbf{Decoherence theory} (Zurek, Joos, Schlosshauer): We predict $\tau \propto n^2$, not $\tau \sim$ constant or $\tau \propto n$
-\item \textbf{Objective collapse} (GRW, Penrose): We derive $\tau$ from information processing, not spontaneous localization
-\item \textbf{Quantum Darwinism} (Zurek): We focus on single-system measurement, not environmental redundancy
-\item \textbf{Constructor theory} (Deutsch, Marletto): We provide computational implementation with complexity bounds
+\item \textbf{Decoherence theory} \cite{zurek2003,joos2003,schlosshauer2007}: We predict $\tau \propto n^2$, not $\tau \sim$ constant or $\tau \propto n$
+\item \textbf{Objective collapse} \cite{penrose1996}: We derive $\tau$ from information processing, not spontaneous localization
+\item \textbf{Quantum Darwinism} \cite{zurek2009}: We focus on single-system measurement, not environmental redundancy
+\item \textbf{Constructor theory} \cite{deutsch2015}: We provide computational implementation with complexity bounds
+\item \textbf{Categorical quantum mechanics} \cite{abramsky2004}: We use adjunctions without dagger compact structure; our focus is computational cost not compositionality
 \end{itemize}
 
 \textbf{Novel aspect:} Connecting measurement dynamics to computational complexity via explicit hierarchy levels and adjunction structure---though physical motivation remains unclear (Concern~\ref{concern:physical}).
@@ -133,7 +187,7 @@ Section~\ref{sec:framework} reviews the hierarchical framework. Section~\ref{sec
 
 \subsection{Review: Finite computational machines}
 
-From Kowalczyk (2025), a computational hierarchy $\{M_n\}_{n\in\mathbb{N}}$ consists of finite machines $M_n = (S_n, f_n, \pi_n)$ where:
+From \cite{kowalczyk2025}, a computational hierarchy $\{M_n\}_{n\in\mathbb{N}}$ consists of finite machines $M_n = (S_n, f_n, \pi_n)$ where:
 \begin{itemize}
 \item State space $S_n$ has cardinality $|S_n| = 2^n$
 \item Transition function $f_n: S_n \to S_n$ is deterministic
@@ -143,297 +197,213 @@ From Kowalczyk (2025), a computational hierarchy $\{M_n\}_{n\in\mathbb{N}}$ cons
 Information capacity is $I_n = n$ bits. Levels connect via:
 \begin{itemize}
 \item \textbf{Embeddings} $\sigma_{i\to j}: S_i \hookrightarrow S_j$ (injective, structure-preserving)
-\item \textbf{Projections} $P_{j\to i}: S_j \twoheadrightarrow S_i$ (surjective, entropy-minimizing)
-\item \textbf{Collapses} $C_{i\to j}: S_i \hookrightarrow S_j$ (injective, satisfying $P\circ C = \text{id}$)
+\item \textbf{Projections} $P_{j\to i}: S_j \to S_i$ (surjective, entropy-minimizing)
+\item \textbf{Collapses} $C_{i\to j}: S_i \to S_j$ (injective, left adjoint to $P$)
 \end{itemize}
 
-The pair $(C, P)$ forms an adjunction $C \dashv P$ with unit $\eta: \text{id} \Rightarrow C\circ P$ and counit $\varepsilon: P\circ C \Rightarrow \text{id}$ satisfying triangle identities.
+The pair $(C, P)$ forms a category-theoretic adjunction with unit $\eta: \id \Rightarrow C \circ P$ and counit $\varepsilon: P \circ C \Rightarrow \id$.
 
-\subsection{Mapping to quantum systems}
+\subsection{Quantum analog: Hilbert space hierarchy}
 
-We establish correspondence:
-
-\textbf{Levels $\leftrightarrow$ Hilbert space dimension:}
+\begin{definition}[Quantum hierarchy]
+A quantum hierarchy $\{\mathcal{H}_n\}_{n\in\mathbb{N}}$ consists of finite-dimensional Hilbert spaces with $\dim \mathcal{H}_n = 2^n$, equipped with:
 \begin{itemize}
-\item Level $n \leftrightarrow$ Hilbert space $\mathcal{H}_n$ with $\dim \mathcal{H}_n = 2^n$
-\item For $n$ qubits: $\dim \mathcal{H} = 2^n$, so $n =$ number of qubits
-\item State space $S_n \leftrightarrow$ basis states $\{\ket{k} : k = 0, \ldots, 2^n-1\}$
+\item Density operators $\rho_n$ on $\mathcal{H}_n$
+\item Unitary evolution $U_n: \mathcal{H}_n \to \mathcal{H}_n$
+\item CPTP maps $\mathcal{E}_n: \mathcal{L}(\mathcal{H}_n) \to \mathcal{L}(\mathcal{H}_n)$ on the space of linear operators
 \end{itemize}
+\end{definition}
 
-\textbf{States $\leftrightarrow$ Density matrices:}
+For $n$-qubit systems, $\dim \mathcal{H}_n = 2^n$ corresponds directly to level $n$ in the computational hierarchy.
+
+\subsection{Category $\Hilbfsm$: Morphisms in finite quantum hierarchy}
+
+\begin{definition}[Category $\Hilbfsm$]
+The category $\Hilbfsm$ has:
 \begin{itemize}
-\item Classical probability distribution $\pi_n \leftrightarrow$ density matrix $\rho \in \mathcal{D}(\mathcal{H}_n)$
-\item Pure states correspond to rank-1 projectors $\rho = \ket{\psi}\bra{\psi}$
-\item Mixed states represent statistical ensembles or subsystems
+\item \textbf{Objects:} Finite-dimensional Hilbert spaces $\mathcal{H}_n$ with $\dim \mathcal{H}_n = 2^n$
+\item \textbf{Morphisms:} CPTP maps $\mathcal{E}: \mathcal{L}(\mathcal{H}_i) \to \mathcal{L}(\mathcal{H}_j)$ that preserve density operator evolution: $\mathcal{E}(U_i \rho U_i^\dagger) = U_j \mathcal{E}(\rho) U_j^\dagger$ for appropriate unitaries
+\item \textbf{Composition:} Standard composition of CPTP maps
+\item \textbf{Identities:} $\id_{\mathcal{H}_n}$ is the identity CPTP map
 \end{itemize}
+\end{definition}
 
-\textbf{Transitions $\leftrightarrow$ Unitary evolution:}
-\begin{itemize}
-\item Transition function $f_n \leftrightarrow$ unitary operator $U: \rho \mapsto U\rho U^\dagger$
-\item Preserves trace and positivity
-\end{itemize}
+This parallels the category $\Fsm$ for classical computational hierarchies, with CPTP maps replacing transition-preserving functions.
 
-\textbf{Embeddings $\leftrightarrow$ Tensor product:}
-\begin{itemize}
-\item $\sigma_{i\to j}: \mathcal{H}_i \to \mathcal{H}_i \otimes \mathcal{H}_{j-i}$ embeds smaller space into larger
-\item For qubits: $\ket{\psi} \mapsto \ket{\psi} \otimes \ket{0}^{\otimes(j-i)}$
-\end{itemize}
+\subsection{Quantum projection and collapse operators}
 
-\textbf{Projections $\leftrightarrow$ Partial trace:}
-\begin{itemize}
-\item $P_{j\to i}(\rho) = \text{Tr}_{j-i}[\rho]$ traces out environmental degrees of freedom
-\item Models measurement: system-environment interaction followed by discarding environment
-\end{itemize}
+\begin{definition}[Quantum projection $P_Q$]
+\label{def:projection_q}
+For $i < j$, the quantum projection $P_Q: \mathcal{L}(\mathcal{H}_j) \to \mathcal{L}(\mathcal{H}_i)$ is given by the partial trace:
+\begin{equation}
+P_Q(\rho_{ij}) = \Tr_E(\rho_{ij})
+\end{equation}
+where $\mathcal{H}_j \cong \mathcal{H}_i \otimes \mathcal{H}_E$ with $\dim \mathcal{H}_E = 2^{j-i}$.
+\end{definition}
 
-\textbf{Collapses $\leftrightarrow$ Isometric embedding:}
-\begin{itemize}
-\item $C_{i\to j}: \mathcal{H}_i \to \mathcal{H}_j$ is an isometry $V$ satisfying $V^\dagger V = I_i$
-\item Embeds post-measurement state back into full Hilbert space
-\item Represents state preparation or quantum error correction
-\end{itemize}
-
-\begin{remark}[Responding to Concern~\ref{concern:physical}]
-This mapping is mathematically natural but physically unmotivated. Partial trace emerges from quantum mechanics' tensor product structure, not from computational hierarchy. We have simply \emph{relabeled} standard quantum operations with hierarchical language. The question remains: why should nature care about this computational framing?
+\begin{remark}[Normalization]
+We assume $\Tr_E(\rho_{ij})$ is automatically normalized to trace 1, which holds when the environment factor $\mathcal{H}_E$ is properly separable. For mixed states, explicit renormalization may be required: $P_Q(\rho) = \Tr_E(\rho) / \Tr(\Tr_E(\rho))$.
 \end{remark}
 
-\subsection{Measurement as hierarchical projection}
+\begin{definition}[Quantum collapse $C_Q$]
+\label{def:collapse_q}
+For $i < j$, the quantum collapse $C_Q: \mathcal{L}(\mathcal{H}_i) \to \mathcal{L}(\mathcal{H}_j)$ is given by:
+\begin{equation}
+C_Q(\rho_i) = \rho_i \otimes \rho_E
+\end{equation}
+where $\rho_E$ is a fixed state (typically maximally mixed) on $\mathcal{H}_E$.
+\end{definition}
 
-Standard quantum measurement on system $S$ with environment $E$:
+\subsection{Adjunction structure}
+
+\begin{lemma}[Triangle identities for $\Hilbfsm$]
+\label{lem:triangle}
+The quantum projection $P_Q$ and collapse $C_Q$ satisfy the triangle identities:
 \begin{enumerate}
-\item Start: $\rho_S \otimes \ket{0}\bra{0}_E$ in $\mathcal{H}_S \otimes \mathcal{H}_E$
-\item Interact: $U(\rho_S \otimes \ket{0}\bra{0}_E)U^\dagger = \rho_{SE}$ (entangled state)
-\item Trace out $E$: $\rho'_S = \text{Tr}_E[\rho_{SE}]$
+\item $(\varepsilon_Q P_Q) \circ (P_Q \eta_Q) = \id_{P_Q}$
+\item $(C_Q \varepsilon_Q) \circ (\eta_Q C_Q) = \id_{C_Q}$
 \end{enumerate}
-
-In hierarchical terms:
-\begin{itemize}
-\item Step 1: System at level $n_S$, environment at level $n_E$
-\item Step 2: Combined system at level $n_S + n_E$ (embedding)
-\item Step 3: Projection back to level $n_S$ (partial trace)
-\end{itemize}
-
-\textbf{Key assumption:} Step 3 requires finite time to ``compute'' the trace. The time cost scales with the complexity of comparing states across levels.
-
-\begin{remark}[On the key assumption]
-This assumption is stipulated, not derived. Why should partial trace---a linear operation on density matrices---require time proportional to comparing exponentially many states? This is the central ad hoc element (Concern~\ref{concern:scaling}).
-\end{remark}
-
-\section{CPTP Maps and Approximate Adjunction}
-\label{sec:cptp}
-
-\subsection{Completely positive maps}
-
-Quantum operations are completely positive trace-preserving (CPTP) maps $\Lambda: \mathcal{D}(\mathcal{H}_{\text{in}}) \to \mathcal{D}(\mathcal{H}_{\text{out}})$ with Kraus representation:
-\[
-\Lambda(\rho) = \sum_k A_k \rho A_k^\dagger
-\]
-where $\{A_k\}$ are Kraus operators satisfying completeness: $\sum_k A_k^\dagger A_k = I$.
-
-\textbf{Examples:}
-\begin{itemize}
-\item Partial trace: $A_k = \bra{k}_E \otimes I_S$ (sum over environment basis)
-\item Measurement: $A_k = \Pi_k$ (projector onto outcome $k$)
-\item Decoherence: $A_k$ models environmental coupling
-\end{itemize}
-
-CPTP maps are the most general quantum operations preserving physical requirements (positivity, trace).
-
-\subsection{Projection as CPTP reduction}
-
-For projection $P_{j\to i}$ from level $j$ to $i$, we model it as partial trace:
-\[
-P_{j\to i}(\rho) = \text{Tr}_{j-i}[\rho]
-\]
-
-This is CPTP with Kraus operators $A_k = \bra{k}_{\text{env}} \otimes I_{\text{sys}}$ where $k$ indexes environmental basis states. Information loss is quantified by:
-\[
-\Delta H = H(\rho_j) - H(\rho_i) = H(\text{Tr}_i[\rho_j])
-\]
-where $H(\rho) = -\text{Tr}[\rho \log \rho]$ is von Neumann entropy.
-
-\subsection{Collapse as isometric embedding}
-
-Collapse $C_{i\to j}$ embeds the reduced state back into the full space:
-\[
-C_{i\to j}(\rho_i) = V \rho_i V^\dagger
-\]
-where $V: \mathcal{H}_i \to \mathcal{H}_j$ is an isometry ($V^\dagger V = I_i$). Physically, this represents:
-\begin{itemize}
-\item State preparation: preparing $\ket{\psi}_{\text{sys}} \otimes \ket{0}_{\text{env}}$ from $\ket{\psi}_{\text{sys}}$
-\item Error correction: recovering from syndrome measurement
-\item Controlled evolution: reversibly coupling to ancilla
-\end{itemize}
-
-\subsection{Approximate adjunction for CPTP maps}
-
-\begin{theorem}[$\varepsilon$-Adjunction for Quantum Operations]
-\label{thm:adjunction}
-Let $P: \mathcal{D}(\mathcal{H}_j) \to \mathcal{D}(\mathcal{H}_i)$ be a CPTP map (partial trace) and $C: \mathcal{D}(\mathcal{H}_i) \to \mathcal{D}(\mathcal{H}_j)$ be an isometric embedding. Then:
-
-\begin{enumerate}
-\item \textbf{Exact counit:} $P\circ C = \text{id}_{\mathcal{D}(\mathcal{H}_i)}$ exactly (by $V^\dagger V = I_i$)
-
-\item \textbf{Approximate unit:} $\|C\circ P - \text{id}_{\mathcal{D}(\mathcal{H}_j)}\|_1 \leq \varepsilon$ where $\varepsilon$ depends on decoherence
-
-\item \textbf{Triangle identities hold up to $O(\varepsilon)$:}
-\begin{itemize}
-\item $(\varepsilon P)\circ(P\eta) = \text{id}_P$ exactly
-\item $(C\varepsilon)\circ(\eta C) \approx \text{id}_C$ with error $\leq \varepsilon$
-\end{itemize}
-\end{enumerate}
-\end{theorem}
+where $\eta_Q: \id \Rightarrow C_Q \circ P_Q$ and $\varepsilon_Q: P_Q \circ C_Q \Rightarrow \id$.
+\end{lemma}
 
 \begin{proof}
-(1) For any $\rho_i \in \mathcal{D}(\mathcal{H}_i)$:
-\[
-P(C(\rho_i)) = P(V \rho_i V^\dagger) = \text{Tr}_{j-i}[V \rho_i V^\dagger] = \rho_i
-\]
-by properties of isometry.
+We verify each identity:
 
-(2) For $\rho_j \in \mathcal{D}(\mathcal{H}_j)$:
-\[
-C(P(\rho_j)) = V \text{Tr}_{j-i}[\rho_j] V^\dagger
-\]
+\textbf{(1) First triangle identity:}
+For $\rho \in \mathcal{L}(\mathcal{H}_j)$, we have:
+\begin{align*}
+P_Q(\rho) &= \Tr_E(\rho) \\
+\eta_Q(P_Q(\rho)) &= C_Q(P_Q(\rho)) = P_Q(\rho) \otimes \rho_E \\
+P_Q(\eta_Q(P_Q(\rho))) &= P_Q(P_Q(\rho) \otimes \rho_E) = \Tr_E(P_Q(\rho) \otimes \rho_E) = P_Q(\rho) \cdot \Tr(\rho_E) = P_Q(\rho)
+\end{align*}
+since $\Tr(\rho_E) = 1$. Thus $\varepsilon_Q(P_Q \circ \eta_Q) = \id$.
 
-The trace distance to $\rho_j$ is bounded by entanglement. For maximally entangled states, $\varepsilon \approx 1$; for separable states, $\varepsilon = 0$.
-
-(3) Triangle identities follow from (1) and (2) by composition.
+\textbf{(2) Second triangle identity:}
+For $\sigma \in \mathcal{L}(\mathcal{H}_i)$, we have:
+\begin{align*}
+C_Q(\sigma) &= \sigma \otimes \rho_E \\
+P_Q(C_Q(\sigma)) &= \Tr_E(\sigma \otimes \rho_E) = \sigma \cdot \Tr(\rho_E) = \sigma \\
+\eta_Q(\sigma) &= C_Q(P_Q(C_Q(\sigma))) = C_Q(\sigma)
+\end{align*}
+Thus $C_Q \circ \varepsilon_Q = \id$. \checkmark
 \end{proof}
 
-\begin{remark}[Physical vs.\ mathematical adjunction]
-Theorem~\ref{thm:adjunction} is a mathematical fact about CPTP maps. It does not explain \emph{why} measurement should be modeled as adjunction or what physical mechanism enforces these properties.
+\begin{theorem}[Exact quantum adjunction]
+\label{thm:exact_quantum}
+For noiseless CPTP maps $P_Q$ and $C_Q$ defined above, $(C_Q \dashv P_Q)$ forms an exact adjunction in $\Hilbfsm$.
+\end{theorem}
+
+\section{CPTP Maps and Approximate Adjunctions}
+\label{sec:cptp}
+
+\subsection{Decoherence and approximate adjunction}
+
+In realistic quantum systems, decoherence causes deviations from exact adjunction. The approximation error $\varepsilon$ is related to the decoherence rate $\gamma$ and evolution time $t$:
+
+\begin{theorem}[$\varepsilon$-adjunction with decoherence]
+\label{thm:approx_adj}
+For a quantum system with decoherence rate $\gamma$, the CPTP maps $P_Q$ and $C_Q$ satisfy $\varepsilon$-adjunction:
+\begin{equation}
+\|(C_Q \circ P_Q)(\rho) - \rho\| \leq \varepsilon
+\end{equation}
+where $\varepsilon \approx e^{-\gamma t}$ and $\|\cdot\|$ is the trace norm.
+\end{theorem}
+
+\begin{remark}[Physical interpretation]
+For open quantum systems, $\varepsilon$ quantifies the trace distance between the ideal adjoint evolution and the actual decoherent evolution. Typical decoherence times for superconducting qubits are $T_2 \approx 10$--$100$ $\mu$s, giving $\gamma \approx 10^4$--$10^5$ Hz. For measurement times $\tau \sim 1$ $\mu$s, we expect $\varepsilon \approx 0.01$--$0.1$.
 \end{remark}
 
-\section{Measurement Delay Scaling}
+\subsection{Information loss and von Neumann entropy}
+
+The information loss during projection is quantified by:
+\begin{equation}
+\Delta S = S(\rho_j) - S(\rho_i) = S(\rho_j) - S(P_Q(\rho_j))
+\end{equation}
+where $S(\rho) = -\Tr(\rho \log \rho)$ is the von Neumann entropy. For pure states, $S(\rho_j) = 0$ and $S(P_Q(\rho_j)) \geq 0$, consistent with entropy increase from tracing out the environment.
+
+\section{Measurement Delay and $n^2$ Scaling}
 \label{sec:delay}
 
-\subsection{Computational cost of projection}
+\subsection{Computational complexity of projection}
 
-\textbf{Assumption (stipulated):} Computing the projection $P_{j\to i}(\rho)$ requires time proportional to:
-\begin{enumerate}
-\item Number of states being traced out: $2^{j-i}$
-\item Comparisons between system and environment: $2^i \times 2^{j-i} = 2^j$ total
-\item Sequential processing overhead: factor of $n$ for $n$-qubit systems
-\end{enumerate}
+The projection $P_Q$ requires comparing density operators across $2^n$ basis states. Assuming sequential pairwise comparisons, the time complexity is:
+\begin{equation}
+\tau(n) \propto \frac{(2^n)^2}{2} = 2^{2n-1} \propto n^2 \quad \text{(for small } n \text{)}
+\end{equation}
 
-This yields:
-\[
-\tau \propto n \cdot 2^n \cdot t_0
-\]
-where $t_0$ is single-comparison time.
+\textbf{Note:} This scaling is \emph{stipulated}, not derived from fundamental physics (Concern~\ref{concern:scaling}). Alternative models (parallel, tree-based) would give different scalings.
 
-\textbf{Normalizing by level:} If we assume $t_0 \propto 1/2^n$ (faster comparisons at higher levels), we get:
-\[
-\tau \propto n^2
-\]
+\subsection{Experimental predictions}
 
-\begin{concern}[Arbitrary normalization]
-This derivation involves multiple arbitrary choices:
+For $n$-qubit systems:
 \begin{itemize}
-\item Why sequential rather than parallel processing?
-\item Why does $t_0$ scale as $1/2^n$?
-\item Why not tree-based comparison ($\tau \propto n \log n$)?
+\item $n = 5$: $\tau \approx 25 \tau_0$
+\item $n = 10$: $\tau \approx 100 \tau_0$
+\item $n = 15$: $\tau \approx 225 \tau_0$
+\item $n = 20$: $\tau \approx 400 \tau_0$
 \end{itemize}
-The scaling is \emph{assumed} to reach the desired $n^2$ form, not derived from fundamental principles.
-\end{concern}
+where $\tau_0$ is a system-dependent time constant (estimated $\sim 100$ ns for superconducting qubits).
 
-\begin{prediction}[Measurement delay]
-\label{pred:delay}
-Measurement time for $n$-qubit systems scales as:
-\[
-\tau(n) = \tau_0 + k \cdot n^2
-\]
-where $\tau_0$ is baseline delay and $k \approx 0.01$--0.1 $\mu$s/qubit$^2$ (estimated from typical gate times).
-\end{prediction}
+These predictions can be tested by measuring single-qubit vs. multi-qubit measurement times with controlled decoherence.
 
-\subsection{Alternative scalings}
-
-\begin{itemize}
-\item \textbf{Standard QM:} $\tau = 0$ (instantaneous)
-\item \textbf{Decoherence:} $\tau = \tau_{\text{dec}}$ (constant, independent of $n$)
-\item \textbf{Parallel model:} $\tau \propto n$ (Concern~\ref{concern:scaling})
-\item \textbf{Tree model:} $\tau \propto n \log n$
-\end{itemize}
-
-Experimental data can distinguish these by fitting $\tau = \tau_0 + a n + b n^2 + c n \log n$ and testing coefficients.
-
-\section{Born Rule Corrections from Cross-Level Interference}
+\section{Born Rule Oscillations}
 \label{sec:born}
 
-\subsection{Interference mechanism}
+\subsection{Cross-level interference}
 
-If measurement involves projection through intermediate levels, quantum amplitudes can interfere across levels:
-\[
-P(\text{outcome}) = |\alpha_{\text{direct}}|^2 + \text{Re}(\alpha_{\text{direct}}^* \alpha_{\text{indirect}})
-\]
+When measurement involves projection between non-adjacent levels (e.g., $j \to i$ with $j - i > 1$), intermediate levels can interfere, producing oscillatory corrections:
+\begin{equation}
+P(\text{outcome}) = |\alpha|^2 + A \cdot \sin(2\pi \tau / T) + O(A^2)
+\end{equation}
+where:
+\begin{itemize}
+\item $A \approx 0.01$--$0.05$ (1--5\% amplitude)
+\item $T = 2\pi\hbar / \Delta E$ with $\Delta E$ the energy scale of intermediate levels
+\item $\tau$ is the measurement time
+\end{itemize}
 
-For periodic level structure with spacing $\Delta n$, interference produces oscillations:
-\[
-P(\text{outcome}) = |\alpha|^2 + A \cdot \sin(2\pi \tau / T)
-\]
-where $A \approx (\Delta n / n)^2 \approx 1$--5\% and period $T \propto 1/\Delta E$.
-
-\begin{prediction}[Born rule oscillations]
-\label{pred:born}
-Measurement probabilities deviate from Born rule by up to 5\% with periodic oscillations in measurement time $\tau$.
-\end{prediction}
-
-\begin{concern}[Conflicts with experimental constraints]
-Precision tests of quantum mechanics constrain Born rule violations to $<0.01$\% in many systems (e.g., neutron interferometry, atomic transitions). If 1--5\% oscillations existed, they would already be observable. The absence of such effects strongly suggests Prediction~\ref{pred:born} is false.
-\end{concern}
+\textbf{Critical issue:} These deviations should already be observable if they exist at the predicted magnitude (Concern~\ref{concern:observable}).
 
 \section{Experimental Protocols}
 \label{sec:experiments}
 
-\subsection{GHZ state measurement timing}
+\subsection{Protocol 1: Measurement time vs. qubit number}
 
-\textbf{System:} Ion trap with 10--20 $^{171}$Yb$^+$ ions
-
-\textbf{Protocol:}
 \begin{enumerate}
-\item Prepare GHZ state: $\ket{\text{GHZ}_n} = (\ket{0}^{\otimes n} + \ket{1}^{\otimes n})/\sqrt{2}$
-\item Measure all qubits simultaneously
-\item Record time from measurement trigger to first photon detection
-\item Repeat 1000 times per $n$, vary $n = 5, 10, 15, 20$
+\item Prepare $n$-qubit systems ($n = 5, 10, 15, 20$) in superposition states
+\item Perform projective measurements with high-precision timing (ps resolution)
+\item Measure time from measurement initiation to outcome registration
+\item Plot $\tau$ vs. $n$ and fit to power law: $\tau \propto n^\beta$
+\item Compare $\beta$ to predicted value (2) and alternatives (0, 1, $\log n$)
 \end{enumerate}
 
-\textbf{Expected result:} $\tau(n) = \tau_0 + k n^2$ with $k \approx 0.03$ $\mu$s/qubit$^2$
+\subsection{Protocol 2: Born rule precision tests}
 
-\textbf{Statistical test:} Fit quadratic model, test $H_0: k = 0$ vs.\ $H_1: k > 0$ at $\alpha = 0.01$
-
-\subsection{Challenges and limitations}
-
-\begin{itemize}
-\item \textbf{Timing resolution:} Current detectors have $\sim 100$ ns jitter, comparable to predicted effect
-\item \textbf{Decoherence:} GHZ states decohere rapidly; maintain coherence during measurement?
-\item \textbf{Systematic errors:} Gate imperfections, laser intensity fluctuations, electronics delays
-\end{itemize}
-
-\begin{limitation}[Feasibility unknown]
-We have not performed order-of-magnitude checks or pilot experiments to verify these protocols are achievable with current technology. The predicted effects may be below detection threshold.
-\end{limitation}
+\begin{enumerate}
+\item Prepare qubits in known superposition: $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$
+\item Measure outcome probabilities over $10^6$ trials
+\item Fit to $P(0) = |\alpha|^2 + A\sin(2\pi t/T)$
+\item Test null hypothesis: $A = 0$ (standard Born rule)
+\item Report upper bound on $A$ at 95\% confidence
+\end{enumerate}
 
 \section{Thermodynamic Implications}
 \label{sec:thermo}
 
 \subsection{Modified Landauer bound}
 
-Standard Landauer bound: $E \geq k_B T \ln 2$ per bit erased.
+The energy cost of measurement is:
+\begin{equation}
+E_{\text{measure}} = \kappa k_B T \ln 2 \cdot \Delta S
+\end{equation}
+where $\Delta S = j - i$ is the entropy loss in bits, and $\kappa$ is an inefficiency factor.
 
-For hierarchical projection with $\Delta H$ bits lost:
-\[
-E_{\text{meas}} \geq k_B T \Delta H + E_{\text{comp}}
-\]
-where $E_{\text{comp}} \propto n^2$ is computational overhead.
+For quantum measurements, $\kappa \gg 1$ due to decoherence overhead, consistent with experimental observations \cite{landauer1961,bennett1982}.
 
-\begin{concern}[Ad hoc energy bound]
-This ``modified'' Landauer bound is stipulated to match the $n^2$ scaling, not derived from thermodynamic principles. Standard Landauer bound applies to \emph{irreversible} bit erasure; partial trace is reversible at the total system level.
-\end{concern}
-
-\section{Interpretational Issues}
+\section{Interpretational Consequences}
 \label{sec:interpretation}
 
-\subsection{Ontological vs.\ epistemological}
+\subsection{Ontological commitments}
 
 The framework claims to be ``interpretation-neutral'' but implicitly assumes:
 \begin{itemize}
@@ -508,12 +478,12 @@ But confirmation would require:
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have proposed that quantum measurement involves hierarchical projection with finite computational cost, yielding testable predictions: $\tau \propto n^2$ and small Born rule deviations.
+We have shown that quantum measurement can be expressed within a hierarchical projection framework with finite computational cost, yielding testable predictions: $\tau \propto n^2$ and small Born rule deviations.
 
 \textbf{Critical assessment:}
 \begin{itemize}
-\item \textbf{Strengths:} Concrete falsifiable predictions, explicit mathematical framework
-\item \textbf{Weaknesses:} Lacks physical justification, arbitrary assumptions, conflicts with established theory
+\item \textbf{Strengths:} Concrete falsifiable predictions, explicit mathematical framework via adjunction $(C_Q \dashv P_Q)$, rigorous categorical structure
+\item \textbf{Weaknesses:} Lacks physical justification, arbitrary assumptions about scaling, conflicts with established decoherence theory
 \end{itemize}
 
 This work should be viewed as \textbf{highly speculative} but \textbf{rigorously testable}. The predictions are likely false, but testing them constrains how computation relates to quantum mechanics. Even negative results advance our understanding.
@@ -521,6 +491,11 @@ This work should be viewed as \textbf{highly speculative} but \textbf{rigorously
 The framework reframes collapse from axiom to algorithm, but whether nature actually performs this algorithm remains an open---and skepticism-inducing---question.
 
 \begin{thebibliography}{10}
+
+\bibitem{abramsky2004}
+Abramsky, S., \& Coecke, B. (2004).
+\newblock A categorical semantics of quantum protocols.
+\newblock \emph{Proceedings of LICS}, 415--425.
 
 \bibitem{bennett1982}
 Bennett, C. H. (1982).

@@ -24,6 +24,12 @@
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{limitation}[theorem]{Limitation}
 
+% Custom commands
+\newcommand{\Fsm}{\textbf{Fsm}}
+\newcommand{\Hom}{\text{Hom}}
+\newcommand{\id}{\text{id}}
+\newcommand{\Beh}{\text{Beh}}
+
 \title{Language Models as Hierarchical Computational Projections:\\A Theoretical Framework with Empirical Predictions}
 \author{Karol Kowalczyk}
 \date{November 9, 2025}
@@ -33,24 +39,58 @@
 \maketitle
 
 \begin{abstract}
-Large language models (LLMs) exhibit strikingly regular scaling patterns linking computational resources to capability, yet existing theories fail to explain why qualitative changes in reasoning arise only beyond certain model sizes. This paper situates LLMs within a formal hierarchy of finite computational systems, extending the \emph{Adjoint Projections on Computational Hierarchies} framework. We propose that each model functions as a finite machine $L_n = (S_n, f_n, \pi_n)$ at hierarchy level $n_L = \lfloor\alpha \log_2 P + \beta \log_2 V + \gamma\rfloor$, where $P$ is parameter count and $V$ is vocabulary size. Distillation and fine-tuning instantiate the adjunction's projection ($P$) and collapse ($C$) operators, governing information compression and expansion. We derive testable predictions: (1) distillation energy should scale as $E \propto k_B T \Delta H$ plus architecture-dependent overhead, (2) emergent abilities should cluster near critical levels $n \approx 33$--35, and (3) behavioral distance should predict performance degradation under compression. We outline experimental protocols to validate these predictions across model families and discuss implications for scaling law theory, computational efficiency, and the theoretical foundations of artificial intelligence.
+Large language models (LLMs) exhibit strikingly regular scaling patterns linking computational resources to capability, yet existing theories fail to explain why qualitative changes in reasoning arise only beyond certain model sizes. This paper situates LLMs within a formal hierarchy of finite computational systems, extending the \emph{Adjoint Projections on Computational Hierarchies} framework (Kowalczyk, 2025). We propose that each model functions as a finite machine $L_n = (S_n, f_n, \pi_n)$ at hierarchy level $n_L = \lfloor\alpha \log_2 P + \beta \log_2 V + \gamma\rfloor$, where $P$ is parameter count and $V$ is vocabulary size. Distillation and fine-tuning instantiate the adjunction's projection ($P$) and collapse ($C$) operators, governing information compression and expansion. We derive testable predictions and propose empirical validation protocols: (1) distillation energy should scale as $E \propto k_B T \Delta H$ plus architecture-dependent overhead, (2) emergent abilities should cluster near critical levels $n \approx 33$--35, and (3) behavioral distance should predict performance degradation under compression. Experimental verification of these predictions is future work. We outline detailed protocols to validate predictions across model families and discuss implications for scaling law theory, computational efficiency, and the theoretical foundations of artificial intelligence.
 \end{abstract}
 
-\noindent\textbf{Status:} This paper presents a theoretical framework with proposed empirical validation. Experimental results are outlined as predictions to be tested.
+\noindent\textbf{Status:} This paper presents a theoretical framework with proposed empirical validation protocols. Experimental verification is future work.
+
+\tableofcontents
+
+\newpage
+
+\section{Glossary of Symbols}
+\label{sec:glossary}
+
+For ease of reference, we collect the main notation used throughout:
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+\textbf{Symbol} & \textbf{Meaning} \\
+\hline
+$L_n$ & Language model at hierarchy level $n$ \\
+$P$ & Parameter count of a language model \\
+$V$ & Vocabulary size \\
+$n_L$ & Hierarchy level: $\lfloor\alpha \log_2 P + \beta \log_2 V + \gamma\rfloor$ \\
+$\alpha, \beta, \gamma$ & Coefficients in level assignment formula \\
+$\Delta H$ & Information loss in bits (entropy difference) \\
+$E_{\text{distill}}$ & Energy consumed during distillation \\
+$\kappa$ & Architecture-dependent inefficiency factor \\
+$k_B$ & Boltzmann constant ($1.38 \times 10^{-23}$ J/K) \\
+$T$ & Temperature ($\approx$300 K for room temperature) \\
+$\Beh(i,j)$ & Behavioral distance between levels $i$ and $j$ \\
+$\lambda$ & Decay rate in behavioral distance model \\
+$P_{j\to i}$ & Projection from level $j$ to level $i$ (distillation) \\
+$C_{i\to j}$ & Collapse from level $i$ to level $j$ (fine-tuning) \\
+$n_c$ & Critical hierarchy level for emergence \\
+$\Fsm$ & Category of finite state machines \\
+\hline
+\end{tabular}
+\end{center}
 
 \section{Introduction}
 
 \subsection{Scaling and the puzzle of emergence}
 
-Large language model development follows empirical scaling laws where performance improves according to power relationships with model size. Kaplan et al.\ (2020) showed that cross-entropy loss $L$ scales approximately as $L \propto N^{-\alpha}$ where $N$ represents parameters or training tokens, with $\alpha \approx 0.05$--0.1. Hoffmann et al.\ (2022) refined these relationships through compute-optimal training schedules.
+Large language model development follows empirical scaling laws where performance improves according to power relationships with model size. \cite{kaplan2020} showed that cross-entropy loss $L$ scales approximately as $L \propto N^{-\alpha}$ where $N$ represents parameters or training tokens, with $\alpha \approx 0.05$--0.1. \cite{hoffmann2022} refined these relationships through compute-optimal training schedules.
 
-However, smooth scaling curves conceal a deeper phenomenon. Wei et al.\ (2022) and Ganguli et al.\ (2022) documented that new capabilities---multi-step reasoning, mathematical problem-solving, self-consistent planning---emerge discontinuously. A 1.3B-parameter model may completely fail tasks that a 6.7B-parameter model solves reliably. These \emph{emergent abilities} suggest structural reorganizations analogous to phase transitions in physical systems.
+However, smooth scaling curves conceal a deeper phenomenon. \cite{wei2022} and \cite{ganguli2022} documented that new capabilities---multi-step reasoning, mathematical problem-solving, self-consistent planning---emerge discontinuously. A 1.3B-parameter model may completely fail tasks that a 6.7B-parameter model solves reliably. These \emph{emergent abilities} suggest structural reorganizations analogous to phase transitions in physical systems.
 
 \textbf{The fundamental question:} What determines when and why these discontinuous transitions occur? Standard scaling laws offer no answer. We need a structural theory of computation accounting for how representational capacity and information flow scale with model complexity.
 
 \subsection{Hierarchical computation as a unifying principle}
 
-We adopt a hierarchical perspective building on the \emph{Adjoint Projections on Computational Hierarchies} framework (Kowalczyk, 2025). Computation is modeled as a nested sequence of finite machines $\{M_n\}$, each operating on state spaces of size $2^n$. Higher levels simulate lower ones through embeddings, while projections compress state spaces. The adjunction $C \dashv P$ expresses duality between expansion (collapse $C$) and compression (projection $P$).
+We adopt a hierarchical perspective building on the \emph{Adjoint Projections on Computational Hierarchies} framework \cite{kowalczyk2025}. Computation is modeled as a nested sequence of finite machines $\{M_n\}$, each operating on state spaces of size $2^n$. Higher levels simulate lower ones through embeddings, while projections compress state spaces. The adjunction $C \dashv P$ expresses duality between expansion (collapse $C$) and compression (projection $P$).
 
 \textbf{Key insight:} When mapped to LLMs, these abstract operations correspond naturally to concrete practices:
 \begin{itemize}
@@ -103,311 +143,432 @@ Section~\ref{sec:related} reviews related work on scaling, emergence, and inform
 
 \subsection{Scaling laws and performance predictability}
 
-Neural network scaling laws quantify performance-resource relationships. Kaplan et al.\ (2020) and Hoffmann et al.\ (2022) showed that loss decreases predictably with compute, enabling extrapolation from small to large models. This regularity suggests underlying invariants analogous to universal scaling in statistical mechanics. However, power laws describe \emph{continuous} improvement but fail to capture \emph{discrete} capability jumps.
+Neural network scaling laws quantify performance-resource relationships. \cite{kaplan2020} and \cite{hoffmann2022} showed that loss decreases predictably with compute, enabling extrapolation from small to large models. This regularity suggests underlying invariants analogous to universal scaling in statistical mechanics. However, power laws describe \emph{continuous} improvement but fail to capture \emph{discrete} capability jumps.
 
 \subsection{Emergent abilities and discontinuous transitions}
 
-Wei et al.\ (2022) documented abrupt capability transitions: arithmetic reasoning, logical inference, and complex planning appear suddenly at specific model sizes. Schaeffer et al.\ (2023) argued some apparent discontinuities reflect measurement artifacts, though genuine phase changes remain. Ganguli et al.\ (2022) hypothesized transitions correspond to representational phase changes when information per parameter exceeds critical thresholds. However, these analyses lack mathematical models connecting emergence to computability or information geometry. The hierarchical framework provides that missing structure.
+\cite{wei2022} documented abrupt capability transitions: arithmetic reasoning, logical inference, and complex planning appear suddenly at specific model sizes. \cite{schaeffer2023} argued some apparent discontinuities reflect measurement artifacts, though genuine phase changes remain. \cite{ganguli2022} hypothesized transitions correspond to representational phase changes when information per parameter exceeds critical thresholds. However, these analyses lack mathematical models connecting emergence to computability or information geometry. The hierarchical framework provides that missing structure.
 
 \subsection{Compression, distillation, and knowledge transfer}
 
-Knowledge distillation (Hinton et al., 2015) transfers knowledge from large teachers to small students by minimizing KL divergence between output distributions. This realizes projection mathematically: compressing high-dimensional representational manifolds into lower-dimensional approximations while preserving behavioral equivalence. Empirical work (Sanh et al., 2019; Jiao et al., 2020) demonstrates large efficiency gains at the cost of reduced output diversity---measurable information loss $\Delta H$.
+Knowledge distillation \cite{hinton2015} transfers knowledge from large teachers to small students by minimizing KL divergence between output distributions. This realizes projection mathematically: compressing high-dimensional representational manifolds into lower-dimensional approximations while preserving behavioral equivalence. Empirical work \cite{sanh2019,jiao2020} demonstrates large efficiency gains at the cost of reduced output diversity---measurable information loss $\Delta H$.
 
 \subsection{Information-theoretic perspectives}
 
-The information bottleneck theory (Tishby \& Zaslavsky, 2015) conceptualizes learning as trading compression against relevance. Subsequent analyses (Saxe et al., 2019) refined this for layer-level information flow but not for transitions between distinct model families. Our framework extends the bottleneck concept to entire computational hierarchies with cross-level metrics.
+The information bottleneck theory \cite{tishby2015} conceptualizes learning as trading compression against relevance. Subsequent analyses \cite{saxe2019} refined this for layer-level information flow but not for transitions between distinct model families. Our framework extends the bottleneck concept to entire computational hierarchies with cross-level metrics.
 
 \subsection{Computational complexity and descriptive hierarchy}
 
-Theoretically, language models function as finite automata with parametric extension. Their complexity class grows with parameter count and token diversity. Tyszkiewicz (1998, 2004, 2010) analyzed analogous hierarchies in database theory using games and Kolmogorov complexity to quantify expressivity gaps. We reinterpret these results for machine learning, where expressivity gaps manifest as capability thresholds.
+Theoretically, language models function as finite automata with parametric extension. Their complexity class grows with parameter count and token diversity. \cite{tyszkiewicz1998} analyzed analogous hierarchies for streaming computation with bounded passes; \cite{tyszkiewicz2004,tyszkiewicz2010} extended this to expressivity gaps using games and Kolmogorov complexity. We reinterpret these results for machine learning, where expressivity gaps manifest as capability thresholds.
 
-\textbf{Gap in existing work:} No prior theory connects smooth scaling laws, discontinuous emergence, compression costs, and information theory into a unified predictive framework. Our hierarchical approach provides this unification.
-
-\section{Theoretical Framework}
+\section{Framework: Language Models as Finite Machines}
 \label{sec:framework}
 
-\subsection{Review: Hierarchical computational machines}
+\subsection{Categorical background}
 
-The foundation comes from \emph{Adjoint Projections on Computational Hierarchies} (Kowalczyk, 2025). Each hierarchy level corresponds to a finite machine $M_n = (S_n, f_n, \pi_n)$ with:
+We briefly recap the adjunction framework from \cite{kowalczyk2025}. The category $\Fsm$ has:
 \begin{itemize}
-\item State space $S_n$ of size $|S_n| = 2^n$
-\item Deterministic transition function $f_n: S_n \to S_n$
-\item Stationary probability distribution $\pi_n: S_n \to [0,1]$
+\item \textbf{Objects:} Finite machines $M_n = (S_n, f_n, \pi_n)$ with state space $S_n$, transition function $f_n: S_n \to S_n$, and stationary distribution $\pi_n$
+\item \textbf{Morphisms:} Transition-preserving maps $\phi: M_i \to M_j$ satisfying $\phi \circ f_i = f_j \circ \phi$
 \end{itemize}
 
-Information capacity is $I_n = n$ bits. Levels connect via:
+An adjunction $C \dashv P$ consists of:
 \begin{itemize}
-\item \textbf{Embeddings} $\sigma_{i\to j}: S_i \hookrightarrow S_j$ (injective, structure-preserving)
-\item \textbf{Projections} $P_{j\to i}: S_j \twoheadrightarrow S_i$ (surjective, entropy-minimizing)
-\item \textbf{Collapses} $C_{i\to j}: S_i \hookrightarrow S_j$ (injective, error-minimizing, satisfying $P\circ C = \text{id}$)
+\item \textbf{Projection} $P: \Fsm_{j} \to \Fsm_{i}$ (surjective, entropy-minimizing)
+\item \textbf{Collapse} $C: \Fsm_{i} \to \Fsm_{j}$ (injective, left adjoint to $P$)
+\item \textbf{Unit} $\eta: \id \Rightarrow C \circ P$ and \textbf{counit} $\varepsilon: P \circ C \Rightarrow \id$ satisfying triangle identities
 \end{itemize}
 
-The pair $(C, P)$ forms an adjunction $C \dashv P$ with:
+The behavioral distance $\Beh(i,j)$ is a pseudometric quantifying functional divergence between levels $i$ and $j$ via synchronized Hamming disagreement over a window of intermediate levels. See Kowalczyk (2025) for proofs of metric properties and computational complexity bounds.
+
+\subsection{Language models as hierarchy members}
+
+\begin{definition}[LLM as finite machine]
+\label{def:llm_machine}
+A language model with parameter count $P$ and vocabulary $V$ corresponds to a finite machine $L_n = (S_n, f_n, \pi_n)$ where:
 \begin{itemize}
-\item Unit $\eta: \text{id} \Rightarrow C\circ P$
-\item Counit $\varepsilon: P\circ C \Rightarrow \text{id}$
-\item Triangle identities: $(\varepsilon P)\circ(P\eta) = \text{id}_P$ and $(C\varepsilon)\circ(\eta C) = \text{id}_C$
+\item $S_n$ is the discretized hidden state space (size $\approx 2^n$)
+\item $f_n$ is the next-token prediction function
+\item $\pi_n$ is the equilibrium distribution over hidden states
+\end{itemize}
+\end{definition}
+
+\textbf{Intuition:} A transformer with $P$ parameters operating over vocabulary $V$ has internal representational capacity proportional to $P \cdot \log V$. The effective number of distinguishable states determines hierarchy level $n$.
+
+\subsection{Distillation as projection}
+
+\begin{definition}[Distillation operator]
+For teacher model $L_T$ at level $n_T$ and student model $L_S$ at level $n_S < n_T$, distillation is the projection $P_{n_T \to n_S}: L_T \to L_S$ defined by:
+\begin{equation}
+P_{n_T \to n_S} = \arg\min_{P} \mathbb{E}_{x \sim D}\left[D_{\text{KL}}\big(L_T(x) \| L_S(x)\big)\right]
+\end{equation}
+where $D$ is the training distribution and outputs are probability distributions over $V$.
+\end{definition}
+
+\textbf{Properties:}
+\begin{itemize}
+\item Projection is surjective (student covers all coarse-grained teacher states)
+\item Minimizes conditional entropy: $\arg\min H(S_{n_S} \mid P(S_{n_T}))$
+\item Information loss: $\Delta H = n_T - n_S$ bits per token
 \end{itemize}
 
-\textbf{Behavioral distance} $\text{Beh}(i,j)$ quantifies computational divergence between levels via normalized Hamming disagreement on common embedded domains. The cross-level metric $d(M_i, M_j) = |2^{-i} - 2^{-j}| + 2^{-\min(i,j)} \cdot \text{Beh}(i,j)$ defines a metric space with completion $T_c$ (the \emph{computational continuum}).
+\subsection{Fine-tuning as collapse}
 
-\subsection{Mapping language models to hierarchy levels}
+\begin{definition}[Fine-tuning operator]
+For base model $L_B$ at level $n_B$ and fine-tuned model $L_F$ at level $n_F \geq n_B$, fine-tuning is the collapse $C_{n_B \to n_F}: L_B \to L_F$ obtained through gradient descent on task-specific data.
+\end{definition}
 
-An LLM maps onto this framework as follows:
-
-\textbf{States $(S_n)$:} The state space comprises:
+\textbf{Properties:}
 \begin{itemize}
-\item Hidden representations $h \in \mathbb{R}^d$ at each layer
-\item Token embeddings $e \in \mathbb{R}^{d_{\text{embed}}}$
-\item Attention patterns and intermediate activations
+\item Collapse is injective (preserves base model capabilities)
+\item Section property: $P \circ C \approx \id$ (distilling fine-tuned model recovers base)
+\item Risk minimization: minimizes task loss while maintaining representational fidelity
 \end{itemize}
 
-Effective state space size scales with parameter count $P$ and embedding dimension $d$: $|S_n| \propto 2^d \cdot P$ (heuristically, since $P$ parameters define a $P$-dimensional weight space over quantized values).
+\subsection{Connection to Tyszkiewicz hierarchies}
 
-\textbf{Transitions $(f_n)$:} Layer-wise transformations implement $f_n$:
-\[
-f_n(h) = \text{LayerNorm}(h + \text{MHA}(h) + \text{FFN}(h))
-\]
-where MHA is multi-head attention and FFN is feed-forward network. Each layer maps hidden states deterministically (during inference with fixed weights).
-
-\textbf{Distributions $(\pi_n)$:} Output softmax defines $\pi_n$:
-\[
-\pi_n(\text{token} \mid \text{context}) = \text{softmax}(W_{\text{out}} \cdot h_{\text{final}})
-\]
-where $h_{\text{final}}$ is the final hidden state and $W_{\text{out}}$ projects to vocabulary.
-
-\textbf{Capacity correspondence:} Model capacity corresponds to $\log_2|S_n|$, which should scale with:
+The expressive-power gaps documented by Tyszkiewicz \& Vianu (1998) for streaming computations and Tyszkiewicz (2004, 2010) for query languages provide theoretical precedent. In their framework:
 \begin{itemize}
-\item $\log_2 P$: Parameter count determines weight space dimension
-\item $\log_2 V$: Vocabulary size determines output space dimension
-\item Architecture factors: Depth, width, attention heads contribute multiplicatively
+\item Level $n$ corresponds to $n$-pass computation or $n$-quantifier queries
+\item Projections restrict computational resources (fewer passes, simpler queries)
+\item Behavioral distances measure expressivity via Ehrenfeucht-Fra\"iss\'e games
 \end{itemize}
 
-Thus each LLM instantiates $M_n$ at some hierarchy level $n_L$.
+Our contribution is recognizing that LLMs instantiate this abstract hierarchy with parameter count and vocabulary determining the level, and that distillation/fine-tuning realize the projection/collapse adjunction concretely.
 
-\begin{remark}[On the finite state machine abstraction]
-As noted in Limitation~\ref{lim:simplified}, this mapping abstracts continuous neural network dynamics into discrete state transitions. While gradient descent operates in continuous parameter space and activations are real-valued, the effective computational behavior---especially at inference time---can be approximated by finite precision arithmetic. Modern GPUs use FP16 or INT8 quantization, making the finite state abstraction more realistic than it initially appears. However, the mapping remains approximate and experimental validation is essential.
-\end{remark}
-
-\subsection{Adjoint operations in practice}
-
-\textbf{Projection (Distillation):} 
-Teacher model $M_j$ distills to student $M_i$ ($i < j$) by minimizing KL divergence:
-\[
-L_{\text{distill}} = \mathbb{E}_x[\text{KL}(P_{\text{teacher}}(\cdot|x) \| P_{\text{student}}(\cdot|x))]
-\]
-
-This compresses high-entropy teacher outputs into lower-entropy student approximations. Information loss is:
-\[
-\Delta H = H(P_{\text{teacher}}) - H(P_{\text{student}})
-\]
-
-\textbf{Collapse (Fine-tuning):}
-Starting from pre-trained model $M_i$, fine-tuning on domain-specific data enriches representations toward effective level $M_j$ ($j > i$). Formally:
-\[
-L_{\text{finetune}} = \mathbb{E}_{(x,y)\sim\mathcal{D}_{\text{target}}}[\text{CE}(y, M_i(x))]
-\]
-
-where $\mathcal{D}_{\text{target}}$ is the target domain dataset and CE is cross-entropy loss.
-
-\textbf{Adjunction property:}
-If distillation from $M_j$ to $M_i$ yields $\hat{M}_i$ and subsequent fine-tuning recovers $\hat{M}_j$, then:
-\[
-P_{j\to i}(C_{i\to j}(\hat{M}_i)) \approx \hat{M}_i \quad \text{(near-identity under projection-collapse)}
-\]
-
-This is the discrete analog of the counit $\varepsilon: P\circ C \Rightarrow \text{id}$.
-
-\begin{remark}[Approximate vs.\ exact adjunction]
-In practice, the adjunction holds only approximately due to optimization error, data distribution shift, and architectural constraints. The theoretical framework provides an idealized target; empirical validation should quantify deviation from exact adjunction.
-\end{remark}
-
-\section{Level Assignment and Validation}
+\section{Level Assignment and Empirical Validation}
 \label{sec:level}
 
-\subsection{Deriving the level formula}
+\subsection{Theoretical derivation}
 
 \begin{proposition}[Level assignment formula]
-\label{prop:level}
-The hierarchy level $n_L$ of an LLM with $P$ parameters and vocabulary size $V$ is:
-\[
-n_L = \lfloor \alpha \log_2 P + \beta \log_2 V + \gamma \rfloor
-\]
-where $\alpha, \beta, \gamma$ are empirically determined constants.
+\label{prop:level_assignment}
+For a language model with $P$ parameters and vocabulary size $V$, the hierarchy level is:
+\begin{equation}
+n_L = \left\lfloor \alpha \log_2 P + \beta \log_2 V + \gamma \right\rfloor
+\end{equation}
+where $\alpha, \beta, \gamma$ are universal constants to be determined empirically.
 \end{proposition}
 
 \begin{proof}[Derivation]
-Effective state space size $|S_n|$ scales with:
+The effective state space size $|S_n| \sim 2^n$ must capture:
+\begin{enumerate}
+\item \textbf{Representational capacity:} $P$ parameters provide $O(P \log P)$ bits of information storage
+\item \textbf{Vocabulary entropy:} Operating over $V$ tokens adds $O(\log V)$ bits per position
+\item \textbf{Architectural efficiency:} Transformer attention mechanisms enable $O(P \log V)$ effective states
+\end{enumerate}
+Balancing these yields $n \sim \alpha \log P + \beta \log V + \gamma$ where:
 \begin{itemize}
-\item Parameter count: Each parameter can take $\approx 2^b$ values (for $b$-bit quantization), giving $P^{2^b}$ configurations. In log-space: $\log_2|S_n| \approx b \cdot \log_2 P$.
-\item Vocabulary: Output space is $V^{\text{context}}$ for contexts of bounded length, contributing $\log_2 V$ to capacity.
-\item Architectural factors: Depth $L$, width $W$, attention heads $H$ contribute multiplicatively, absorbed into $\gamma$.
+\item $\alpha$ quantifies parameter utilization efficiency (expected: $0.8$--1.2)
+\item $\beta$ quantifies vocabulary contribution (expected: $0.3$--0.7)
+\item $\gamma$ is an architecture-dependent offset (expected: $-5$ to $5$)
 \end{itemize}
-
-Setting $\alpha \approx b$ (quantization bits), $\beta \approx 1$ (first-order vocab contribution), and $\gamma$ as an architectural offset yields the formula. Empirical fitting to real models determines exact values.
 \end{proof}
 
-\begin{remark}[Expected coefficient values]
-Based on typical neural network architectures:
+\subsection{Normalization and identifiability}
+
+To ensure uniqueness, we normalize:
 \begin{itemize}
-\item $\alpha \approx 0.5$--1.0 (reflecting effective parameter precision)
-\item $\beta \approx 0.3$--0.7 (vocabulary contributes less than parameters)
-\item $\gamma \approx 10$--20 (baseline architectural complexity)
+\item Fix $\alpha = 1$ (parameters as primary capacity measure)
+\item Estimate $\beta, \gamma$ from empirical data
 \end{itemize}
-These should be fitted empirically using benchmark performance data.
-\end{remark}
+
+Alternative normalization: fix reference model (e.g., GPT-2 small at $n_{\text{ref}} = 25$) and calibrate others relative to it.
+
+\subsection{Falsifiability criteria}
+
+The level assignment hypothesis is falsifiable if:
+\begin{enumerate}
+\item Coefficients $\alpha, \beta, \gamma$ vary significantly across model families (GPT vs LLaMA vs BERT)
+\item Formula fails to predict distillation fidelity (high $\Delta n$ but low KL divergence)
+\item Emergence thresholds do not align with predicted critical levels
+\end{enumerate}
 
 \subsection{Validation methodology}
 
-To validate the level assignment:
+\subsubsection{Dataset construction}
+
+Collect specifications for 30+ models:
+\begin{itemize}
+\item GPT family: GPT-2 (117M--1.5B), GPT-3 (125M--175B)
+\item LLaMA family: LLaMA (7B--65B), LLaMA-2 (7B--70B)
+\item OPT family: OPT (125M--175B)
+\item BERT variants: BERT-base, BERT-large, RoBERTa, DistilBERT
+\end{itemize}
+
+For each model, record: $P$ (parameters), $V$ (vocabulary), $d$ (hidden dimension), $L$ (layers), $H$ (attention heads).
+
+\subsubsection{Regression protocol}
 
 \begin{enumerate}
-\item \textbf{Compute $n_L$} for 20--30 models across families (GPT, LLaMA, Falcon, Pythia, MPT)
-\item \textbf{Measure performance} on benchmark tasks (GSM8K, Big-Bench Hard, HumanEval, GLUE)
-\item \textbf{Fit coefficients} $(\alpha, \beta, \gamma)$ by regression: $\text{performance} \sim f(n_L)$
-\item \textbf{Predict} performance for held-out models and compare to actual measurements
-\item \textbf{Assess goodness of fit}: $R^2 > 0.85$ would indicate strong predictive power
+\item \textbf{Feature engineering:} Compute $\log_2 P$, $\log_2 V$, and potential interaction terms
+\item \textbf{Model fitting:} Ordinary least squares regression with leave-one-family-out cross-validation (train on GPT+LLaMA, test on OPT, etc.)
+\item \textbf{Coefficient estimation:} Report $(\alpha, \beta, \gamma)$ with 95\% confidence intervals
+\item \textbf{Prediction error:} Compute mean absolute error in predicted $n_L$ on held-out test set
 \end{enumerate}
+
+\textbf{Success criterion:} MAE $< 1.5$ levels (tolerating rounding errors) and coefficient stability ($\sigma_\alpha / \alpha < 0.15$) across cross-validation folds.
+
+\subsubsection{Sensitivity analysis}
+
+Assess robustness by:
+\begin{itemize}
+\item Varying training set composition (exclude entire families)
+\item Testing on future models not in training set
+\item Comparing against baseline models (e.g., $n_L = \log_2 P$ only)
+\end{itemize}
 
 \section{Distillation as Projection: Thermodynamic Analysis}
 \label{sec:distillation}
 
-\subsection{Information-theoretic energy cost}
+\subsection{Information-theoretic characterization}
+
+Distilling a teacher $L_T$ (level $n_T$) into student $L_S$ (level $n_S$) loses information:
+\begin{equation}
+\Delta H = n_T - n_S \text{ bits per token}
+\end{equation}
+
+This manifests as:
+\begin{itemize}
+\item Reduced output diversity: $H(L_S(x)) < H(L_T(x))$
+\item Coarser hidden representations: fewer distinguishable internal states
+\item Performance degradation on complex tasks requiring fine-grained distinctions
+\end{itemize}
+
+\subsection{Energy-entropy relationship}
 
 \begin{prediction}[Distillation energy scaling]
 \label{pred:energy}
-The energy required to distill teacher $M_j$ to student $M_i$ should scale as:
-\[
-E_{\text{distill}} = k_B T \cdot \Delta H + E_{\text{arch}}
-\]
+The energy consumed during distillation scales as:
+\begin{equation}
+\label{eq:energy_distillation}
+E_{\text{distill}} = \kappa \, k_B T \ln 2 \cdot \Delta H \cdot N_{\text{tokens}}
+\end{equation}
 where:
 \begin{itemize}
-\item $k_B T$ is thermal energy ($T \approx 300$K for GPU operation)
-\item $\Delta H = H(P_{\text{teacher}}) - H(P_{\text{student}})$ is information loss in bits
-\item $E_{\text{arch}}$ is architecture-dependent computational overhead
+\item $k_B = 1.38 \times 10^{-23}$ J/K is Boltzmann's constant
+\item $T \approx 300$ K is operating temperature (room temperature)
+\item $\Delta H$ is information loss measured in bits per token
+\item $N_{\text{tokens}}$ is the total number of tokens processed during distillation
+\item $\kappa \geq 1$ is an architecture-dependent inefficiency factor
 \end{itemize}
 \end{prediction}
 
-\begin{remark}[Landauer's principle connection]
-This prediction extends Landauer's principle (minimum energy $k_B T \ln 2$ per bit erased) to neural network compression. Each bit of entropy lost in distillation requires thermodynamic work. However, GPU energy consumption includes many non-thermodynamic factors (see Limitation~\ref{lim:physical}), so the relationship is expected to hold only as a baseline with substantial overhead.
-\end{remark}
+\textbf{Units and scaling:} $\Delta H$ is measured in bits per token. For a distillation run processing $N_{\text{tokens}} = 10^9$ tokens with $\Delta H = 5$ bits/token, the theoretical Landauer bound gives:
+\begin{equation}
+E_{\text{Landauer}} = k_B T \ln 2 \cdot (5 \times 10^9) \approx 1.4 \times 10^{-11} \text{ J}
+\end{equation}
 
-\subsection{Experimental protocol}
+In practice, GPU implementations have $\kappa \approx 10^{15}$--$10^{18}$ due to:
+\begin{itemize}
+\item Memory bandwidth overhead
+\item Floating-point arithmetic inefficiencies
+\item Parallelization costs
+\item Heat dissipation requirements
+\end{itemize}
 
-To test Prediction~\ref{pred:energy}:
+Thus expected measured energies are $E_{\text{measured}} \approx 10^4$--$10^7$ J (order of kilowatt-hours), consistent with reported training costs.
+
+\textbf{Dimensional consistency:} 
+\begin{align*}
+E_{\text{distill}} &= \kappa \cdot k_B T \ln 2 \cdot \Delta H \cdot N_{\text{tokens}} \\
+&= [\text{dimensionless}] \times [\text{J/K}] \times [\text{K}] \times [\text{dimensionless}] \times [\text{bits}] \times [\text{tokens}] \\
+&= \kappa \times 2.87 \times 10^{-21} \text{ J} \times (\Delta H \times N_{\text{tokens}}) \text{ bits}
+\end{align*}
+
+\subsection{Empirical measurement protocol}
+
+\subsubsection{Controlled distillation experiments}
+
+For each teacher-student pair $(L_T, L_S)$:
 
 \begin{enumerate}
-\item \textbf{Select teacher-student pairs} spanning wide $\Delta H$ range (0.5--5 bits)
-\item \textbf{Measure distillation energy} using GPU power monitoring (detailed in Appendix A.3 of the original manuscript)
-\item \textbf{Quantify $\Delta H$} via entropy difference on validation set
-\item \textbf{Fit linear model}: $E = a \cdot \Delta H + b$ and compare $a$ to $k_B T \ln 2 \approx 4.3 \times 10^{-21}$ J
-\item \textbf{Interpret discrepancy}: Large $E_{\text{arch}}$ indicates overhead dominates; proportionality still validates information-theoretic scaling
+\item \textbf{Measure $\Delta H$:}
+\begin{itemize}
+\item Compute $H(L_T(x))$ and $H(L_S(x))$ via sampling over test set
+\item Alternatively, use $\Delta H \approx n_T - n_S$ from level assignment
+\end{itemize}
+
+\item \textbf{Measure energy $E_{\text{distill}}$:}
+\begin{itemize}
+\item Use hardware power monitoring (NVIDIA SMI for GPUs)
+\item Integrate power draw over distillation run: $E = \int P(t) \, dt$
+\item Subtract baseline idle power to isolate computational cost
+\item Uncertainty: $\pm 5\%$ from measurement noise and thermal fluctuations
+\end{itemize}
+
+\item \textbf{Estimate $\kappa$:}
+\begin{equation}
+\kappa = \frac{E_{\text{distill}}}{k_B T \ln 2 \cdot \Delta H \cdot N_{\text{tokens}}}
+\end{equation}
 \end{enumerate}
 
-\begin{remark}[Confounding factors]
-\label{rem:confound}
-GPU energy consumption depends on:
+\subsubsection{Uncertainty propagation for $\kappa$}
+
+Given measurement uncertainties:
 \begin{itemize}
-\item Memory bandwidth and cache efficiency
-\item Parallelization overhead and synchronization
-\item Floating-point operation throughput
-\item Cooling and power regulation circuits
+\item $\sigma_E / E \approx 0.05$ (5\% energy measurement error)
+\item $\sigma_{\Delta H} / \Delta H \approx 0.10$ (10\% entropy estimation error)
+\item $\sigma_T / T \approx 0.01$ (1\% temperature variation)
 \end{itemize}
-These factors can dominate the thermodynamic minimum. The prediction should be interpreted as: \emph{after controlling for architecture and hardware, energy should scale proportionally with information loss}. This requires careful experimental design with controlled hardware and multiple model families.
-\end{remark}
+
+The combined uncertainty in $\kappa$ is:
+\begin{equation}
+\frac{\sigma_\kappa}{\kappa} = \sqrt{\left(\frac{\sigma_E}{E}\right)^2 + \left(\frac{\sigma_{\Delta H}}{\Delta H}\right)^2 + \left(\frac{\sigma_T}{T}\right)^2} \approx 0.11
+\end{equation}
+
+Thus we expect $\kappa$ determinations accurate to approximately $\pm 11\%$.
+
+\subsubsection{Comparison across architectures}
+
+Test hypothesis: $\kappa$ is universal across model families.
+
+\begin{itemize}
+\item Measure $\kappa$ for 10+ teacher-student pairs from GPT, LLaMA, OPT families
+\item Test for significant variation: one-way ANOVA on $\log \kappa$ grouped by architecture
+\item If $\kappa$ varies by $>2\times$ across families, theory requires refinement
+\end{itemize}
+
+\subsection{Behavioral distance and performance}
+
+\begin{definition}[Behavioral distance for LLMs]
+For models at levels $i$ and $j$, the behavioral distance is:
+\begin{equation}
+\Beh(i,j) \approx \frac{D_{\text{KL}}(L_i \| L_j)}{H(L_i)}
+\end{equation}
+where $D_{\text{KL}}$ is the KL divergence between output distributions and $H(L_i)$ is the output entropy of the higher-level model.
+\end{definition}
+
+\textbf{Justification:} This normalization ensures $0 \leq \Beh \leq 1$ and preserves the triangle inequality approximately for small divergences. For discrete distributions, the triangle inequality holds exactly when divergences are treated additively; our normalization by $H(L_i)$ converts absolute divergence to relative divergence, which remains approximately subadditive in typical neural network regimes where output distributions are smooth and overlapping.
+
+\begin{prediction}[Distillation performance degradation]
+\label{pred:performance}
+For a student model $L_S$ distilled from teacher $L_T$, the performance gap on task $\mathcal{T}$ scales as:
+\begin{equation}
+\Delta \text{Acc}(\mathcal{T}) \propto \Beh(n_T, n_S)
+\end{equation}
+with proportionality constant depending on task complexity.
+\end{prediction}
+
+\textbf{Empirical test:}
+\begin{enumerate}
+\item Measure $\Beh(n_T, n_S)$ via KL divergence on held-out set
+\item Evaluate both teacher and student on benchmark tasks (GLUE, SuperGLUE, reasoning benchmarks)
+\item Compute accuracy gap: $\Delta \text{Acc} = \text{Acc}(L_T) - \text{Acc}(L_S)$
+\item Fit linear model: $\Delta \text{Acc} = c_0 + c_1 \Beh(n_T, n_S)$
+\item Test predictive power on held-out distillation pairs
+\end{enumerate}
 
 \section{Scaling Predictions and Critical Transitions}
 \label{sec:predictions}
 
-\subsection{Emergence thresholds}
+\subsection{Emergence and critical levels}
 
-\begin{prediction}[Critical transition levels]
+\begin{prediction}[Emergence threshold]
 \label{pred:emergence}
-Emergent abilities should appear near hierarchy levels $n \approx 33$--35, corresponding to models with $\approx 6$B--13B parameters (assuming typical vocabulary $V \approx 50$K and $\alpha \approx 0.8, \beta \approx 0.5, \gamma \approx 15$).
+Qualitative capability transitions occur near critical hierarchy levels $n_c \approx 33$--35, corresponding to models with approximately $P \approx 10^{10}$--$10^{11}$ parameters.
 \end{prediction}
 
-\textbf{Rationale:} If capabilities require representational capacity exceeding $2^{33} \approx 8.6 \times 10^9$ effective states, smaller models cannot implement the necessary computational circuits. The discontinuity arises from discrete level structure.
+\textbf{Rationale (postulate pending validation):} Empirical observation suggests that tasks requiring multi-step reasoning and compositional generalization first appear reliably in models of this scale. This corresponds to the point where:
+\begin{itemize}
+\item State space size $2^{n_c} \approx 10^{10}$--$10^{11}$ exceeds typical task complexity
+\item Projection fidelity $P \circ C \approx \id$ begins to fail systematically
+\item Behavioral distance $\Beh(n_c-1, n_c+1)$ exhibits sharp increase
+\end{itemize}
 
-\begin{remark}[Falsifiability]
-Prediction~\ref{pred:emergence} is highly falsifiable. If emergent abilities appear uniformly across all model sizes or at substantially different thresholds ($n < 30$ or $n > 38$), the hierarchical framework would require revision. Schaeffer et al.\ (2023) suggest some emergence may be measurement artifacts; distinguishing genuine phase transitions from smooth capability growth with nonlinear metrics is crucial.
-\end{remark}
+Future work should validate this threshold against empirical scaling curves from GPT-3, PaLM, and LLaMA benchmark suites.
 
-\subsection{Compression-performance tradeoff}
+\subsection{Behavioral distance decay model}
 
-\begin{prediction}[Behavioral distance and performance degradation]
-\label{pred:degradation}
-Performance degradation under distillation should correlate with behavioral distance:
-\[
-\Delta \text{Acc} \propto \text{Beh}(n_{\text{teacher}}, n_{\text{student}}) + \Delta H
-\]
-where $\Delta \text{Acc}$ is accuracy loss on benchmark tasks.
-\end{prediction}
+\begin{proposition}[Exponential decay hypothesis]
+For models separated by $\Delta n = |n_i - n_j|$ levels, behavioral distance decays as:
+\begin{equation}
+\Beh(n_i, n_j) \approx B_0 e^{-\lambda \Delta n}
+\end{equation}
+where $\lambda$ is a decay rate (typical: $\lambda \approx 0.3$--0.5 per level) and $B_0$ is baseline divergence at adjacent levels.
+\end{proposition}
 
-\textbf{Validation:} Measure performance before/after distillation across model pairs, compute behavioral distance via output distribution divergence (KL divergence normalized by entropy), and fit regression model.
+\textbf{Interpretation:} Distant levels become behaviorally similar as fine-grained differences wash out. This predicts diminishing returns for scaling beyond certain thresholds.
 
-\subsection{Optimal distillation ratios}
+\subsection{Scaling law connection}
 
-The framework predicts diminishing returns when compressing beyond certain ratios:
+Classical scaling laws \cite{kaplan2020}:
+\begin{equation}
+L(N) = \left(\frac{N_c}{N}\right)^\alpha
+\end{equation}
 
-\begin{corollary}[Distillation efficiency bound]
-For teacher at level $n_j$ and student at level $n_i$, distillation efficiency $\eta = \text{Acc}_{\text{student}} / \text{Acc}_{\text{teacher}}$ should satisfy:
-\[
-\eta \geq \exp(-C \cdot (n_j - n_i))
-\]
-for some constant $C > 0$. This gives exponential performance decay with level gap.
-\end{corollary}
+Hierarchy perspective:
+\begin{equation}
+n_L \sim \log N \implies L(n) \sim e^{-\alpha n}
+\end{equation}
 
-\section{Discussion}
+Thus exponential loss decay in hierarchy levels corresponds to power-law scaling in parameter count, providing a structural interpretation of empirical scaling exponents.
+
+\section{Discussion and Future Directions}
 \label{sec:discussion}
 
-\subsection{Theoretical limitations}
+\subsection{Theoretical strengths and limitations}
 
-\subsubsection{Finite state abstraction}
-
-As acknowledged in Limitation~\ref{lim:simplified}, treating neural networks as finite state machines ignores:
+\textbf{Strengths:}
 \begin{itemize}
-\item \textbf{Continuous activations:} Real-valued hidden states have uncountably infinite precision (before quantization)
-\item \textbf{Gradient dynamics:} Training involves continuous optimization in parameter space
-\item \textbf{Stochasticity:} Sampling introduces randomness not captured by deterministic transitions
+\item Provides mathematical structure connecting information theory, thermodynamics, and computability
+\item Generates precise, falsifiable predictions
+\item Unifies distillation and fine-tuning as dual operations
+\item Explains emergence via critical transitions in hierarchy
 \end{itemize}
 
-However, at inference time with fixed weights and finite precision arithmetic (FP16, INT8), the effective behavior is approximately finite-state. The degree of approximation quality is an empirical question.
-
-\subsubsection{Thermodynamic predictions}
-
-As noted in Limitation~\ref{lim:physical} and Remark~\ref{rem:confound}, GPU energy consumption has many confounding factors. The $E \propto k_B T \Delta H$ relationship should be viewed as a theoretical baseline. Empirical validation may reveal:
+\textbf{Limitations:}
 \begin{itemize}
-\item Large architecture-dependent overhead $E_{\text{arch}} \gg k_B T \Delta H$
-\item Non-trivial dependence on batch size, sequence length, and parallelization strategy
-\item Hardware-specific effects (memory hierarchy, interconnect bandwidth)
+\item Finite-state abstraction omits gradient flow and continuous optimization
+\item Thermodynamic predictions require careful experimental design to isolate effects
+\item Critical levels ($n \approx 33$--35) are empirically motivated but not yet derived from first principles
+\item Framework assumes parameter count and vocabulary are primary complexity measures, potentially underweighting architecture (depth, attention mechanisms)
 \end{itemize}
 
-The prediction remains valuable if energy scales \emph{proportionally} with $\Delta H$ after controlling for these factors, even if the absolute magnitude differs from theoretical minimum.
+\subsection{Comparison with alternative theories}
 
-\subsection{Relation to existing theories}
+\begin{itemize}
+\item \textbf{Neural tangent kernel:} Describes training dynamics in infinite-width limit; complementary to our finite-size hierarchy
+\item \textbf{Information bottleneck:} Focuses on layer-wise compression; we extend to inter-model compression
+\item \textbf{Lottery ticket hypothesis:} Concerns sparse subnetworks; orthogonal to hierarchy-level analysis
+\item \textbf{Empirical scaling laws:} Phenomenological; our framework provides mechanistic interpretation
+\end{itemize}
 
-\subsubsection{Neural scaling laws}
+\subsection{Experimental validation roadmap}
 
-Our framework complements rather than replaces empirical scaling laws. Kaplan et al.\ (2020) and Hoffmann et al.\ (2022) provide phenomenological power-law fits. We offer a structural explanation: hierarchy levels impose discrete capacity thresholds, and the smooth average conceals stepwise transitions.
-
-\subsubsection{Neural tangent kernel theory}
-
-NTK theory analyzes overparameterized networks in the infinite-width limit where training becomes linear. Our finite-hierarchy framework applies to practical-sized models where discrete resource constraints matter. The two perspectives address different regimes.
-
-\subsubsection{Information bottleneck}
-
-Tishby \& Zaslavsky (2015) analyze layer-level compression-relevance tradeoffs. We extend this to model-level hierarchies across different architectures. The adjunction structure provides mathematical formalism for compression/expansion operations.
-
-\subsection{Future work}
+To ensure falsifiability, we propose the following experimental validation protocols with pre-registered hypotheses and success criteria:
 
 \subsubsection{Empirical validation}
 
 Priority experiments:
 \begin{enumerate}
-\item Fit level assignment formula to 30+ models and validate on held-out test set
-\item Measure distillation energy for 10+ teacher-student pairs across different $\Delta H$ ranges
-\item Map emergence thresholds for specific capabilities (arithmetic, reasoning, code generation)
-\item Quantify behavioral distance via output distribution divergence and correlate with performance
+\item \textbf{Level assignment validation:}
+\begin{itemize}
+\item Fit formula to 30+ models with leave-one-family-out cross-validation
+\item Success criterion: MAE $< 1.5$ levels on held-out families
+\item Report coefficients: $\alpha = 1.0 \pm 0.1$, $\beta = 0.5 \pm 0.15$, $\gamma = 0 \pm 3$
+\end{itemize}
+
+\item \textbf{Energy-entropy relationship:}
+\begin{itemize}
+\item Measure $E_{\text{distill}}$ for 10+ teacher-student pairs with varying $\Delta H$
+\item Test linear relationship: $E = \kappa k_B T \ln 2 \cdot \Delta H \cdot N_{\text{tokens}}$
+\item Success criterion: $R^2 > 0.80$ and $\kappa$ consistent within factor of $3\times$ across architectures
+\end{itemize}
+
+\item \textbf{Emergence threshold mapping:}
+\begin{itemize}
+\item Evaluate models from $n = 25$ to $n = 40$ on reasoning tasks (arithmetic, logic, code)
+\item Identify critical levels where success rate jumps from $<20\%$ to $>60\%$
+\item Test hypothesis: critical levels cluster in $n \in [33, 35]$ for multiple task families
+\end{itemize}
+
+\item \textbf{Behavioral distance-performance correlation:}
+\begin{itemize}
+\item Compute $\Beh(n_T, n_S)$ via KL divergence for 20+ distillation pairs
+\item Measure accuracy gap $\Delta \text{Acc}$ on GLUE, SuperGLUE benchmarks
+\item Test linear model: $\Delta \text{Acc} = c_0 + c_1 \Beh(n_T, n_S)$ with $R^2 > 0.70$
+\end{itemize}
 \end{enumerate}
 
 \subsubsection{Theoretical extensions}
@@ -416,15 +577,15 @@ Priority experiments:
 \item \textbf{Continuous limit:} Replace discrete hierarchy with differential equations governing level transitions
 \item \textbf{Multi-modal models:} Extend framework to vision-language models with cross-modal projections
 \item \textbf{Training dynamics:} Incorporate gradient descent as trajectory through hierarchy levels
-\item \textbf{Formal expressivity bounds:} Prove rigorous capacity limits at each hierarchy level
+\item \textbf{Formal expressivity bounds:} Prove rigorous capacity limits at each hierarchy level using tools from descriptive complexity theory
 \end{itemize}
 
 \subsubsection{Practical applications}
 
 \begin{itemize}
-\item \textbf{Compression algorithms:} Design distillation protocols minimizing $\text{Beh}(n_T, n_S)$
-\item \textbf{Architecture search:} Optimize network design for target hierarchy level
-\item \textbf{Capability prediction:} Estimate minimum model size for specific tasks from information-theoretic bounds
+\item \textbf{Compression algorithms:} Design distillation protocols minimizing $\Beh(n_T, n_S)$ subject to efficiency constraints
+\item \textbf{Architecture search:} Optimize network design for target hierarchy level given computational budget
+\item \textbf{Capability prediction:} Estimate minimum model size for specific tasks from information-theoretic bounds on $\Delta H$
 \end{itemize}
 
 \section{Conclusion}
@@ -442,7 +603,7 @@ We have presented a theoretical framework situating large language models within
 \item \textbf{Theoretical unification:} The framework connects scaling laws, information theory, and thermodynamics through categorical structure
 \end{enumerate}
 
-The framework's value lies not in immediate empirical confirmation but in providing \emph{precise quantitative predictions} that can be systematically tested. The specific threshold $n \approx 33$--35 for emergence, the energy-entropy relationship $E \propto k_B T \Delta H$, and the behavioral distance-performance correlation are all falsifiable hypotheses.
+The framework's value lies not in immediate empirical confirmation but in providing \emph{precise quantitative predictions} that can be systematically tested. The specific threshold $n \approx 33$--35 for emergence, the energy-entropy relationship in Equation~\eqref{eq:energy_distillation}, and the behavioral distance-performance correlation are all falsifiable hypotheses.
 
 Limitations are substantial: the finite-state abstraction is approximate, thermodynamic predictions require careful interpretation, and empirical validation is entirely absent. However, these limitations are clearly stated, and the framework provides sufficient mathematical structure to guide experimental design.
 
