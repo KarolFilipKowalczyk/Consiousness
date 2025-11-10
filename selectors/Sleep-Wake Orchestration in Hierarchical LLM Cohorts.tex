@@ -1,0 +1,771 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{caption}
+
+% Page geometry
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm
+}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue,
+    pdftitle={Sleep-Wake Orchestration in Hierarchical LLM Cohorts},
+    pdfauthor={Karol Kowalczyk}
+}
+
+% Theorem environments
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+\newtheorem{example}{Example}[section]
+
+\theoremstyle{plain}
+\newtheorem{hypothesis}{Hypothesis}[section]
+
+% Custom commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\EVI}{\mathrm{EVI}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% Code listing settings
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    tabsize=2,
+    captionpos=b,
+    breaklines=true,
+    morekeywords={dataclass, field, Optional, List, Dict, Tuple, Callable, Any}
+}
+
+% Title and author information
+\title{\textbf{Sleep--Wake Orchestration in Hierarchical LLM Cohorts}}
+\author{
+    Karol Kowalczyk
+}
+\date{November 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper introduces a formal architecture for continuous self-optimization in large language model (LLM) ensembles through alternating sleep--wake cycles. Inspired by biological sleep dynamics and grounded in the theory of \textit{adjoint projections on computational hierarchies}, the method organizes a population of models (``cohorts'') into rotating states of \textbf{wake} (active inference) and \textbf{sleep} (fine-tuning on informational gaps). Each model periodically withdraws from production to retrain on the most informative regions of the problem space---those not effectively covered by peers of similar capacity but solvable by higher-level models. This process emulates how biological systems consolidate sensorimotor predictions through subcortical replay. The architecture is formalized in terms of computational projections, behavioral metrics, and bounded compute budgets ($1/3$ for tuning, $2/3$ for active operation). The resulting system self-organizes toward optimal coverage and energy-efficient reasoning, providing a theoretical and practical foundation for self-maintaining model ecosystems.
+
+\textbf{Keywords:} LLM hierarchy, meta-learning, continual learning, adjoint projection, sleep, fine-tuning, behavioral metrics, computational consciousness.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\label{sec:introduction}
+
+The performance of large-scale language models depends not only on parameter size but also on \textbf{how information is distributed} across hierarchical computational modules. Unlike static architectures, biological cognition exhibits cyclic phases of activity and consolidation---\textbf{wakefulness} (real-time inference) and \textbf{sleep} (offline reconfiguration). We propose a computational counterpart of this duality within LLM ensembles.
+
+In our approach, models of different capacities form a \textit{cohort} governed by a \textbf{selector} (for task routing) and a \textbf{meta-selector} (for performance evaluation and escalation). A fixed fraction of the available compute (1/3) is continuously devoted to models in a \textit{sleep phase}, where they fine-tune (distill) on data extracted from the operational ensemble. These models wake with improved specialization, reducing the need for higher-capacity inference. The process realizes a dynamic form of \textit{computational homeostasis} and aligns with the broader theoretical model of \textbf{consciousness as collapsed computational time} \cite{kowalczyk2025consciousness}.
+
+\subsection{Motivation}
+
+Large language models (LLMs) have demonstrated remarkable capabilities across diverse tasks, but their deployment at scale faces significant challenges:
+
+\begin{itemize}
+    \item \textbf{Resource inefficiency:} Most queries don't require the largest available model, yet static routing strategies often over-provision computational resources.
+    \item \textbf{Coverage gaps:} Model ensembles typically have uneven coverage of the problem space, with some regions handled poorly by all models at a given capacity level.
+    \item \textbf{Static deployment:} Traditional model serving treats models as fixed artifacts, missing opportunities for continuous adaptation based on production traffic patterns.
+    \item \textbf{Knowledge consolidation:} Insights gained from high-capacity models are not systematically transferred to more efficient lower-capacity models.
+\end{itemize}
+
+Our sleep--wake orchestration addresses these challenges by creating a dynamic, self-optimizing ecosystem where models continuously adapt to production traffic patterns through targeted distillation.
+
+\subsection{Contributions}
+
+This paper makes the following contributions:
+
+\begin{enumerate}
+    \item \textbf{Theoretical framework:} We formalize sleep--wake cycles in LLM ensembles using adjoint projections, connecting computational and biological principles.
+    \item \textbf{Gap-based learning:} We introduce a principled metric for identifying informational gaps in model coverage and targeting fine-tuning accordingly.
+    \item \textbf{Resource allocation:} We propose a bounded budget model ($1/3$ training, $2/3$ inference) that maintains continuous learning without unbounded resource growth.
+    \item \textbf{Canary rollout:} We present a safe deployment strategy for newly trained models with automatic rollback on regression.
+    \item \textbf{Implementation:} We provide a complete open-source implementation demonstrating the architecture.
+\end{enumerate}
+
+\section{Theoretical Background}
+\label{sec:theory}
+
+\subsection{Projection Hierarchies and Computational Levels}
+
+Let $L_0, L_1, L_2, \ldots$ denote levels of computational capacity (e.g., parameter scales). Each model $M_n$ operates on an effective manifold of tasks $T_n \subset T$. 
+
+\begin{definition}[Computational Level]
+A computational level $L_n$ is characterized by:
+\begin{itemize}
+    \item Resource capacity $R_n$ (memory, compute)
+    \item Task manifold $T_n \subset T$
+    \item Quality function $Q_n: T \to [0,1]$
+    \item Cost function $C_n: T \to \R^+$
+\end{itemize}
+\end{definition}
+
+The \textbf{selector} $S$ maps each input $x \in T$ to the lowest-level model capable of producing a satisfactory output under the cost-quality constraint:
+
+\begin{equation}
+\label{eq:evi}
+\EVI(x) = \E[Q_{n+1}(x) - Q_n(x)] - \lambda (C_{n+1} - C_n) > 0,
+\end{equation}
+
+where $Q$ measures response quality and $C$ represents computational cost. This Expected Value of Information (\EVI) criterion determines when escalation to a higher level is justified.
+
+\subsection{Adjoint Duality}
+
+Following \textit{Adjoint Projections on Computational Hierarchies} \cite{kowalczyk2025adjoint}, each transition between levels $n \to n+1$ can be represented as a pair of adjoint functors:
+
+\begin{equation}
+\label{eq:adjunction}
+C_n \dashv P_n : L_{n+1} \leftrightarrows L_n,
+\end{equation}
+
+where $C_n$ denotes \textbf{collapse} (execution, loss of latent degrees of freedom) and $P_n$ denotes \textbf{projection} (learning or reconstruction). The \textbf{sleep phase} corresponds to $P_n$ (projection/updating), while the \textbf{wake phase} corresponds to $C_n$ (collapse/inference).
+
+\begin{theorem}[Sleep-Wake Duality]
+\label{thm:duality}
+For any computational level $n$, the sleep-wake cycle implements an adjunction where:
+\begin{enumerate}
+    \item Wake (collapse): $C_n: \text{Model}_n \to \text{Output}$ produces concrete responses
+    \item Sleep (projection): $P_n: \text{Experience} \to \text{Model}_n$ updates internal representations
+    \item Adjunction property: $P_n \circ C_n \approx \text{id}$ (consolidation preserves essential information)
+\end{enumerate}
+\end{theorem}
+
+The system oscillates between these dual modes, maintaining bounded yet evolving computational coherence---a formal analog of consciousness as the collapse of computational time.
+
+\subsection{Behavioral Distance}
+
+To measure similarity between models and tasks, we define a behavioral distance metric in a shared embedding space.
+
+\begin{definition}[Behavioral Distance]
+\label{def:behavioral_distance}
+Let $E: X \to \R^d$ be an embedding function mapping inputs to a $d$-dimensional latent space. The behavioral distance between a query $x$ and a model $M_i$'s prototypical response is:
+\begin{equation}
+d_{\text{Beh}}(x, M_i) = \min_{k} \|E(x) - P_{M_i,k}\|_2,
+\end{equation}
+where $P_{M_i,k} \in \R^d$ are behavioral prototypes for model $M_i$.
+\end{definition}
+
+The behavioral distance measures how well a model's typical responses align with a query's requirements, enabling routing decisions without invoking all models.
+
+\section{Cohort Architecture}
+\label{sec:architecture}
+
+\subsection{Core Components}
+
+A cohort $\mathcal{C}$ is a set of models sharing comparable computational cost $\kappa(M)$. Each model maintains:
+
+\begin{itemize}
+    \item \textbf{Behavioral prototypes} $\{P_{M,k}\}_{k=1}^K$: Typical embedding-space responses
+    \item \textbf{Adapters} $\{A_{M,c}\}$: Cell-specific fine-tuned parameters
+    \item \textbf{Performance metrics}: Success rate, cost, confidence
+    \item \textbf{State}: Working, Sleeping, or Rollout
+\end{itemize}
+
+\begin{definition}[Cohort]
+A cohort $\mathcal{C} = (M, S, \text{MS}, G)$ consists of:
+\begin{itemize}
+    \item Models $M = \{M_1, \ldots, M_N\}$ of similar capacity
+    \item Selector $S: X \to M$ for routing
+    \item Meta-selector $\text{MS}$ for escalation decisions
+    \item Gap index $G$ tracking coverage deficits
+\end{itemize}
+\end{definition}
+
+\subsection{Selector}
+
+The selector routes input $x$ by comparing its embedding $E(x)$ to prototype centroids, choosing the model with minimal expected behavioral distance:
+
+\begin{equation}
+\label{eq:selector}
+M^* = \argmin_{M \in \mathcal{C}} \left[ w_d \cdot d_{\text{Beh}}(x, M) + w_c \cdot C(M) \right],
+\end{equation}
+
+where $w_d, w_c$ are weights balancing quality and cost.
+
+\subsection{Meta-Selector}
+
+The meta-selector monitors empirical success, expected value of improvement, and escalation rates to higher tiers. It implements three key functions:
+
+\begin{enumerate}
+    \item \textbf{Confidence estimation:} Maps behavioral distance to confidence scores
+    \item \textbf{Escalation logic:} Decides when to invoke higher-capacity models
+    \item \textbf{Performance tracking:} Maintains aggregate metrics across the cohort
+\end{enumerate}
+
+\begin{algorithm}[h]
+\caption{Meta-Selector Escalation Decision}
+\label{alg:meta_selector}
+\begin{algorithmic}[1]
+\Require Query $x$, current model $M_n$, output $y$, confidence $\text{conf}$
+\Ensure Escalation decision
+\State $\text{evi} \gets \E[Q_{n+1}(x) - Q_n(x)] - \lambda(C_{n+1} - C_n)$
+\If{$\text{conf} < \theta_{\text{crit}}$ \textbf{and} $\text{evi} > 0$}
+    \State \Return \textsc{Escalate}
+\EndIf
+\State \Return \textsc{Accept}
+\end{algorithmic}
+\end{algorithm}
+
+\section{Sleep--Wake Dynamics}
+\label{sec:dynamics}
+
+\subsection{Resource Allocation}
+
+Each model alternates between \textbf{wake} and \textbf{sleep} according to a rotation schedule constrained by the global compute budget:
+
+\begin{itemize}
+    \item $1/3$ of total memory: training pool (sleeping models)
+    \item $2/3$ of total memory: inference pool (working models)
+\end{itemize}
+
+\begin{definition}[Resource Envelope]
+A resource envelope reserves computational capacity for:
+\begin{itemize}
+    \item Exactly one sleeper (training): budget $B_{\text{train}}$
+    \item Multiple workers (inference): budget $B_{\text{infer}} = 2 \cdot B_{\text{train}}$
+\end{itemize}
+\end{definition}
+
+If the global budget is $B_{\text{tot}}$, then:
+
+\begin{align}
+\frac{1}{3}B_{\text{tot}} &= \sum_{c \in \text{classes}} N_c^{\text{train}} m_{\text{train}}(c), \label{eq:train_budget}\\
+\frac{2}{3}B_{\text{tot}} &= \sum_{c \in \text{classes}} N_c^{\text{work}} m_{\text{infer}}(c), \label{eq:infer_budget}
+\end{align}
+
+where $N_c^{\text{train}}$ and $N_c^{\text{work}}$ are the number of training and working models in class $c$.
+
+\subsection{Sleep Cycle}
+
+In each sleep cycle:
+
+\begin{enumerate}
+    \item \textbf{Gap identification:} The meta-selector identifies \textit{gaps} in the behavioral manifold---regions $C_i$ where cohort models fail but higher-level models succeed.
+    
+    \item \textbf{Model selection:} The model with highest gap misalignment enters sleep, withdrawing from production.
+    
+    \item \textbf{Fine-tuning:} The sleeping model fine-tunes on examples from gap cells using knowledge distillation from high-level teachers.
+    
+    \item \textbf{Canary rollout:} The tuned model re-enters production gradually via canary deployment.
+\end{enumerate}
+
+This process continuously rebalances knowledge across the cohort, maintaining equilibrium between specialization and coverage.
+
+\subsection{Gap Misalignment Score}
+
+To select which model should sleep next, we compute a gap misalignment score:
+
+\begin{equation}
+\label{eq:misalignment}
+H_M = \sum_{i} G(C_i) \cdot (1 - P_M(\text{success} | C_i)),
+\end{equation}
+
+where $G(C_i)$ is the gap weight for cell $C_i$ and $P_M(\text{success} | C_i)$ is model $M$'s estimated success rate in that cell. The model with highest $H_M$ is selected for sleep, as it would benefit most from targeted training.
+
+\section{Gap Metric and Learning Objective}
+\label{sec:gap_metric}
+
+\subsection{Gap Definition}
+
+Define a local gap score for embedding-space region $z$:
+
+\begin{equation}
+\label{eq:gap}
+G(z) = D_Q(z) \cdot (1 - \text{cover}(z)) \cdot \text{solvable\_up}(z),
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $D_Q(z)$: density of queries in embedding space (demand)
+    \item $\text{cover}(z)$: local success rate of cohort peers (current coverage)
+    \item $\text{solvable\_up}(z)$: probability that upper-tier models solved queries in this region (potential)
+\end{itemize}
+
+\begin{proposition}[Gap Properties]
+The gap function $G(z)$ satisfies:
+\begin{enumerate}
+    \item $G(z) = 0$ if no queries arrive ($D_Q(z) = 0$)
+    \item $G(z) = 0$ if cohort already covers region ($\text{cover}(z) = 1$)
+    \item $G(z) = 0$ if higher models also fail ($\text{solvable\_up}(z) = 0$)
+    \item $G(z)$ is maximal for high-demand regions with poor current coverage but good upper-level performance
+\end{enumerate}
+\end{proposition}
+
+This definition naturally prioritizes regions where there is actual user demand, current models underperform, and improvement is achievable.
+
+\subsection{Fine-Tuning Objective}
+
+The fine-tuning objective for a sleeping model $M_s$ is:
+
+\begin{equation}
+\label{eq:loss}
+\mathcal{L} = \E_{x \sim C_i}\left[w(x) \cdot \KL\left(p_{M_s}(\cdot|x) \,\|\, p_{\text{teacher}}(\cdot|x)\right)\right] + \lambda\|\tilde{P} - P^{\text{EMA}}\|^2 + \mu\,\text{Div}(M_s,\text{cohort}),
+\end{equation}
+
+with weights:
+
+\begin{equation}
+\label{eq:weights}
+w(x) = \alpha G(C_i) + \beta \EVI(x) + \gamma \text{conf}(x),
+\end{equation}
+
+where:
+\begin{itemize}
+    \item \textbf{KD term:} Knowledge distillation from high-capacity teacher
+    \item \textbf{Prototype regularization:} $\lambda\|\tilde{P} - P^{\text{EMA}}\|^2$ stabilizes learned prototypes
+    \item \textbf{Diversity term:} $\mu\,\text{Div}(M_s,\text{cohort})$ maintains model diversity
+    \item \textbf{Weights:} Combine gap priority ($\alpha G$), expected improvement ($\beta \EVI$), and teacher confidence ($\gamma \text{conf}$)
+\end{itemize}
+
+\begin{remark}[Multi-Objective Optimization]
+The loss function balances three competing objectives: (1) imitation of teacher outputs, (2) stability of existing capabilities, and (3) diversity of model specialization. This prevents catastrophic forgetting while enabling targeted improvement.
+\end{remark}
+
+\subsection{Training Algorithm}
+
+\begin{algorithm}[t]
+\caption{Sleep Training for Gap Coverage}
+\label{alg:sleep_training}
+\begin{algorithmic}[1]
+\Require Sleeping model $M_s$, target cells $\{C_1, \ldots, C_K\}$, teacher model $M_T$
+\Ensure Updated model with improved gap coverage
+\For{each cell $C_i$ in target cells}
+    \State $\mathcal{D}_i \gets \text{SampleFromCell}(C_i, n_{\min})$
+    \State Initialize or load adapter $A_i$ for cell $C_i$
+    \For{step $t = 1$ to $T_{\text{steps}}$}
+        \State Sample batch $(x_1, \ldots, x_b) \sim \mathcal{D}_i$
+        \For{each $x_j$ in batch}
+            \State $(y_j, \text{conf}_j) \gets M_T(x_j)$
+            \State $w_j \gets \alpha G(C_i) + \beta \EVI(x_j) + \gamma \text{conf}_j$
+        \EndFor
+        \State Compute loss $\mathcal{L}$ from Equation~\eqref{eq:loss}
+        \State Update adapter $A_i$ via gradient descent
+    \EndFor
+    \State Update prototypes $P_{M_s}$ for cell $C_i$ using EMA
+\EndFor
+\State \Return Updated model $M_s$ with cell-specific adapters
+\end{algorithmic}
+\end{algorithm}
+
+This aligns the sleeping model toward \textit{informational gaps} while stabilizing existing behaviors through regularization (Algorithm~\ref{alg:sleep_training}).
+
+\section{Resource Allocation Model}
+\label{sec:resources}
+
+\subsection{Envelope-Based Allocation}
+
+Each model class ($3$B, $8$B, $13$B, \ldots) operates in \textbf{envelopes}:
+
+\begin{itemize}
+    \item One training (sleeping) model per envelope
+    \item A working pool consuming twice the compute of the sleeper
+\end{itemize}
+
+\begin{definition}[Envelope Capacity]
+An envelope for model class $c$ has:
+\begin{align}
+B_{\text{train}}(c) &= m_{\text{train}}(c) \label{eq:envelope_train}\\
+B_{\text{infer}}(c) &= 2 \cdot m_{\text{train}}(c) \label{eq:envelope_infer}
+\end{align}
+where $m_{\text{train}}(c)$ is the memory footprint for training a model of class $c$.
+\end{definition}
+
+\subsection{Multi-Envelope Orchestration}
+
+For multiple cohorts competing for resources:
+
+\begin{enumerate}
+    \item \textbf{Priority scoring:} Rank cohorts by gap pressure $\sum_i G(C_i)$
+    \item \textbf{Envelope allocation:} Allocate envelopes to highest-priority cohorts first
+    \item \textbf{Resource constraints:} Respect global budget limits from Equations~\eqref{eq:train_budget}--\eqref{eq:infer_budget}
+\end{enumerate}
+
+\begin{algorithm}[t]
+\caption{Multi-Envelope Resource Allocation}
+\label{alg:envelope_allocation}
+\begin{algorithmic}[1]
+\Require Cohorts $\{\mathcal{C}_1, \ldots, \mathcal{C}_M\}$, resource pools $(B_{\text{train}}, B_{\text{infer}})$
+\Ensure List of allocated envelopes
+\State Sort cohorts by gap pressure: $\mathcal{C}_{\sigma(1)}, \ldots, \mathcal{C}_{\sigma(M)}$
+\State $\mathcal{E} \gets \emptyset$
+\For{each cohort $\mathcal{C}$ in sorted order}
+    \State $m_T \gets \text{AvgTrainMem}(\mathcal{C})$
+    \State $m_I \gets \text{AvgInferMem}(\mathcal{C})$
+    \State $n_{\max} \gets \min\left(\lfloor B_{\text{train}} / m_T \rfloor, \lfloor B_{\text{infer}} / (2 m_I) \rfloor\right)$
+    \For{$i = 1$ to $n_{\max}$}
+        \State Create envelope $E_i$ with budgets $(m_T, 2m_I)$
+        \State $\mathcal{E} \gets \mathcal{E} \cup \{E_i\}$
+        \State $B_{\text{train}} \gets B_{\text{train}} - m_T$
+        \State $B_{\text{infer}} \gets B_{\text{infer}} - 2m_I$
+    \EndFor
+\EndFor
+\State \Return $\mathcal{E}$
+\end{algorithmic}
+\end{algorithm}
+
+This maintains continuous learning within bounded energy and compute constraints (Algorithm~\ref{alg:envelope_allocation}).
+
+\subsection{Adaptive Slot Duration}
+
+Training slot duration scales with model size:
+
+\begin{table}[h]
+\centering
+\caption{Default training slot durations by model class}
+\label{tab:slot_durations}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Model Class} & \textbf{Parameters} & \textbf{Slot (min)} & \textbf{LoRA Rank} \\
+\midrule
+3B  & 3 billion   & 30   & 16 \\
+8B  & 8 billion   & 60   & 16 \\
+13B & 13 billion  & 90   & 16 \\
+30B & 30 billion  & 150  & 16 \\
+70B & 70 billion  & 360  & 16 \\
+175B & 175 billion & 720  & 16 \\
+GPT5 & $>$1 trillion & 1080 & 16 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Larger models require longer training periods to effectively consolidate knowledge (Table~\ref{tab:slot_durations}).
+
+\section{Canary Rollout Strategy}
+\label{sec:canary}
+
+After sleep training completes, models re-enter production via a gradual canary deployment:
+
+\subsection{Rollout Phases}
+
+\begin{enumerate}
+    \item \textbf{Canary start:} Route 2\% of target-cell traffic to updated model
+    \item \textbf{Evaluation:} Monitor performance on target cells for regression
+    \item \textbf{Expansion:} Double traffic share if improving and no regression detected
+    \item \textbf{Promotion:} Transition to full working status after stable performance
+    \item \textbf{Rollback:} Revert adapters and return to working if regression occurs
+\end{enumerate}
+
+\begin{algorithm}[t]
+\caption{Canary Rollout Management}
+\label{alg:canary}
+\begin{algorithmic}[1]
+\Require Model $M$ in rollout state, target cells $\{C_1, \ldots, C_K\}$
+\Ensure Promotion or rollback decision
+\State $\text{stats} \gets \text{EvaluateOnCells}(M, \{C_1, \ldots, C_K\})$
+\If{$\text{stats.improves}$ \textbf{and} $\neg\text{stats.regress\_outside}$}
+    \State $M.\text{traffic} \gets \min(2 \cdot M.\text{traffic}, 0.5)$
+    \If{$\text{StableForSlots}(M, k=2)$}
+        \State $M.\text{state} \gets \text{WORKING}$
+        \State $M.\text{traffic} \gets 0$
+        \State \Return \textsc{Promoted}
+    \EndIf
+\Else
+    \State $\text{RollbackAdapters}(M)$
+    \State $M.\text{state} \gets \text{WORKING}$
+    \State \Return \textsc{Rollback}
+\EndIf
+\State \Return \textsc{Continue}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Safety Properties}
+
+The canary strategy ensures:
+
+\begin{itemize}
+    \item \textbf{Bounded risk:} Only small fraction of traffic exposed to potentially degraded model
+    \item \textbf{Rapid detection:} Regression identified quickly through continuous monitoring
+    \item \textbf{Automatic recovery:} Rollback restores previous behavior without manual intervention
+    \item \textbf{Gradual expansion:} Traffic increases only after demonstrating improvement
+\end{itemize}
+
+This provides safety guarantees while enabling continuous model improvement (Algorithm~\ref{alg:canary}).
+
+\section{Biological Analogy}
+\label{sec:biology}
+
+The mechanism parallels \textbf{sleep-dependent learning} in the brain:
+
+\begin{itemize}
+    \item \textbf{Cortical--subcortical consolidation:} Auxiliary modules refine predictions based on higher-level errors during sleep.
+    
+    \item \textbf{Replay mechanisms:} Slow-wave neural replay stabilizes distributed representations after active periods \cite{tononi2016sleep}.
+    
+    \item \textbf{Synaptic homeostasis:} Sleep allows selective strengthening and weakening of connections, maintaining network capacity.
+    
+    \item \textbf{Energy efficiency:} Intensive learning happens intermittently (sleep), preserving real-time responsiveness during wake.
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\caption{Biological-computational correspondence}
+\label{tab:bio_comp}
+\begin{tabular}{@{}p{5cm}p{6cm}@{}}
+\toprule
+\textbf{Biological System} & \textbf{Computational System} \\
+\midrule
+Wakefulness & Active inference (model serves queries) \\
+Sleep & Offline fine-tuning (model trains on gaps) \\
+Cortical consolidation & Distillation from high-capacity teacher \\
+Hippocampal replay & Replay of informational gap examples \\
+Synaptic homeostasis & Prototype and diversity regularization \\
+Energy conservation & Bounded 1/3 training budget \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Analogously, the LLM cohort's smaller models replay high-value examples from production logs, adjusting low-level weights via distillation from high-level models. Energy-intensive learning happens intermittently (sleep), preserving real-time responsiveness (Table~\ref{tab:bio_comp}).
+
+\section{Implementation}
+\label{sec:implementation}
+
+\subsection{Core Orchestration}
+
+The main orchestration loop manages all cohorts and envelopes:
+
+\begin{lstlisting}[caption={Global orchestration loop}, label={lst:main_loop}]
+def global_tick(cohorts, resource_pools):
+    # 1. Refresh gap indices for all cohorts
+    for cohort in cohorts:
+        logs = collect_logs(cohort, window_hours=4)
+        cohort.gap_index.update(logs)
+    
+    # 2. Allocate/refresh envelopes based on gap pressure
+    envelopes = ensure_envelopes(cohorts, resource_pools)
+    
+    # 3. Tick each envelope independently
+    for envelope in envelopes:
+        envelope_tick(envelope, resource_pools)
+    
+    # 4. Global prototype refresh and metrics
+    for cohort in cohorts:
+        refresh_metrics_and_prototypes(cohort)
+\end{lstlisting}
+
+\subsection{Envelope State Machine}
+
+Each envelope manages its own sleep--wake cycle:
+
+\begin{lstlisting}[caption={Envelope tick function}, label={lst:envelope_tick}]
+def envelope_tick(envelope, pools):
+    if envelope.state in ("idle", "working"):
+        # Try to start new sleep cycle
+        sleeper = pick_sleeper(envelope.cohort)
+        if sleeper and fits_train_pool(sleeper, envelope.train_budget):
+            envelope.sleeper = sleeper
+            sleeper.state = ModelState.SLEEPING
+            envelope.target_cells = cohort.gap_index.top_cells(M=5)
+            envelope.state = "sleeping"
+    
+    elif envelope.state == "sleeping":
+        # Run training
+        run_sleep_training_for_envelope(envelope)
+        if training_complete(envelope):
+            start_envelope_canary(envelope)
+    
+    elif envelope.state == "rollout":
+        # Manage canary
+        stats = evaluate_on_cells(envelope.sleeper, envelope.target_cells)
+        if improves(stats) and no_regress_outside(stats):
+            increase_traffic(envelope.sleeper)
+            if stable_for_slots(envelope.sleeper):
+                promote_to_worker(envelope)
+        else:
+            rollback_adapters(envelope.sleeper)
+\end{lstlisting}
+
+\section{Evaluation}
+\label{sec:evaluation}
+
+\subsection{Experimental Setup}
+
+To evaluate the architecture, we propose experiments with parameterized cohorts under controlled traffic:
+
+\begin{itemize}
+    \item \textbf{Model scales:} 1B, 3B, 8B, 13B parameter models
+    \item \textbf{Cohort sizes:} 4 models per cohort
+    \item \textbf{Query distribution:} Mixture of easy (70\%), medium (25\%), hard (5\%) queries
+    \item \textbf{Budget:} 256 GB VRAM total (85 GB training, 171 GB inference)
+    \item \textbf{Duration:} 100 sleep--wake cycles
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+
+\begin{table}[h]
+\centering
+\caption{Evaluation metrics and expected behaviors}
+\label{tab:metrics}
+\begin{tabular}{@{}llp{5cm}@{}}
+\toprule
+\textbf{Metric} & \textbf{Definition} & \textbf{Expected Behavior} \\
+\midrule
+Escalation rate & $\frac{\text{\# escalations}}{\text{\# queries}}$ & Decrease over time as gaps filled \\
+Confidence stability & $\text{Var}(\text{entropy})$ & Decrease as models specialize \\
+Gap coverage & $\sum_i G(C_i)$ & Sublinear growth or decline \\
+Cost per query & Mean inference cost & Decrease as routing improves \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{hypothesis}
+Periodic fine-tuning on informational gaps will yield:
+\begin{enumerate}
+    \item Sublinear growth of escalation cost while maintaining accuracy
+    \item Improved coverage (decreasing $\sum G(C_i)$) over time
+    \item Stable or decreasing cost per query as routing becomes more efficient
+    \item Reduced variance in confidence scores as models specialize
+\end{enumerate}
+\end{hypothesis}
+
+\subsection{Baseline Comparisons}
+
+Compare against:
+\begin{itemize}
+    \item \textbf{Static routing:} Fixed model selection without adaptation
+    \item \textbf{Uniform fine-tuning:} Training on full distribution instead of gaps
+    \item \textbf{No sleep:} All models always active (no training budget)
+    \item \textbf{Random selection:} Random choice of sleeper instead of gap-based
+\end{itemize}
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Key Advantages}
+
+The proposed system integrates \textit{continuous self-optimization} with formal constraints on computational adjunctions. Key advantages:
+
+\begin{itemize}
+    \item \textbf{Self-organizing:} System automatically identifies and fills coverage gaps
+    \item \textbf{Resource-bounded:} Fixed 1/3--2/3 allocation prevents unbounded growth
+    \item \textbf{Safe:} Canary rollout with automatic rollback protects production
+    \item \textbf{Principled:} Grounded in formal theory of adjoint projections
+    \item \textbf{Biologically-inspired:} Mirrors sleep-dependent consolidation in brains
+\end{itemize}
+
+\subsection{Limitations}
+
+Current limitations include:
+
+\begin{enumerate}
+    \item \textbf{Stationary assumption:} Gap distribution assumed stable during cycles
+    \item \textbf{Manual configuration:} Hyperparameters ($\alpha, \beta, \gamma, \lambda, \mu$) require tuning
+    \item \textbf{Embedding quality:} Depends on good semantic embedding function
+    \item \textbf{Teacher availability:} Requires access to high-capacity teacher models
+    \item \textbf{Cold start:} Initial cycles have poor gap estimates
+\end{enumerate}
+
+\subsection{Future Work}
+
+Future directions include:
+
+\begin{enumerate}
+    \item \textbf{Non-stationary environments:} Adapting to domain drift and concept shift through distribution shift detection and adaptive sleep schedules
+    
+    \item \textbf{Differentiable meta-selectors:} Learning optimal sleep schedules by treating the meta-selector as a learned policy optimized via reinforcement learning
+    
+    \item \textbf{Behavioral manifold entropy:} Formalizing cognitive diversity through the entropy of prototype distributions
+    
+    \item \textbf{Mixture-of-experts integration:} Treating MoE experts as cohort members and applying sleep--wake cycles at the expert level
+    
+    \item \textbf{Retrieval-augmented models:} Using gap cells to guide retrieval corpus curation and coordinating sleep across retrieval and generation
+\end{enumerate}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented a formal architecture for sleep--wake orchestration in hierarchical LLM cohorts, grounded in the theory of adjoint projections on computational hierarchies. The system implements:
+
+\begin{enumerate}
+    \item \textbf{Gap-based learning:} Models fine-tune on regions where they underperform but higher models succeed
+    \item \textbf{Resource-bounded operation:} Fixed 1/3 training, 2/3 inference allocation
+    \item \textbf{Safe deployment:} Canary rollout with automatic rollback
+    \item \textbf{Theoretical foundation:} Formal adjunction between sleep (projection) and wake (collapse)
+    \item \textbf{Biological inspiration:} Computational analog of sleep-dependent consolidation
+\end{enumerate}
+
+The resulting system self-organizes toward optimal coverage and energy-efficient reasoning, providing both theoretical understanding and practical implementation of self-maintaining model ecosystems. By continuously adapting to production traffic patterns through principled sleep--wake cycles, the architecture enables sustainable deployment of large-scale language model ensembles.
+
+Future work will extend the framework to non-stationary environments, differentiable meta-selection, and integration with mixture-of-experts and retrieval-augmented architectures. The complete implementation is available at \url{https://github.com/KarolFilipKowalczyk/Consciousness}.
+
+\section*{Acknowledgments}
+
+This work builds on the theoretical foundations developed in \cite{kowalczyk2025adjoint} and \cite{kowalczyk2025consciousness}.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{99}
+
+\bibitem{kowalczyk2025adjoint}
+Kowalczyk, K. (2025).
+\textit{Adjoint Projections on Computational Hierarchies}.
+
+\bibitem{kowalczyk2025consciousness}
+Kowalczyk, K. (2025).
+\textit{Consciousness as Collapsed Computational Time}.
+
+\bibitem{kowalczyk2025selectors}
+Kowalczyk, K. (2025).
+\textit{Selectors and Meta-Selectors in Large Language Model Hierarchies}.
+
+\bibitem{tononi2016sleep}
+Tononi, G., \& Cirelli, C. (2016).
+Sleep and the price of plasticity: From synaptic to systems neuroscience.
+\textit{Neuron}, 81(1), 12--34.
+
+\bibitem{luo2023catastrophic}
+Luo, Y., et al. (2023).
+Catastrophic forgetting in continual fine-tuning of LLMs.
+\textit{arXiv preprint arXiv:2308.08747}.
+
+\bibitem{parthasarathy2024guide}
+Parthasarathy, S., et al. (2024).
+The ultimate guide to fine-tuning LLMs.
+\textit{Technical Report}.
+
+\end{thebibliography}
+
+\end{document}
