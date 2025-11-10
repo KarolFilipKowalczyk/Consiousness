@@ -184,16 +184,6 @@ Irreversible: information loss creates arrow of time
 
 ---
 
-## Files in This Repository
-
-- **[Consciousness as Collapsed Computational Time.pdf](Consciousness%20as%20Collapsed%20Computational%20Time.pdf)** - Main paper (236 pages)
-- **BIT_LEVEL_CORRECTIONS.md** - Recent updates to realistic cognitive levels
-- **HIERARCHY_UPDATE_SUMMARY.md** - Details of non-uniform hierarchy changes
-- **QUICK_REFERENCE.md** - Quick lookup for key concepts
-- **VISUAL_COMPARISON.md** - Diagrams comparing linear vs. non-uniform hierarchy
-
----
-
 ## Citation
 
 If you use or reference this work, please cite:
@@ -282,4 +272,4 @@ consciousness, computational theory, finite state machines, temporal collapse, m
 ---
 
 **Status:** Open for feedback and collaboration  
-**Last Updated:** November 8, 2025
+**Last Updated:** November 10, 2025
